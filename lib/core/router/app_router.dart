@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import '../../features/onboarding/presentation/pages/onboarding_page.dart';
+import '../../features/profile_setup/presentation/pages/profile_setup_page.dart';
 import '../../features/auth/presentation/pages/login.dart';
 import '../../features/auth/presentation/pages/signup.dart';
 import '../../features/auth/presentation/pages/reset_password.dart';
@@ -13,9 +14,10 @@ import 'home_shell.dart';
 import 'placeholder_screens.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/onboarding',
+  initialLocation: '/profile-setup',
   routes: [
-    GoRoute(path: '/onboarding', builder: (ctx, _) => const OnboardingPage()),
+    GoRoute(path: '/onboarding',     builder: (ctx, _) => const OnboardingPage()),
+    GoRoute(path: '/profile-setup',  builder: (ctx, _) => const ProfileSetupPage()),
     GoRoute(path: '/login',          builder: (ctx, _) => const LoginPage()),
     GoRoute(path: '/signup',         builder: (ctx, _) => const SignupPage()),
     GoRoute(path: '/reset-password', builder: (ctx, _) => const ResetPasswordPage()),

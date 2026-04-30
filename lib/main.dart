@@ -25,6 +25,13 @@ import 'features/onboarding/domain/usecases/get_onboarding_pages_usecase.dart';
 import 'features/onboarding/domain/usecases/mark_onboarding_seen_usecase.dart';
 import 'features/onboarding/presentation/provider/onboarding_provider.dart';
 
+import 'features/profile_setup/data/datasources/profile_setup_local_datasource.dart';
+import 'features/profile_setup/data/repositories/profile_setup_repository_impl.dart';
+import 'features/profile_setup/domain/usecases/get_departments_usecase.dart';
+import 'features/profile_setup/domain/usecases/get_semesters_usecase.dart';
+import 'features/profile_setup/domain/usecases/save_profile_usecase.dart';
+import 'features/profile_setup/presentation/provider/profile_setup_provider.dart';
+
 void main() {
   runApp(const CampusConnectApp());
 }
@@ -39,6 +46,8 @@ class CampusConnectApp extends StatelessWidget {
     final cartRepo    = CartRepositoryImpl();
     final obSource    = OnboardingLocalDataSourceImpl();
     final obRepo      = OnboardingRepositoryImpl(obSource);
+    final psSource    = ProfileSetupLocalDataSourceImpl();
+    final psRepo      = ProfileSetupRepositoryImpl(psSource);
 
     return MultiProvider(
       providers: [
@@ -46,6 +55,13 @@ class CampusConnectApp extends StatelessWidget {
           create: (_) => OnboardingProvider(
             getPagesUsecase: GetOnboardingPagesUsecase(obRepo),
             markSeenUsecase: MarkOnboardingSeenUsecase(obRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ProfileSetupProvider(
+            getDepartmentsUsecase: GetDepartmentsUsecase(psRepo),
+            getSemestersUsecase:   GetSemestersUsecase(psRepo),
+            saveProfileUsecase:    SaveProfileUsecase(psRepo),
           ),
         ),
         ChangeNotifierProvider(
