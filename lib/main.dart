@@ -19,6 +19,12 @@ import 'features/cart/domain/usecases/add_to_cart_usecase.dart';
 import 'features/cart/domain/usecases/remove_from_cart_usecase.dart';
 import 'features/cart/presentation/provider/cart_provider.dart';
 
+import 'features/onboarding/data/datasources/onboarding_local_datasource.dart';
+import 'features/onboarding/data/repositories/onboarding_repository_impl.dart';
+import 'features/onboarding/domain/usecases/get_onboarding_pages_usecase.dart';
+import 'features/onboarding/domain/usecases/mark_onboarding_seen_usecase.dart';
+import 'features/onboarding/presentation/provider/onboarding_provider.dart';
+
 void main() {
   runApp(const CampusConnectApp());
 }
@@ -28,12 +34,20 @@ class CampusConnectApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRemote = AuthRemoteDataSourceImpl();
-    final authRepo   = AuthRepositoryImpl(authRemote);
-    final cartRepo   = CartRepositoryImpl();
+    final authRemote  = AuthRemoteDataSourceImpl();
+    final authRepo    = AuthRepositoryImpl(authRemote);
+    final cartRepo    = CartRepositoryImpl();
+    final obSource    = OnboardingLocalDataSourceImpl();
+    final obRepo      = OnboardingRepositoryImpl(obSource);
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (_) => OnboardingProvider(
+            getPagesUsecase: GetOnboardingPagesUsecase(obRepo),
+            markSeenUsecase: MarkOnboardingSeenUsecase(obRepo),
+          ),
+        ),
         ChangeNotifierProvider(
           create: (_) => AuthProvider(
             loginUsecase:         LoginUsecase(authRepo),
