@@ -32,6 +32,15 @@ import 'features/profile_setup/domain/usecases/get_semesters_usecase.dart';
 import 'features/profile_setup/domain/usecases/save_profile_usecase.dart';
 import 'features/profile_setup/presentation/provider/profile_setup_provider.dart';
 
+import 'features/create_post/data/repositories/create_post_repository_impl.dart';
+import 'features/create_post/domain/usecases/submit_post_usecase.dart';
+import 'features/create_post/presentation/provider/create_post_provider.dart';
+
+import 'features/project_partners/data/datasources/project_partners_local_datasource.dart';
+import 'features/project_partners/data/repositories/project_partners_repository_impl.dart';
+import 'features/project_partners/domain/usecases/get_project_partners_usecase.dart';
+import 'features/project_partners/presentation/provider/project_partners_provider.dart';
+
 void main() {
   runApp(const CampusConnectApp());
 }
@@ -48,6 +57,10 @@ class CampusConnectApp extends StatelessWidget {
     final obRepo      = OnboardingRepositoryImpl(obSource);
     final psSource    = ProfileSetupLocalDataSourceImpl();
     final psRepo      = ProfileSetupRepositoryImpl(psSource);
+    final cpSource    = CreatePostLocalDataSourceImpl();
+    final cpRepo      = CreatePostRepositoryImpl(cpSource);
+    final ppSource    = ProjectPartnersLocalDataSource();
+    final ppRepo      = ProjectPartnersRepositoryImpl(ppSource);
 
     return MultiProvider(
       providers: [
@@ -62,6 +75,17 @@ class CampusConnectApp extends StatelessWidget {
             getDepartmentsUsecase: GetDepartmentsUsecase(psRepo),
             getSemestersUsecase:   GetSemestersUsecase(psRepo),
             saveProfileUsecase:    SaveProfileUsecase(psRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CreatePostProvider(
+            submitPostUsecase: SubmitPostUsecase(cpRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ProjectPartnersProvider(
+            getProjectsUsecase:   GetProjectPartnersUsecase(ppRepo),
+            getFilterChipsUsecase: GetFilterChipsUsecase(ppRepo),
           ),
         ),
         ChangeNotifierProvider(
