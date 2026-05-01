@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     await provider.login(email: _emailCtrl.text.trim(), password: _passwordCtrl.text);
     if (!mounted) return;
     if (provider.isAuthenticated) {
-      context.go('/home');
+      context.go('/thread');
     } else if (provider.errorMessage != null) {
       AppSnackbar.show(context, provider.errorMessage!, isError: true);
       provider.clearError();

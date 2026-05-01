@@ -19,6 +19,32 @@ import 'features/cart/domain/usecases/add_to_cart_usecase.dart';
 import 'features/cart/domain/usecases/remove_from_cart_usecase.dart';
 import 'features/cart/presentation/provider/cart_provider.dart';
 
+import 'features/onboarding/data/datasources/onboarding_local_datasource.dart';
+import 'features/onboarding/data/repositories/onboarding_repository_impl.dart';
+import 'features/onboarding/domain/usecases/get_onboarding_pages_usecase.dart';
+import 'features/onboarding/domain/usecases/mark_onboarding_seen_usecase.dart';
+import 'features/onboarding/presentation/provider/onboarding_provider.dart';
+
+import 'features/profile_setup/data/datasources/profile_setup_local_datasource.dart';
+import 'features/profile_setup/data/repositories/profile_setup_repository_impl.dart';
+import 'features/profile_setup/domain/usecases/get_departments_usecase.dart';
+import 'features/profile_setup/domain/usecases/get_semesters_usecase.dart';
+import 'features/profile_setup/domain/usecases/save_profile_usecase.dart';
+import 'features/profile_setup/presentation/provider/profile_setup_provider.dart';
+
+import 'features/create_post/data/repositories/create_post_repository_impl.dart';
+import 'features/create_post/domain/usecases/submit_post_usecase.dart';
+import 'features/create_post/presentation/provider/create_post_provider.dart';
+
+import 'features/project_partners/data/datasources/project_partners_local_datasource.dart';
+import 'features/project_partners/data/repositories/project_partners_repository_impl.dart';
+import 'features/project_partners/domain/usecases/get_project_partners_usecase.dart';
+import 'features/project_partners/presentation/provider/project_partners_provider.dart';
+
+import 'features/thread/data/datasources/thread_local_datasource.dart';
+import 'features/thread/domain/usecases/thread_usecases.dart';
+import 'features/thread/presentation/provider/thread_provider.dart';
+
 void main() {
   runApp(const CampusConnectApp());
 }
@@ -28,12 +54,53 @@ class CampusConnectApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRemote = AuthRemoteDataSourceImpl();
-    final authRepo   = AuthRepositoryImpl(authRemote);
-    final cartRepo   = CartRepositoryImpl();
+    final authRemote  = AuthRemoteDataSourceImpl();
+    final authRepo    = AuthRepositoryImpl(authRemote);
+    final cartRepo    = CartRepositoryImpl();
+    final obSource    = OnboardingLocalDataSourceImpl();
+    final obRepo      = OnboardingRepositoryImpl(obSource);
+    final psSource    = ProfileSetupLocalDataSourceImpl();
+    final psRepo      = ProfileSetupRepositoryImpl(psSource);
+    final cpSource    = CreatePostLocalDataSourceImpl();
+    final cpRepo      = CreatePostRepositoryImpl(cpSource);
+    final ppSource    = ProjectPartnersLocalDataSource();
+    final ppRepo      = ProjectPartnersRepositoryImpl(ppSource);
+    final threadSource = ThreadLocalDataSource();
+    final threadRepo   = ThreadRepositoryImpl(threadSource);
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (_) => OnboardingProvider(
+            getPagesUsecase: GetOnboardingPagesUsecase(obRepo),
+            markSeenUsecase: MarkOnboardingSeenUsecase(obRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ProfileSetupProvider(
+            getDepartmentsUsecase: GetDepartmentsUsecase(psRepo),
+            getSemestersUsecase:   GetSemestersUsecase(psRepo),
+            saveProfileUsecase:    SaveProfileUsecase(psRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CreatePostProvider(
+            submitPostUsecase: SubmitPostUsecase(cpRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ProjectPartnersProvider(
+            getProjectsUsecase:   GetProjectPartnersUsecase(ppRepo),
+            getFilterChipsUsecase: GetFilterChipsUsecase(ppRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ThreadProvider(
+            getThreadUsecase:          GetThreadUsecase(threadRepo),
+            postCommentUsecase:        PostCommentUsecase(threadRepo),
+            toggleAllowRepliesUsecase: ToggleAllowRepliesUsecase(threadRepo),
+          ),
+        ),
         ChangeNotifierProvider(
           create: (_) => AuthProvider(
             loginUsecase:         LoginUsecase(authRepo),
