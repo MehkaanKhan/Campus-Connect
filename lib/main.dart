@@ -41,6 +41,10 @@ import 'features/project_partners/data/repositories/project_partners_repository_
 import 'features/project_partners/domain/usecases/get_project_partners_usecase.dart';
 import 'features/project_partners/presentation/provider/project_partners_provider.dart';
 
+import 'features/thread/data/datasources/thread_local_datasource.dart';
+import 'features/thread/domain/usecases/thread_usecases.dart';
+import 'features/thread/presentation/provider/thread_provider.dart';
+
 void main() {
   runApp(const CampusConnectApp());
 }
@@ -61,6 +65,8 @@ class CampusConnectApp extends StatelessWidget {
     final cpRepo      = CreatePostRepositoryImpl(cpSource);
     final ppSource    = ProjectPartnersLocalDataSource();
     final ppRepo      = ProjectPartnersRepositoryImpl(ppSource);
+    final threadSource = ThreadLocalDataSource();
+    final threadRepo   = ThreadRepositoryImpl(threadSource);
 
     return MultiProvider(
       providers: [
@@ -86,6 +92,13 @@ class CampusConnectApp extends StatelessWidget {
           create: (_) => ProjectPartnersProvider(
             getProjectsUsecase:   GetProjectPartnersUsecase(ppRepo),
             getFilterChipsUsecase: GetFilterChipsUsecase(ppRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ThreadProvider(
+            getThreadUsecase:          GetThreadUsecase(threadRepo),
+            postCommentUsecase:        PostCommentUsecase(threadRepo),
+            toggleAllowRepliesUsecase: ToggleAllowRepliesUsecase(threadRepo),
           ),
         ),
         ChangeNotifierProvider(
