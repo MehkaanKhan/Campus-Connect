@@ -367,7 +367,7 @@ class _BottomNavBar extends StatelessWidget {
               isActive: false, onTap: () {}),
         ],
       ),
-    );
+    ));
   }
 }
 

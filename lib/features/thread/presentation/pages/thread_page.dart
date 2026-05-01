@@ -621,7 +621,7 @@ class _BottomNavBar extends StatelessWidget {
               onTap: () {}),
         ],
       ),
-    );
+    ));
   }
 }
 
