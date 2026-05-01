@@ -33,17 +33,22 @@ class CreatePostPage extends StatelessWidget {
             // ── Header ──
             _Header(),
 
-            const SizedBox(height: 20),
-
-            // ── Input container (Hug height, Transparent) ──
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: _InputCard(),
+            // ── Main input card + Scroll area ──
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: _InputCard(),
+                    ),
+                    const SizedBox(height: 100), // padding to ensure chips are reachable
+                  ],
+                ),
+              ),
             ),
-
-            // ── Empty space (background continues below) ──
-            const Spacer(),
-
+ 
             // ── Bottom toolbar with inverted-curve top edge ──
             const _BottomToolbar(),
           ],

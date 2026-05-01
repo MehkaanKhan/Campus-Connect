@@ -583,13 +583,15 @@ class _BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60,
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
       decoration: const BoxDecoration(
         color: Colors.white,
         border:
             Border(top: BorderSide(color: Color(0xFFEEEEE8), width: 1)),
       ),
-      child: Row(
+      child: SizedBox(
+        height: 60,
+        child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _NavItem(
