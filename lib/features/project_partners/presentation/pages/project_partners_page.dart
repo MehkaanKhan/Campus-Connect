@@ -354,9 +354,9 @@ class _BottomNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _NavItem(icon: Icons.home_outlined, label: 'HOME', isActive: false,
-              onTap: () {}),
+              onTap: () => context.go('/thread')),
           _NavItem(icon: Icons.explore_outlined, label: 'EXPLORE', isActive: true,
-              onTap: () {}),
+              onTap: () => context.go('/project-partners')),
           _NavItem(icon: Icons.add_circle_outline, label: 'CREATE', isActive: false,
               onTap: () => context.go('/create-post')),
           _NavItem(icon: Icons.notifications_none_rounded, label: 'ALERTS',

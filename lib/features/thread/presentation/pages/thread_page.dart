@@ -595,13 +595,13 @@ class _BottomNavBar extends StatelessWidget {
           _NavItem(
               icon: Icons.home_outlined,
               label: 'HOME',
-              isActive: false,
-              onTap: () {}),
+              isActive: true,
+              onTap: () => context.go('/thread')),
           _NavItem(
               icon: Icons.explore_outlined,
               label: 'EXPLORE',
               isActive: false,
-              onTap: () {}),
+              onTap: () => context.go('/project-partners')),
           _NavItem(
               icon: Icons.add_circle_outline,
               label: 'CREATE',
@@ -615,7 +615,7 @@ class _BottomNavBar extends StatelessWidget {
           _NavItem(
               icon: Icons.person_outline_rounded,
               label: 'PROFILE',
-              isActive: true,
+              isActive: false,
               onTap: () {}),
         ],
       ),

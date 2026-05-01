@@ -17,7 +17,7 @@ import 'home_shell.dart';
 import 'placeholder_screens.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/thread',
+  initialLocation: '/onboarding',
   routes: [
     GoRoute(path: '/onboarding',         builder: (ctx, _) => const OnboardingPage()),
     GoRoute(path: '/profile-setup',       builder: (ctx, _) => const ProfileSetupPage()),
@@ -41,7 +41,7 @@ final appRouter = GoRouter(
     ShellRoute(
       builder: (ctx, state, child) => HomeShell(child: child),
       routes: [
-        GoRoute(path: '/home',    builder: (ctx, _) => const HomePlaceholder()),
+        GoRoute(path: '/home',    redirect: (context, state) => '/thread'),
         GoRoute(path: '/events',  builder: (ctx, _) => const EventsPlaceholder()),
         GoRoute(path: '/clubs',   builder: (ctx, _) => const ClubsPlaceholder()),
         GoRoute(path: '/profile', builder: (ctx, _) => const ProfilePlaceholder()),

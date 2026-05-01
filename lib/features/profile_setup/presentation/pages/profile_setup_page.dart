@@ -137,7 +137,7 @@ class _ProfileCard extends StatelessWidget {
               await provider.saveProfile();
               if (context.mounted &&
                   provider.status == ProfileSetupStatus.success) {
-                context.go('/home');
+                context.go('/thread');
               }
             },
           ),

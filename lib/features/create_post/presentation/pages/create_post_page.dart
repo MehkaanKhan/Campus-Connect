@@ -4,13 +4,18 @@ import 'package:go_router/go_router.dart';
 import '../provider/create_post_provider.dart';
 
 // ─────────────────────────────────────────────────────────
-// Design colours (Create Post.png)
-// Full-page bg  : #F2F2EE  warm off-white — fills entire screen
-// Header row    : same bg, ✕ icon | "Create" title | POST pill
-// Tab bar track : #E4E4DF, active pill = white
-// POST button   : #1A1A1A pill, white text
-// Flair chip    : #EBEBEB bg, #555 text, rounded
-// Bottom bar    : white bg, grey icons, char counter
+// Design reference (Create Post.png + Figma specs)
+//
+// Scaffold bg   : #F0F0EC  warm off-white fills the whole page
+// Header        : ✕ | Create (centre) | POST black pill
+// Input box     : W=Fill, H=Hug  cornerRadius=16
+//                 Transparent background — matches page background
+//                 padding=24, gap=16
+//                 contains: avatar row + text + flair chips
+// Rest of body  : plain bg colour (no widget, just empty space)
+// Bottom bar    : White, cornerRadius top-left/right = 24
+//                 "inverted curve" floating effect
+//                 icons left  |  0/280 + circle indicator right
 // ─────────────────────────────────────────────────────────
 
 class CreatePostPage extends StatelessWidget {
@@ -19,29 +24,28 @@ class CreatePostPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Full white-ish background — no dark scaffold visible
-      backgroundColor: const Color(0xFFF2F2EE),
+      backgroundColor: const Color(0xFFF0F0EC),
       body: SafeArea(
+        bottom: false, // let bottom bar handle its own safe area
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ── Header row (✕  Create  POST) ──
+            // ── Header ──
             _Header(),
 
-            // ── Tab bar ──
-            _TabBar(),
+            const SizedBox(height: 20),
 
-            // ── Main content (avatar + textarea) — expands to fill ──
-            Expanded(child: _ContentArea()),
+            // ── Input container (Hug height, Transparent) ──
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: _InputCard(),
+            ),
 
-            // ── Flair chips ──
-            _FlairRow(),
+            // ── Empty space (background continues below) ──
+            const Spacer(),
 
-            // ── Divider ──
-            const Divider(height: 1, thickness: 1, color: Color(0xFFDEDED8)),
-
-            // ── Bottom toolbar ──
-            _BottomToolbar(),
+            // ── Bottom toolbar with inverted-curve top edge ──
+            const _BottomToolbar(),
           ],
         ),
       ),
@@ -58,22 +62,22 @@ class _Header extends StatelessWidget {
     final provider = context.watch<CreatePostProvider>();
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 8),
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
       child: Row(
         children: [
-          // ── Close icon ──
+          // Close
           GestureDetector(
-            onTap: () => context.go('/project-partners'),
-            child: const Icon(Icons.close, size: 22, color: Color(0xFF2A2A28)),
+            onTap: () => context.go('/thread'),
+            child: const Icon(Icons.close, size: 22, color: Color(0xFF1A1A1A)),
           ),
 
-          // ── "Create" centred ──
+          // "Create" centred
           const Expanded(
             child: Center(
               child: Text(
                 'Create',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 17,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF1A1A1A),
                 ),
@@ -81,18 +85,17 @@ class _Header extends StatelessWidget {
             ),
           ),
 
-          // ── POST pill ──
+          // POST pill
           GestureDetector(
             onTap: () async {
               await provider.submitPost();
               if (context.mounted &&
                   provider.status == CreatePostStatus.success) {
-                context.go('/project-partners');
+                context.go('/thread');
               }
             },
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
               decoration: BoxDecoration(
                 color: const Color(0xFF1A1A1A),
                 borderRadius: BorderRadius.circular(100),
@@ -110,7 +113,7 @@ class _Header extends StatelessWidget {
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
-                        letterSpacing: 0.6,
+                        letterSpacing: 0.8,
                       ),
                     ),
             ),
@@ -122,131 +125,28 @@ class _Header extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────
-//  Tab bar  (TEXT | IMAGE | POLL)
+//  Input card — Figma: W Fill × H Hug, radius 16,
+//               Transparent, padding 24, gap 16
 // ─────────────────────────────────────────────────────────
-class _TabBar extends StatelessWidget {
-  const _TabBar();
-
+class _InputCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<CreatePostProvider>();
 
-    const tabs = [
-      (PostTab.text, 'TEXT'),
-      (PostTab.image, 'IMAGE'),
-      (PostTab.poll, 'POLL'),
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-      child: Container(
-        padding: const EdgeInsets.all(3),
-        decoration: BoxDecoration(
-          color: const Color(0xFFE4E4DF),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          children: tabs.map((t) {
-            final isActive = provider.activeTab == t.$1;
-            return Expanded(
-              child: GestureDetector(
-                onTap: () => provider.setTab(t.$1),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: isActive ? Colors.white : Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: isActive
-                        ? [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            )
-                          ]
-                        : null,
-                  ),
-                  child: Center(
-                    child: Text(
-                      t.$2,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.4,
-                        color: isActive
-                            ? const Color(0xFF1A1A1A)
-                            : const Color(0xFF888880),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
+    return Container(
+      // Transparent — matches the page background exactly
+      decoration: const BoxDecoration(
+        color: Colors.transparent,
       ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────
-//  Content area  (avatar + text field)
-// ─────────────────────────────────────────────────────────
-class _ContentArea extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final provider = context.watch<CreatePostProvider>();
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(18, 4, 18, 8),
-      child: Row(
+      padding: const EdgeInsets.all(24), // padding = 24 from Figma
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // Hug height
         children: [
-          // ── Avatar ──
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: const Color(0xFF2C3E35),
-              shape: BoxShape.circle,
-              border:
-                  Border.all(color: const Color(0xFFD0D0C8), width: 1.5),
-            ),
-            child: const Icon(
-              Icons.person,
-              color: Colors.white54,
-              size: 22,
-            ),
-          ),
-          const SizedBox(width: 14),
-
-          // ── Text input ──
-          Expanded(
-            child: TextField(
-              maxLines: null,
-              maxLength: 280,
-              onChanged: provider.setContent,
-              autofocus: false,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Color(0xFF1A1A1A),
-                height: 1.45,
-              ),
-              decoration: const InputDecoration(
-                hintText: "What's happening on campus?",
-                hintStyle: TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFFAAAAAA),
-                  height: 1.45,
-                ),
-                border: InputBorder.none,
-                counterText: '',
-                isDense: true,
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-          ),
+          // gap = 16 between avatar row and chips
+          _AvatarRow(provider: provider),
+          const SizedBox(height: 16),
+          _FlairRow(provider: provider),
         ],
       ),
     );
@@ -254,79 +154,152 @@ class _ContentArea extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────
-//  Flair chips row
+//  Avatar + text input row
+// ─────────────────────────────────────────────────────────
+class _AvatarRow extends StatelessWidget {
+  final CreatePostProvider provider;
+  const _AvatarRow({required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Avatar circle
+        Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: const Color(0xFFDEDED8), width: 1.5),
+            color: const Color(0xFF1A2C3D),
+          ),
+          child: const ClipOval(
+            child: Icon(Icons.person, color: Colors.white54, size: 26),
+          ),
+        ),
+
+        const SizedBox(width: 14),
+
+        // Hint / text field
+        Expanded(
+          child: TextField(
+            maxLines: null,
+            maxLength: 280,
+            onChanged: provider.setContent,
+            autofocus: false,
+            style: const TextStyle(
+              fontSize: 17,
+              color: Color(0xFF1A1A1A),
+              height: 1.4,
+              letterSpacing: -0.1,
+            ),
+            decoration: const InputDecoration(
+              hintText: "What's happening on campus?",
+              hintMaxLines: 1,
+              hintStyle: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFFB8B8B0),
+                height: 1.35,
+                letterSpacing: -0.2,
+              ),
+              filled: true,
+              fillColor: Colors.transparent, // Explicitly transparent
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.zero,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.zero,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.zero,
+              ),
+              counterText: '',
+              isDense: true,
+              contentPadding: EdgeInsets.only(top: 6),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+//  Flair chips
 // ─────────────────────────────────────────────────────────
 class _FlairRow extends StatelessWidget {
-  const _FlairRow();
+  final CreatePostProvider provider;
+  const _FlairRow({required this.provider});
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<CreatePostProvider>();
     const flairs = ['SELECT FLAIR', 'EVENT', 'MARKETPLACE'];
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: flairs.map((flair) {
-          final isSelected = provider.selectedFlair == flair;
-          final isSelector = flair == 'SELECT FLAIR';
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: flairs.map((flair) {
+        final isSelected = provider.selectedFlair == flair;
+        final isSelector = flair == 'SELECT FLAIR';
 
-          return GestureDetector(
-            onTap: () {
-              if (!isSelector) {
-                provider.setFlair(isSelected ? null : flair);
-              }
-            },
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
+        return GestureDetector(
+          onTap: () {
+            if (!isSelector) provider.setFlair(isSelected ? null : flair);
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? const Color(0xFF6B8F6B)
+                  : Colors.white.withValues(alpha: 0.7),
+              borderRadius: BorderRadius.circular(100),
+              border: Border.all(
                 color: isSelected
                     ? const Color(0xFF6B8F6B)
-                    : const Color(0xFFEBEBE7),
-                borderRadius: BorderRadius.circular(100),
-                border: isSelector
-                    ? Border.all(
-                        color: const Color(0xFFCCCCC8), width: 1)
-                    : null,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (isSelector)
-                    const Padding(
-                      padding: EdgeInsets.only(right: 5),
-                      child: Icon(
-                        Icons.local_offer_outlined,
-                        size: 12,
-                        color: Color(0xFF666660),
-                      ),
-                    ),
-                  Text(
-                    flair,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.3,
-                      color: isSelected
-                          ? Colors.white
-                          : const Color(0xFF555550),
-                    ),
-                  ),
-                ],
+                    : const Color(0xFFDDDDD5),
+                width: 1,
               ),
             ),
-          );
-        }).toList(),
-      ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isSelector)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 5),
+                    child: Icon(
+                      Icons.local_offer_outlined,
+                      size: 12,
+                      color: isSelected
+                          ? Colors.white
+                          : const Color(0xFF888880),
+                    ),
+                  ),
+                Text(
+                  flair,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.6,
+                    color: isSelected ? Colors.white : const Color(0xFF888880),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
 
 // ─────────────────────────────────────────────────────────
-//  Bottom toolbar  (image | chart | location | 0/280)
+//  Bottom toolbar
+//  White background + inverted curve (top-left & top-right radius)
 // ─────────────────────────────────────────────────────────
 class _BottomToolbar extends StatelessWidget {
   const _BottomToolbar();
@@ -335,24 +308,77 @@ class _BottomToolbar extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<CreatePostProvider>();
     final charCount = provider.content.length;
+    const maxChars = 280;
+    final progress = charCount / maxChars;
 
     return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        // Inverted-curve / floating effect — round only top corners
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 12,
+            offset: Offset(0, -3),
+          ),
+        ],
+      ),
+      padding: EdgeInsets.fromLTRB(
+        24,
+        16,
+        24,
+        MediaQuery.of(context).padding.bottom + 12,
+      ),
       child: Row(
         children: [
+          // Image icon
           _ToolbarIcon(icon: Icons.image_outlined, onTap: () {}),
-          const SizedBox(width: 22),
-          _ToolbarIcon(icon: Icons.bar_chart_outlined, onTap: () {}),
-          const SizedBox(width: 22),
+          const SizedBox(width: 26),
+          // Bar chart icon
+          _ToolbarIcon(icon: Icons.bar_chart_rounded, onTap: () {}),
+          const SizedBox(width: 26),
+          // Location icon
           _ToolbarIcon(icon: Icons.location_on_outlined, onTap: () {}),
+
           const Spacer(),
+
+          // 0/280 counter
           Text(
-            '$charCount/280',
+            '$charCount/$maxChars',
             style: const TextStyle(
-              fontSize: 12,
-              color: Color(0xFF999990),
+              fontSize: 12.5,
+              color: Color(0xFFAAAAAA),
               fontWeight: FontWeight.w500,
+            ),
+          ),
+
+          const SizedBox(width: 10),
+
+          // Circular progress ring
+          SizedBox(
+            width: 26,
+            height: 26,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                CircularProgressIndicator(
+                  value: 1.0,
+                  strokeWidth: 2.5,
+                  color: const Color(0xFFE8E8E0),
+                ),
+                CircularProgressIndicator(
+                  value: progress.clamp(0.0, 1.0),
+                  strokeWidth: 2.5,
+                  backgroundColor: Colors.transparent,
+                  color: charCount > 260
+                      ? const Color(0xFFB85050)
+                      : const Color(0xFF6B8F6B),
+                ),
+              ],
             ),
           ),
         ],
@@ -370,7 +396,7 @@ class _ToolbarIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Icon(icon, size: 22, color: const Color(0xFF666660)),
+      child: Icon(icon, size: 22, color: const Color(0xFF888880)),
     );
   }
 }

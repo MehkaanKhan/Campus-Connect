@@ -41,7 +41,7 @@ class _SignupPageState extends State<SignupPage> {
     );
     if (!mounted) return;
     if (provider.isAuthenticated) {
-      context.go('/home');
+      context.go('/profile-setup');
     } else if (provider.errorMessage != null) {
       AppSnackbar.show(context, provider.errorMessage!, isError: true);
       provider.clearError();
