@@ -353,19 +353,35 @@ class _BottomNavBar extends StatelessWidget {
       child: SizedBox(
         height: 64,
         child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _NavItem(icon: Icons.home_outlined, label: 'HOME', isActive: false,
-              onTap: () => context.go('/thread')),
-          _NavItem(icon: Icons.explore_outlined, label: 'EXPLORE', isActive: true,
-              onTap: () => context.go('/project-partners')),
-          _NavItem(icon: Icons.add_circle_outline, label: 'CREATE', isActive: false,
-              onTap: () => context.go('/create-post')),
-          _NavItem(icon: Icons.notifications_none_rounded, label: 'ALERTS',
-              isActive: false, onTap: () {}),
-          _NavItem(icon: Icons.person_outline_rounded, label: 'PROFILE',
-              isActive: false, onTap: () {}),
-        ],
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _NavItem(
+                icon: Icons.home_outlined,
+                label: 'HOME',
+                isActive: false,
+                onTap: () => context.go('/thread')),
+            _NavItem(
+                icon: Icons.explore_outlined,
+                label: 'EXPLORE',
+                isActive: true,
+                onTap: () => context.go('/project-partners')),
+            _NavItem(
+                icon: Icons.add_circle_outline,
+                label: 'CREATE',
+                isActive: false,
+                onTap: () => context.go('/create-post')),
+            _NavItem(
+                icon: Icons.notifications_none_rounded,
+                label: 'ALERTS',
+                isActive: false,
+                onTap: () {}),
+            _NavItem(
+                icon: Icons.person_outline_rounded,
+                label: 'PROFILE',
+                isActive: false,
+                onTap: () {}),
+          ],
+        ),
       ),
     );
   }
