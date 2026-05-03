@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
+
 import '../provider/project_partners_provider.dart';
 import '../../domain/entities/project_partner_entity.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/campus_top_navbar.dart';
+import '../../../../core/widgets/campus_bottom_navbar.dart';
 
 // ─────────────────────────────────────────────────────────
 // Design colours (ProjectPartners.png)
@@ -24,12 +27,11 @@ class ProjectPartnersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
+      body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Top bar ──
-            _TopBar(),
+            const CampusTopNavBar(),
             // ── Scrollable body ──
             Expanded(
               child: SingleChildScrollView(
@@ -42,7 +44,7 @@ class ProjectPartnersPage extends StatelessWidget {
                     const Text(
                       'Find Project\nPartners',
                       style: TextStyle(
-                        fontFamily: 'Georgia',
+                        fontFamily: 'Inter',
                         fontSize: 30,
                         fontWeight: FontWeight.w800,
                         height: 1.15,
@@ -54,6 +56,7 @@ class ProjectPartnersPage extends StatelessWidget {
                     const Text(
                       'Connect with peers across campus to collaborate on innovative projects, startups, and academic research.',
                       style: TextStyle(
+                        fontFamily: 'Inter',
                         fontSize: 13.5,
                         height: 1.55,
                         color: Color(0xFF666660),
@@ -71,62 +74,13 @@ class ProjectPartnersPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
       // Bottom navigation bar
-      bottomNavigationBar: _BottomNavBar(),
+      bottomNavigationBar: const CampusBottomNavBar(activeTab: BottomNavTab.explore),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────
-//  Top bar (Campus Connect logo + search icon)
-// ─────────────────────────────────────────────────────────
-class _TopBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 0),
-      child: Row(
-        children: [
-          // Logo pill
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F0EC),
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 18,
-                  height: 18,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF6B8F6B),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.school_rounded,
-                      size: 11, color: Colors.white),
-                ),
-                const SizedBox(width: 6),
-                const Text(
-                  'Campus Connect',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF1A1A1A),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Spacer(),
-          const Icon(Icons.search, size: 24, color: Color(0xFF444440)),
-        ],
-      ),
-    );
-  }
-}
+
 
 // ─────────────────────────────────────────────────────────
 //  Horizontal filter chips
@@ -150,22 +104,23 @@ class _FilterChips extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: isActive
-                    ? const Color(0xFF1A1A1A)
-                    : Colors.white,
-                borderRadius: BorderRadius.circular(100),
+                    ? AppColors.filterActiveBg
+                    : AppColors.filterInactiveBg,
                 border: Border.all(
                   color: isActive
-                      ? const Color(0xFF1A1A1A)
-                      : const Color(0xFFD0D0C8),
-                  width: 1.2,
+                      ? Colors.transparent
+                      : AppColors.filterInactiveBorder,
+                  width: 1,
                 ),
+                borderRadius: BorderRadius.circular(100),
               ),
               child: Text(
                 chip,
                 style: TextStyle(
+                  fontFamily: 'PlusJakartaSans',
                   fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: isActive ? Colors.white : const Color(0xFF444440),
+                  fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                  color: isActive ? Colors.white : AppColors.filterInactiveText,
                 ),
               ),
             ),
@@ -275,9 +230,9 @@ class _ProjectCard extends StatelessWidget {
           Text(
             project.title,
             style: const TextStyle(
-              fontFamily: 'Georgia',
+              fontFamily: 'Inter',
               fontSize: 19,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.bold,
               height: 1.2,
               color: Color(0xFF1A1A1A),
             ),
@@ -311,24 +266,27 @@ class _ProjectCard extends StatelessWidget {
           Wrap(
             spacing: 7,
             runSpacing: 7,
-            children: project.skills
-                .map(
-                  (skill) => Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF0F0EC),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Text(
-                      skill,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF444440),
+            children: project.skills.asMap().entries.map(
+                  (entry) {
+                    final colors = AppColors.flairColors;
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: colors[entry.key % colors.length],
+                        borderRadius: BorderRadius.circular(100),
                       ),
-                    ),
-                  ),
+                      child: Text(
+                        entry.value,
+                        style: const TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF444440),
+                        ),
+                      ),
+                    );
+                  },
                 )
                 .toList(),
           ),
@@ -338,91 +296,3 @@ class _ProjectCard extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────
-//  Bottom navigation bar
-// ─────────────────────────────────────────────────────────
-class _BottomNavBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFEEEEE8), width: 1)),
-      ),
-      child: SizedBox(
-        height: 64,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _NavItem(
-                icon: Icons.home_outlined,
-                label: 'HOME',
-                isActive: false,
-                onTap: () => context.go('/thread')),
-            _NavItem(
-                icon: Icons.explore_outlined,
-                label: 'EXPLORE',
-                isActive: true,
-                onTap: () => context.go('/project-partners')),
-            _NavItem(
-                icon: Icons.add_circle_outline,
-                label: 'CREATE',
-                isActive: false,
-                onTap: () => context.go('/create-post')),
-            _NavItem(
-                icon: Icons.notifications_none_rounded,
-                label: 'ALERTS',
-                isActive: false,
-                onTap: () {}),
-            _NavItem(
-                icon: Icons.person_outline_rounded,
-                label: 'PROFILE',
-                isActive: false,
-                onTap: () {}),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _NavItem({
-    required this.icon,
-    required this.label,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color =
-        isActive ? const Color(0xFF6B8F6B) : const Color(0xFF999990);
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 24, color: color),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.4,
-              color: color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

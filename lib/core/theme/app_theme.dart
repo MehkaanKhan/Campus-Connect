@@ -8,6 +8,7 @@ class AppTheme {
           seedColor: AppColors.primary,
           brightness: Brightness.light,
         ),
+        fontFamily: 'Inter',
         scaffoldBackgroundColor: AppColors.background,
         appBarTheme: const AppBarTheme(
           backgroundColor: AppColors.primary,
@@ -66,5 +67,6 @@ class AppTheme {
           seedColor: AppColors.primary,
           brightness: Brightness.dark,
         ),
+        fontFamily: 'Inter',
       );
 }
