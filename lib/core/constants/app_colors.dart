@@ -10,4 +10,17 @@ class AppColors {
   static const textSecondary = Color(0xFF64748B);
   static const error   = Color(0xFFEF4444);
   static const success = Color(0xFF22C55E);
+
+  // Filter Chips & Tags
+  static const filterActiveBg = Color(0xFF98A895);
+  static const filterInactiveBg = Color(0xFFF2F3F0);
+  static const filterInactiveBorder = Color(0xFFE2E3E0);
+  static const filterInactiveText = Color(0xFF434942);
+
+  static const flairColors = [
+    Color(0xFFD6D6EA),
+    Color(0xFFFED9B8),
+    Color(0xFFE2E3E0),
+    Color(0xFFE2E9E0),
+  ];
 }

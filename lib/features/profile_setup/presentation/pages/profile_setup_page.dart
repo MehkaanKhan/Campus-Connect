@@ -72,9 +72,9 @@ class _ProfileCard extends StatelessWidget {
             'Tell us about\nyourself',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontFamily: 'Georgia',
+              fontFamily: 'Inter',
               fontSize: 22,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.bold,
               height: 1.25,
               color: Color(0xFF1A1A1A),
             ),

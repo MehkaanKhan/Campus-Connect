@@ -134,7 +134,7 @@ class _OnboardingSlide extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontFamily: 'Georgia',
+              fontFamily: 'Inter',
               fontSize: 32,
               fontWeight: FontWeight.w900,
               height: 1.15,

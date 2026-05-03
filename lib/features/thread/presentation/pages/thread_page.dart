@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
+
 import '../provider/thread_provider.dart';
 import '../../domain/entities/thread_entity.dart';
+import '../../../../core/widgets/campus_top_navbar.dart';
+import '../../../../core/widgets/campus_bottom_navbar.dart';
 
 // ─────────────────────────────────────────────────────────
 // Design colours (Thread.png)
@@ -42,12 +44,11 @@ class _ThreadPageState extends State<ThreadPage> {
     final thread = provider.thread;
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
+      backgroundColor: const Color(0xFFF7F7F5),
+      body: Column(
           children: [
             // ── Top nav bar ──
-            _TopBar(),
+            const CampusTopNavBar(),
 
             // ── Scrollable thread content ──
             Expanded(
@@ -75,7 +76,6 @@ class _ThreadPageState extends State<ThreadPage> {
             ),
           ],
         ),
-      ),
 
       // ── Sticky comment input + bottom nav ──
       bottomSheet: Column(
@@ -85,63 +85,13 @@ class _ThreadPageState extends State<ThreadPage> {
             controller: _commentController,
             provider: provider,
           ),
-          _BottomNavBar(),
+          const CampusBottomNavBar(activeTab: BottomNavTab.home),
         ],
       ),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────
-//  Top navigation bar
-// ─────────────────────────────────────────────────────────
-class _TopBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 8),
-      child: Row(
-        children: [
-          // Logo pill
-          Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F0EC),
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 18,
-                  height: 18,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF6B8F6B),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.school_rounded,
-                      size: 11, color: Colors.white),
-                ),
-                const SizedBox(width: 6),
-                const Text(
-                  'Campus Connect',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF1A1A1A),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Spacer(),
-          const Icon(Icons.search, size: 24, color: Color(0xFF444440)),
-        ],
-      ),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────
 //  Thread post header + body
@@ -152,8 +102,13 @@ class _ThreadPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(18, 10, 18, 16),
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -182,9 +137,9 @@ class _ThreadPost extends StatelessWidget {
                     Text(
                       thread.title,
                       style: const TextStyle(
-                        fontFamily: 'Georgia',
+                        fontFamily: 'Inter',
                         fontSize: 20,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.bold,
                         height: 1.2,
                         color: Color(0xFF1A1A1A),
                       ),
@@ -239,8 +194,13 @@ class _DiscussionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFFF5F5F0),
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF6F6F4),
+        border: Border.all(color: const Color(0xFFEAEAE8)),
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Row(
         children: [
           // Left: Discussion count
@@ -322,10 +282,10 @@ class _CommentTile extends StatelessWidget {
         // ── Comment card ──
         Container(
           margin: EdgeInsets.fromLTRB(
-            isNested ? 32 : 16, // indent nested comments
-            6,
+            isNested ? 32 : 16,
+            8,
             16,
-            0,
+            8,
           ),
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
           decoration: BoxDecoration(
@@ -576,91 +536,3 @@ class _CommentInputBar extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────
-//  Bottom navigation bar
-// ─────────────────────────────────────────────────────────
-class _BottomNavBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border:
-            Border(top: BorderSide(color: Color(0xFFEEEEE8), width: 1)),
-      ),
-      child: SizedBox(
-        height: 60,
-        child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _NavItem(
-              icon: Icons.home_outlined,
-              label: 'HOME',
-              isActive: true,
-              onTap: () => context.go('/thread')),
-          _NavItem(
-              icon: Icons.explore_outlined,
-              label: 'EXPLORE',
-              isActive: false,
-              onTap: () => context.go('/project-partners')),
-          _NavItem(
-              icon: Icons.add_circle_outline,
-              label: 'CREATE',
-              isActive: false,
-              onTap: () => context.go('/create-post')),
-          _NavItem(
-              icon: Icons.notifications_none_rounded,
-              label: 'ALERTS',
-              isActive: false,
-              onTap: () {}),
-          _NavItem(
-              icon: Icons.person_outline_rounded,
-              label: 'PROFILE',
-              isActive: false,
-              onTap: () {}),
-        ],
-      ),
-    ));
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _NavItem({
-    required this.icon,
-    required this.label,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color =
-        isActive ? const Color(0xFF6B8F6B) : const Color(0xFF999990);
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 24, color: color),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.4,
-              color: color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
