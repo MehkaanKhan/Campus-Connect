@@ -30,7 +30,7 @@ class CampusBottomNavBar extends StatelessWidget {
                 icon: Icons.explore_outlined,
                 label: 'EXPLORE',
                 isActive: activeTab == BottomNavTab.explore,
-                onTap: () => context.go('/project-partners')),
+                onTap: () => context.go('/explore')),
             _NavItem(
                 icon: Icons.add_circle_outline,
                 label: 'CREATE',
@@ -40,12 +40,12 @@ class CampusBottomNavBar extends StatelessWidget {
                 icon: Icons.notifications_none_rounded,
                 label: 'ALERTS',
                 isActive: activeTab == BottomNavTab.alerts,
-                onTap: () {}),
+                onTap: () => context.go('/notifications')),
             _NavItem(
                 icon: Icons.person_outline_rounded,
                 label: 'PROFILE',
                 isActive: activeTab == BottomNavTab.profile,
-                onTap: () {}),
+                onTap: () => context.go('/user-profile')),
           ],
         ),
       ),
