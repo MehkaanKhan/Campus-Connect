@@ -50,7 +50,9 @@ import 'features/hostellite_exchange_board/presentation/provider/exchange_board_
 import 'features/uni_graph/presentation/provider/uni_graph_provider.dart';
 import 'features/other_unis/presentation/provider/other_unis_provider.dart';
 
-// Missing from previous dev's integration:
+import 'features/hostellite_exchange/data/datasources/hostellite_local_datasource.dart';
+import 'features/hostellite_exchange/data/repositories/hostellite_repository_impl.dart';
+import 'features/hostellite_exchange/domain/usecases/get_items_usecase.dart';
 import 'features/hostellite_exchange/presentation/provider/hostellite_provider.dart';
 
 void main() {
@@ -131,7 +133,13 @@ class CampusConnectApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ExchangeBoardProvider()),
         ChangeNotifierProvider(create: (_) => UniGraphProvider()),
         ChangeNotifierProvider(create: (_) => OtherUnisProvider()),
-        ChangeNotifierProvider(create: (_) => HostelliteProvider()),
+        ChangeNotifierProvider(
+          create: (_) {
+            final hSource = HostelliteLocalDataSourceImpl();
+            final hRepo   = HostelliteRepositoryImpl(hSource);
+            return HostelliteProvider(usecase: GetExchangeItemsUsecase(hRepo));
+          },
+        ),
       ],
       child: MaterialApp.router(
         title: 'Campus Connect',
