@@ -1,0 +1,3 @@
+class OtherUnisModel {
+  // Boilerplate model
+}

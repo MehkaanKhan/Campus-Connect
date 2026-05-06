@@ -1,0 +1,3 @@
+class GetGraphDataUsecase {
+  // Boilerplate usecase
+}
