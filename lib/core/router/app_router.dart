@@ -8,27 +8,39 @@ import '../../features/auth/presentation/pages/login.dart';
 import '../../features/auth/presentation/pages/signup.dart';
 import '../../features/auth/presentation/pages/reset_password.dart';
 import '../../features/auth/presentation/pages/logout.dart';
+import '../../features/auth/presentation/pages/email_verification_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/settings/presentation/pages/change_profile_page.dart';
 import '../../features/settings/presentation/pages/language_page.dart';
 import '../../features/settings/presentation/pages/notification_page.dart';
 import '../../features/cart/presentation/pages/cart_page.dart';
+import '../../features/feed/presentation/pages/feed_page.dart';
+import '../../features/notifications/presentation/pages/notifications_page.dart';
+import '../../features/user_profile/presentation/pages/user_profile_page.dart';
+import '../../features/hostellite_exchange/presentation/pages/hostellite_page.dart';
+import '../../features/explore/presentation/pages/explore_hub_page.dart';
 import 'home_shell.dart';
 import 'placeholder_screens.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/onboarding',
   routes: [
-    GoRoute(path: '/onboarding',         builder: (ctx, _) => const OnboardingPage()),
-    GoRoute(path: '/profile-setup',       builder: (ctx, _) => const ProfileSetupPage()),
-    GoRoute(path: '/create-post',         builder: (ctx, _) => const CreatePostPage()),
-    GoRoute(path: '/project-partners',    builder: (ctx, _) => const ProjectPartnersPage()),
-    GoRoute(path: '/thread',              builder: (ctx, _) => const ThreadPage()),
-    GoRoute(path: '/login',          builder: (ctx, _) => const LoginPage()),
-    GoRoute(path: '/signup',         builder: (ctx, _) => const SignupPage()),
-    GoRoute(path: '/reset-password', builder: (ctx, _) => const ResetPasswordPage()),
-    GoRoute(path: '/logout',         builder: (ctx, _) => const LogoutPage()),
-    GoRoute(path: '/cart',           builder: (ctx, _) => const CartPage()),
+    GoRoute(path: '/onboarding',          builder: (ctx, _) => const OnboardingPage()),
+    GoRoute(path: '/profile-setup',        builder: (ctx, _) => const ProfileSetupPage()),
+    GoRoute(path: '/create-post',          builder: (ctx, _) => const CreatePostPage()),
+    GoRoute(path: '/explore',              builder: (ctx, _) => const ExploreHubPage()),
+    GoRoute(path: '/project-partners',     builder: (ctx, _) => const ProjectPartnersPage()),
+    GoRoute(path: '/thread',               builder: (ctx, _) => const ThreadPage()),
+    GoRoute(path: '/feed',                 builder: (ctx, _) => const FeedPage()),
+    GoRoute(path: '/notifications',        builder: (ctx, _) => const NotificationsPage()),
+    GoRoute(path: '/user-profile',         builder: (ctx, _) => const UserProfilePage()),
+    GoRoute(path: '/hostellite-exchange',  builder: (ctx, _) => const HostellitePage()),
+    GoRoute(path: '/email-verification', builder: (ctx, _) => const EmailVerificationPage()),
+    GoRoute(path: '/login',           builder: (ctx, _) => const LoginPage()),
+    GoRoute(path: '/signup',          builder: (ctx, _) => const SignupPage()),
+    GoRoute(path: '/reset-password',  builder: (ctx, _) => const ResetPasswordPage()),
+    GoRoute(path: '/logout',          builder: (ctx, _) => const LogoutPage()),
+    GoRoute(path: '/cart',            builder: (ctx, _) => const CartPage()),
     GoRoute(
       path: '/settings',
       builder: (ctx, _) => const SettingsPage(),

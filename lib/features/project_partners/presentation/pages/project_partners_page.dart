@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/project_partners_provider.dart';
@@ -31,7 +32,9 @@ class ProjectPartnersPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Top bar ──
-            const CampusTopNavBar(),
+            CampusTopNavBar(
+              onBack: context.canPop() ? () => context.pop() : null,
+            ),
             // ── Scrollable body ──
             Expanded(
               child: SingleChildScrollView(
