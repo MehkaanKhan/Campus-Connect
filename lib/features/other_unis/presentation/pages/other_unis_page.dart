@@ -1,9 +1,11 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
 import '../../../../core/widgets/app_loader.dart';
+import '../../domain/entities/other_uni_entity.dart';
 import '../provider/other_unis_provider.dart';
 
 class OtherUnisPage extends StatefulWidget {
@@ -28,6 +30,25 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _showUniOverlay(BuildContext context, OtherUniEntity uni) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: 'Dismiss',
+      barrierColor: Colors.transparent,
+      transitionDuration: const Duration(milliseconds: 300),
+      transitionBuilder: (ctx, anim, secondAnim, child) {
+        return FadeTransition(
+          opacity: CurvedAnimation(parent: anim, curve: Curves.easeOut),
+          child: child,
+        );
+      },
+      pageBuilder: (ctx, anim, secondAnim) {
+        return _UniOverlayModal(uni: uni);
+      },
+    );
   }
 
   @override
@@ -104,7 +125,7 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
                   itemBuilder: (context, index) {
                     final uni = provider.unis[index];
                     return GestureDetector(
-                      onTap: () => context.push('/other-unis/profile', extra: uni),
+                      onTap: () => _showUniOverlay(context, uni),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -186,6 +207,165 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
                   },
                 );
               },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Modal overlay – matches Figma CSS specs exactly
+// ─────────────────────────────────────────────────────────────────────────────
+class _UniOverlayModal extends StatelessWidget {
+  final OtherUniEntity uni;
+
+  const _UniOverlayModal({required this.uni});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      child: Stack(
+        children: [
+          // ── Blurred background ──────────────────────────────────────────
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                child: Container(
+                  color: const Color(0xFFF2F2EF).withValues(alpha: 0.6),
+                ),
+              ),
+            ),
+          ),
+
+          // ── Centered modal card ─────────────────────────────────────────
+          Center(
+            child: Container(
+              width: 358,
+              constraints: const BoxConstraints(maxWidth: 448),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: const Color(0xFFC3C8BC)),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.25),
+                    blurRadius: 50,
+                    spreadRadius: -12,
+                    offset: const Offset(0, 25),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(48),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // ── University icon ─────────────────────────────────────
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFEBEBE8),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.account_balance_rounded,
+                        size: 28,
+                        color: Color(0xFF98A895),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // ── University name ─────────────────────────────────────
+                  Text(
+                    uni.name,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 24,
+                      fontWeight: FontWeight.w400,
+                      height: 32 / 24,
+                      color: Color(0xFF1A1C19),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // ── Description ─────────────────────────────────────────
+                  Text(
+                    uni.description,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      height: 24 / 16,
+                      color: Color(0xFF434940),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // ── Member stats ────────────────────────────────────────
+                  Text(
+                    '${uni.memberCount} members · ${uni.region}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      height: 24 / 16,
+                      color: Color(0xFF1A1C19),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // ── Explore button ──────────────────────────────────────
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        context.push('/other-unis/profile', extra: uni);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF18181B),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 16,
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.open_in_new_rounded, size: 13.33, color: Colors.white),
+                          SizedBox(width: 8),
+                          Text(
+                            'Explore University',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              height: 24 / 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
