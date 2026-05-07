@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/post_entity.dart';
 import '../provider/feed_provider.dart';
@@ -221,14 +222,21 @@ class _PostActions extends StatelessWidget {
           child: Icon(Icons.arrow_downward_rounded, size: 16, color: downColor),
         ),
         const SizedBox(width: 20),
-        const Icon(Icons.chat_bubble_outline, size: 15, color: Color(0xFF94A3B8)),
-        const SizedBox(width: 5),
-        Text(
-          '${post.commentCount}',
-          style: const TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 13,
-            color: Color(0xFF94A3B8),
+        GestureDetector(
+          onTap: () => context.push('/thread'),
+          child: Row(
+            children: [
+              const Icon(Icons.chat_bubble_outline, size: 15, color: Color(0xFF94A3B8)),
+              const SizedBox(width: 5),
+              Text(
+                '${post.commentCount}',
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 13,
+                  color: Color(0xFF94A3B8),
+                ),
+              ),
+            ],
           ),
         ),
         const Spacer(),

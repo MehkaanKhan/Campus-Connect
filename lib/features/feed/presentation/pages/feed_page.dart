@@ -35,12 +35,6 @@ class _FeedPageState extends State<FeedPage> {
           const CampusBottomNavBar(activeTab: BottomNavTab.home),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/create-post'),
-        backgroundColor: const Color(0xFF1A1A1A),
-        elevation: 4,
-        child: const Icon(Icons.add, color: Colors.white, size: 26),
-      ),
     );
   }
 }

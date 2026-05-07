@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../core/widgets/app_loader.dart';
 
 class AuthButton extends StatelessWidget {
   final String label;
@@ -17,12 +16,46 @@ class AuthButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final child = isLoading
-        ? const SizedBox(height: 22, width: 22, child: AppLoader())
-        : Text(label);
-
-    return outlined
-        ? OutlinedButton(onPressed: isLoading ? null : onPressed, child: child)
-        : ElevatedButton(onPressed: isLoading ? null : onPressed, child: child);
+    return SizedBox(
+      height: 54,
+      child: GestureDetector(
+        onTap: isLoading ? null : onPressed,
+        child: Container(
+          decoration: BoxDecoration(
+            color: outlined ? Colors.transparent : const Color(0xFF1A1A1A),
+            borderRadius: BorderRadius.circular(100),
+            border: outlined ? Border.all(color: const Color(0xFF1A1A1A), width: 1.5) : null,
+            boxShadow: outlined ? null : [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.22),
+                blurRadius: 14,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Center(
+            child: isLoading
+                ? const SizedBox(
+                    height: 22,
+                    width: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.5,
+                      color: Colors.white,
+                    ),
+                  )
+                : Text(
+                    label,
+                    style: TextStyle(
+                      color: outlined ? const Color(0xFF1A1A1A) : Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.1,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+          ),
+        ),
+      ),
+    );
   }
 }

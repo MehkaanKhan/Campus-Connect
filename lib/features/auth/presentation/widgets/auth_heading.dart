@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_colors.dart';
 
 class AuthHeading extends StatelessWidget {
   final String title;
@@ -14,19 +13,26 @@ class AuthHeading extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
+            height: 1.15,
+            letterSpacing: -0.5,
+            color: Color(0xFF1A1A1A),
+          ),
         ),
         if (subtitle != null) ...[
-          const SizedBox(height: 4),
+          const SizedBox(height: 12),
           Text(
             subtitle!,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: AppColors.textSecondary),
+            style: const TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+              height: 1.5,
+              color: Color(0xFF555555),
+            ),
           ),
         ],
       ],

@@ -52,46 +52,65 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     final isLoading = context.watch<AuthProvider>().isLoading;
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Account'), leading: BackButton(onPressed: () => context.go('/login'))),
+      backgroundColor: const Color(0xFFEEEDE4), // Matches Onboarding background
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const AuthHeading(
-                  title: 'Join Campus Connect',
-                  subtitle: 'Create your account to get started',
+                GestureDetector(
+                  onTap: () => context.go('/login'),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: Color(0xFF1A1A1A)),
+                      SizedBox(width: 8),
+                      Text(
+                        'Back to Login',
+                        style: TextStyle(
+                          color: Color(0xFF1A1A1A),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 32),
+                const AuthHeading(
+                  title: 'Create Account',
+                  subtitle: 'Join Campus Connect and start sharing with your university peers.',
+                ),
+                const SizedBox(height: 40),
                 AuthTextField(
                   label: 'Full Name',
                   controller: _nameCtrl,
-                  prefixIcon: const Icon(Icons.person_outline),
+                  hint: 'Jane Doe',
                   validator: (v) => (v == null || v.isEmpty) ? 'Enter your name' : null,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 AuthTextField(
-                  label: 'Email',
+                  label: 'University Email',
                   controller: _emailCtrl,
+                  hint: 'name@university.edu',
                   keyboardType: TextInputType.emailAddress,
-                  prefixIcon: const Icon(Icons.email_outlined),
                   validator: (v) {
                     if (v == null || v.isEmpty) return 'Enter your email';
                     if (!v.contains('@')) return 'Enter a valid email';
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 AuthTextField(
                   label: 'Password',
                   controller: _passwordCtrl,
                   obscureText: _obscurePassword,
-                  prefixIcon: const Icon(Icons.lock_outline),
+                  hint: '••••••••',
                   suffixIcon: IconButton(
-                    icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                    icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined, color: const Color(0xFF888880)),
                     onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
                   validator: (v) {
@@ -100,17 +119,18 @@ class _SignupPageState extends State<SignupPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 AuthTextField(
                   label: 'Confirm Password',
                   controller: _confirmCtrl,
                   obscureText: true,
-                  prefixIcon: const Icon(Icons.lock_outline),
+                  hint: '••••••••',
                   validator: (v) =>
                       v != _passwordCtrl.text ? 'Passwords do not match' : null,
                 ),
+                const SizedBox(height: 32),
+                AuthButton(label: 'Sign Up  →', onPressed: _submit, isLoading: isLoading),
                 const SizedBox(height: 24),
-                AuthButton(label: 'Sign Up', onPressed: _submit, isLoading: isLoading),
               ],
             ),
           ),

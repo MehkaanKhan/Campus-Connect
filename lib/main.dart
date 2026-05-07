@@ -55,6 +55,28 @@ import 'features/hostellite_exchange/data/repositories/hostellite_repository_imp
 import 'features/hostellite_exchange/domain/usecases/get_items_usecase.dart';
 import 'features/hostellite_exchange/presentation/provider/hostellite_provider.dart';
 
+import 'features/user_profile/data/datasources/user_profile_local_datasource.dart';
+import 'features/user_profile/data/repositories/user_profile_repository_impl.dart';
+import 'features/user_profile/domain/usecases/get_user_profile_usecase.dart';
+import 'features/user_profile/presentation/provider/user_profile_provider.dart';
+
+import 'features/notifications/data/datasources/notifications_local_datasource.dart';
+import 'features/notifications/data/repositories/notifications_repository_impl.dart';
+import 'features/notifications/domain/usecases/get_notifications_usecase.dart';
+import 'features/notifications/domain/usecases/mark_all_read_usecase.dart';
+import 'features/notifications/presentation/provider/notifications_provider.dart';
+
+import 'features/feed/data/datasources/feed_local_datasource.dart';
+import 'features/feed/data/repositories/feed_repository_impl.dart';
+import 'features/feed/domain/usecases/get_feed_usecase.dart';
+import 'features/feed/presentation/provider/feed_provider.dart';
+
+import 'features/carpool/data/datasources/carpool_local_datasource.dart';
+import 'features/carpool/data/repositories/carpool_repository_impl.dart';
+import 'features/carpool/domain/usecases/get_carpool_rides_usecase.dart';
+import 'features/carpool/domain/usecases/join_carpool_ride_usecase.dart';
+import 'features/carpool/presentation/provider/carpool_provider.dart';
+
 void main() {
   runApp(const CampusConnectApp());
 }
@@ -77,6 +99,18 @@ class CampusConnectApp extends StatelessWidget {
     final ppRepo      = ProjectPartnersRepositoryImpl(ppSource);
     final threadSource = ThreadLocalDataSource();
     final threadRepo   = ThreadRepositoryImpl(threadSource);
+    
+    final userProfileSource = UserProfileLocalDataSourceImpl();
+    final userProfileRepo = UserProfileRepositoryImpl(userProfileSource);
+    
+    final notificationsSource = NotificationsLocalDataSourceImpl();
+    final notificationsRepo = NotificationsRepositoryImpl(notificationsSource);
+
+    final feedSource = FeedLocalDataSourceImpl();
+    final feedRepo = FeedRepositoryImpl(feedSource);
+
+    final carpoolSource = CarpoolLocalDataSourceImpl();
+    final carpoolRepo = CarpoolRepositoryImpl(carpoolSource);
 
     return MultiProvider(
       providers: [
@@ -139,6 +173,28 @@ class CampusConnectApp extends StatelessWidget {
             final hRepo   = HostelliteRepositoryImpl(hSource);
             return HostelliteProvider(usecase: GetExchangeItemsUsecase(hRepo));
           },
+        ),
+        ChangeNotifierProvider(
+          create: (_) => UserProfileProvider(
+            usecase: GetUserProfileUsecase(userProfileRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => NotificationsProvider(
+            getUsecase: GetNotificationsUsecase(notificationsRepo),
+            markReadUsecase: MarkAllReadUsecase(notificationsRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => FeedProvider(
+            getFeedUsecase: GetFeedUsecase(feedRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CarpoolProvider(
+            getRidesUsecase: GetCarpoolRidesUsecase(carpoolRepo),
+            joinRideUsecase: JoinCarpoolRideUsecase(carpoolRepo),
+          ),
         ),
       ],
       child: MaterialApp.router(

@@ -60,11 +60,12 @@ class ExploreHubPage extends StatelessWidget {
                   const SizedBox(height: 12),
                   _ExploreCard(
                     icon: Icons.directions_car_outlined,
-                    iconColor: const Color(0xFFB0A890),
-                    iconBg: const Color(0xFFF2F1EE),
-                    title: 'Carpool Ride',
+                    iconColor: const Color(0xFF6B8F6B),
+                    iconBg: const Color(0xFFE8F3E8),
+                    title: 'Carpool & Rides',
                     subtitle: 'Share rides with fellow students',
-                    isEnabled: false,
+                    isEnabled: true,
+                    onTap: () => context.push('/carpool'),
                   ),
                   const SizedBox(height: 12),
                   _ExploreCard(
