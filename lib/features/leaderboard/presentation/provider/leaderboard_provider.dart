@@ -27,7 +27,6 @@ class LeaderboardProvider extends ChangeNotifier {
   }
 
   List<LeaderboardEntity> _generateDummyData(String filter) {
-    int mult = filter == 'This Week' ? 1 : filter == 'This Month' ? 4 : 12;
     return [
       LeaderboardEntity(id: '1', name: 'Marcus Thorne',   department: 'Academic Tutor',     score: 12200, avatarUrl: 'M'),
       LeaderboardEntity(id: '2', name: 'Sarah Jenkins',   department: 'Event Organizer',    score: 9450,  avatarUrl: 'S'),
