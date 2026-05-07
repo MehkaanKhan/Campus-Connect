@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../provider/onboarding_provider.dart';
+import '../../../../core/constants/app_theme.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -42,7 +43,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final provider = context.watch<OnboardingProvider>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEEEDE4),
+      backgroundColor: AppColors.onboardingBg,
       body: SafeArea(
         child: Column(
           children: [
@@ -139,7 +140,7 @@ class _OnboardingSlide extends StatelessWidget {
               fontWeight: FontWeight.w900,
               height: 1.15,
               letterSpacing: -0.5,
-              color: Color(0xFF1A1A1A),
+              color: AppColors.textPrimary,
             ),
           ),
 
@@ -153,7 +154,7 @@ class _OnboardingSlide extends StatelessWidget {
               fontSize: 15,
               fontWeight: FontWeight.w400,
               height: 1.55,
-              color: Color(0xFF555555),
+              color: AppColors.textCaption,
             ),
           ),
 
@@ -214,8 +215,8 @@ class _PageIndicator extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(100),
             color: isActive
-                ? const Color(0xFF2E2E2E)
-                : const Color(0xFFB0B0A8),
+                ? AppColors.primary
+                : AppColors.disabled,
           ),
         );
       }),
@@ -240,7 +241,7 @@ class _ContinueButton extends StatelessWidget {
         width: double.infinity,
         height: 54,
         decoration: BoxDecoration(
-          color: const Color(0xFF1A1A1A),
+          color: AppColors.primary,
           borderRadius: BorderRadius.circular(100),
           boxShadow: [
             BoxShadow(
@@ -281,7 +282,7 @@ class _TermsText extends StatelessWidget {
       text: const TextSpan(
         style: TextStyle(
           fontSize: 12,
-          color: Color(0xFF888880),
+          color: AppColors.textLabel,
           height: 1.6,
         ),
         children: [
@@ -298,9 +299,9 @@ class _TermsText extends StatelessWidget {
           TextSpan(
             text: 'Privacy\nPolicy',
             style: TextStyle(
-              color: Color(0xFF444444),
+              color: AppColors.textPrimary,
               decoration: TextDecoration.underline,
-              decorationColor: Color(0xFF444444),
+              decorationColor: AppColors.textPrimary,
             ),
           ),
           TextSpan(text: '.'),

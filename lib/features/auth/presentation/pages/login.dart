@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/app_theme.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../provider/auth_provider.dart';
 import '../widgets/auth_button.dart';
@@ -44,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final isLoading = context.watch<AuthProvider>().isLoading;
     return Scaffold(
-      backgroundColor: const Color(0xFFEEEDE4), // Matches Onboarding background
+      backgroundColor: AppColors.onboardingBg, // Matches Onboarding background
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -77,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: _obscurePassword,
                   hint: '••••••••',
                   suffixIcon: IconButton(
-                    icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined, color: const Color(0xFF888880)),
+                    icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined, color: AppColors.textLabel),
                     onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
                   validator: (v) => (v == null || v.isEmpty) ? 'Enter your password' : null,
@@ -90,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: const Text(
                       'Forgot Password?',
                       style: TextStyle(
-                        color: Color(0xFF555555),
+                        color: AppColors.textCaption,
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
                         fontFamily: 'Inter',
@@ -107,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                     const Text(
                       'Don\'t have an account? ',
                       style: TextStyle(
-                        color: Color(0xFF888880),
+                        color: AppColors.textLabel,
                         fontSize: 14,
                         fontFamily: 'Inter',
                       ),
@@ -117,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Text(
                         'Sign Up',
                         style: TextStyle(
-                          color: Color(0xFF1A1A1A),
+                          color: AppColors.primary,
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
                           fontFamily: 'Inter',

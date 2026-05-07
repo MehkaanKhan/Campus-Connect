@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/app_theme.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../provider/auth_provider.dart';
 import '../widgets/auth_button.dart';
@@ -52,7 +53,7 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     final isLoading = context.watch<AuthProvider>().isLoading;
     return Scaffold(
-      backgroundColor: const Color(0xFFEEEDE4), // Matches Onboarding background
+      backgroundColor: AppColors.onboardingBg, // Matches Onboarding background
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -65,12 +66,12 @@ class _SignupPageState extends State<SignupPage> {
                   onTap: () => context.go('/login'),
                   child: const Row(
                     children: [
-                      Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: Color(0xFF1A1A1A)),
+                      Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: AppColors.primary),
                       SizedBox(width: 8),
                       Text(
                         'Back to Login',
                         style: TextStyle(
-                          color: Color(0xFF1A1A1A),
+                          color: AppColors.primary,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                           fontFamily: 'Inter',
@@ -110,7 +111,7 @@ class _SignupPageState extends State<SignupPage> {
                   obscureText: _obscurePassword,
                   hint: '••••••••',
                   suffixIcon: IconButton(
-                    icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined, color: const Color(0xFF888880)),
+                    icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined, color: AppColors.textLabel),
                     onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
                   validator: (v) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_theme.dart';
 
 class AuthButton extends StatelessWidget {
   final String label;
@@ -17,14 +18,14 @@ class AuthButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 54,
+      height: AppDimens.buttonHeight,
       child: GestureDetector(
         onTap: isLoading ? null : onPressed,
         child: Container(
           decoration: BoxDecoration(
-            color: outlined ? Colors.transparent : const Color(0xFF1A1A1A),
-            borderRadius: BorderRadius.circular(100),
-            border: outlined ? Border.all(color: const Color(0xFF1A1A1A), width: 1.5) : null,
+            color: outlined ? Colors.transparent : AppColors.primary,
+            borderRadius: BorderRadius.circular(AppDimens.radiusButton),
+            border: outlined ? Border.all(color: AppColors.primary, width: 1.5) : null,
             boxShadow: outlined ? null : [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.22),
@@ -46,10 +47,10 @@ class AuthButton extends StatelessWidget {
                 : Text(
                     label,
                     style: TextStyle(
-                      color: outlined ? const Color(0xFF1A1A1A) : Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.1,
+                      color: outlined ? AppColors.primary : Colors.white,
+                      fontSize: AppTextStyles.buttonPrimary.fontSize,
+                      fontWeight: AppTextStyles.buttonPrimary.fontWeight,
+                      letterSpacing: AppTextStyles.buttonPrimary.letterSpacing,
                       fontFamily: 'Inter',
                     ),
                   ),

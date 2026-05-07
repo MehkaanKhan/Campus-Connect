@@ -5,6 +5,7 @@ import '../../../../core/widgets/campus_top_navbar.dart';
 import '../../../../core/widgets/app_loader.dart';
 import '../../domain/entities/leaderboard_entity.dart';
 import '../provider/leaderboard_provider.dart';
+import '../../../../core/constants/app_theme.dart';
 
 class LeaderboardPage extends StatefulWidget {
   const LeaderboardPage({super.key});
@@ -25,7 +26,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           CampusTopNavBar(onBack: () => Navigator.of(context).pop()),
@@ -36,7 +37,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 if (provider.users.isEmpty) {
                   return const Center(
                     child: Text('No rankings yet.',
-                        style: TextStyle(fontFamily: 'Inter', color: Color(0xFF94A3B8))),
+                        style: TextStyle(fontFamily: 'Inter', color: AppColors.textMuted)),
                   );
                 }
 
@@ -55,7 +56,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           children: [
                             ShaderMask(
                               shaderCallback: (bounds) => const LinearGradient(
-                                colors: [Color(0xFF6B8F6B), Color(0xFFB0CFAE)],
+                                colors: [AppColors.sage, Color(0xFFB0CFAE)],
                               ).createShader(bounds),
                               child: const Text(
                                 'Weekly Leaderboard',
@@ -73,7 +74,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                               style: TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 13,
-                                color: Color(0xFF94A3B8),
+                                color: AppColors.textMuted,
                               ),
                             ),
                           ],
@@ -87,7 +88,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         height: 2,
                         width: 120,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF6B8F6B),
+                          color: AppColors.sage,
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -115,7 +116,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                     fontSize: 10,
                                     fontWeight: FontWeight.w700,
                                     letterSpacing: 1.2,
-                                    color: Color(0xFF94A3B8),
+                                    color: AppColors.textMuted,
                                   ),
                                 ),
                               ),
@@ -126,7 +127,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                   fontSize: 10,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: 1.2,
-                                  color: Color(0xFF94A3B8),
+                                  color: AppColors.textMuted,
                                 ),
                               ),
                             ],
@@ -152,7 +153,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 1.4,
-                              color: Color(0xFF6B8F6B),
+                              color: AppColors.sage,
                             ),
                           ),
                         ),
@@ -193,21 +194,21 @@ class _TopCard extends StatelessWidget {
   }
 
   Color get _pointsBg {
-    if (rank == 1) return const Color(0xFF3D5C3D);
-    if (rank == 2) return const Color(0xFFFAEDD6);
-    return const Color(0xFFEDF4E9);
+    if (rank == 1) return AppColors.sageDark;
+    if (rank == 2) return AppColors.rank2BadgeBg;
+    return AppColors.rank3BadgeBg;
   }
 
   Color get _pointsText {
     if (rank == 1) return Colors.white;
-    if (rank == 2) return const Color(0xFFB07D3A);
-    return const Color(0xFF6B8F6B);
+    if (rank == 2) return AppColors.rank2BadgeText;
+    return AppColors.sage;
   }
 
   Color get _accentBar {
-    if (rank == 1) return const Color(0xFF7A9B7A);  // sage green
-    if (rank == 2) return const Color(0xFFC8A97A);  // warm caramel
-    return const Color(0xFFB8B8BC);                  // cool silver-gray
+    if (rank == 1) return AppColors.rank1Accent;
+    if (rank == 2) return AppColors.rank2Accent;
+    return AppColors.rank3Accent;
   }
 
   @override
@@ -217,7 +218,7 @@ class _TopCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFEEEEE8)),
+        border: Border.all(color: AppColors.border),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
@@ -237,7 +238,7 @@ class _TopCard extends StatelessWidget {
                   // Avatar
                   CircleAvatar(
                     radius: _avatarRadius,
-                    backgroundColor: const Color(0xFF2E3D2E),
+                    backgroundColor: AppColors.darkCardBg,
                     child: Text(
                       user.avatarUrl,
                       style: TextStyle(
@@ -261,7 +262,7 @@ class _TopCard extends StatelessWidget {
                           fontFamily: 'Inter',
                           fontSize: rank == 1 ? 22 : 18,
                           fontWeight: FontWeight.w800,
-                          color: const Color(0xFF1A1A1A),
+                          color: AppColors.textPrimary,
                         ),
                       ),
                     ],
@@ -274,7 +275,7 @@ class _TopCard extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontSize: _nameSize,
                       fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A1A1A),
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -284,7 +285,7 @@ class _TopCard extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 12,
-                      color: Color(0xFF94A3B8),
+                      color: AppColors.textMuted,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -339,7 +340,7 @@ class _FlatRow extends StatelessWidget {
         border: Border(
           bottom: isLast
               ? BorderSide.none
-              : const BorderSide(color: Color(0xFFF0F0EC), width: 1),
+              : const BorderSide(color: AppColors.borderLight, width: 1),
         ),
       ),
       child: Row(
@@ -353,7 +354,7 @@ class _FlatRow extends StatelessWidget {
                 fontFamily: 'Inter',
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF94A3B8),
+                color: AppColors.textMuted,
               ),
             ),
           ),
@@ -361,7 +362,7 @@ class _FlatRow extends StatelessWidget {
           // Avatar
           CircleAvatar(
             radius: 20,
-            backgroundColor: const Color(0xFF2E3D2E),
+            backgroundColor: AppColors.darkCardBg,
             child: Text(
               user.avatarUrl,
               style: const TextStyle(
@@ -384,7 +385,7 @@ class _FlatRow extends StatelessWidget {
                     fontFamily: 'Inter',
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF1A1A1A),
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 Text(
@@ -394,7 +395,7 @@ class _FlatRow extends StatelessWidget {
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.8,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.textMuted,
                   ),
                 ),
               ],
@@ -407,7 +408,7 @@ class _FlatRow extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1A1A1A),
+              color: AppColors.textPrimary,
             ),
           ),
         ],

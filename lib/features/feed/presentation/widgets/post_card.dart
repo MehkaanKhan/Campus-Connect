@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/post_entity.dart';
 import '../provider/feed_provider.dart';
+import '../../../../core/constants/app_theme.dart';
 
 class PostCard extends StatelessWidget {
   final PostEntity post;
@@ -15,7 +16,7 @@ class PostCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEEEEE8)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +36,7 @@ class PostCard extends StatelessWidget {
                     fontFamily: 'Inter',
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF1A1A1A),
+                    color: AppColors.textPrimary,
                     height: 1.3,
                   ),
                 ),
@@ -47,7 +48,7 @@ class PostCard extends StatelessWidget {
                   style: const TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 13,
-                    color: Color(0xFF64748B),
+                    color: AppColors.textSecondary,
                     height: 1.5,
                   ),
                 ),
@@ -87,7 +88,7 @@ class PostCard extends StatelessWidget {
   Widget _imagePlaceholder() => Container(
         width: double.infinity,
         height: 180,
-        color: const Color(0xFFF0F0EC),
+        color: AppColors.borderLight,
         child: const Icon(Icons.image_outlined, size: 36, color: Color(0xFFCCCCC8)),
       );
 }
@@ -102,7 +103,7 @@ class _PostHeader extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 17,
-          backgroundColor: const Color(0xFF1E3A8A),
+          backgroundColor: AppColors.primary,
           backgroundImage: post.authorAvatarUrl != null
               ? NetworkImage(post.authorAvatarUrl!)
               : null,
@@ -124,7 +125,7 @@ class _PostHeader extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1A1A1A),
+                  color: AppColors.textPrimary,
                 ),
               ),
               Text(
@@ -132,14 +133,14 @@ class _PostHeader extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 10,
-                  color: Color(0xFF94A3B8),
+                  color: AppColors.textMuted,
                   letterSpacing: 0.2,
                 ),
               ),
             ],
           ),
         ),
-        const Icon(Icons.more_horiz, color: Color(0xFF94A3B8), size: 20),
+        const Icon(Icons.more_horiz, color: AppColors.textMuted, size: 20),
       ],
     );
   }
@@ -172,7 +173,7 @@ class _FlairChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(_icon, size: 11, color: const Color(0xFF434942)),
+          Icon(_icon, size: 11, color: AppColors.filterInactiveText),
           const SizedBox(width: 4),
           Text(
             label,
@@ -181,7 +182,7 @@ class _FlairChip extends StatelessWidget {
               fontSize: 10,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.3,
-              color: Color(0xFF434942),
+              color: AppColors.filterInactiveText,
             ),
           ),
         ],
@@ -197,8 +198,8 @@ class _PostActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final feed = context.read<FeedProvider>();
-    final upColor = post.isUpvoted ? const Color(0xFF6B8F6B) : const Color(0xFF94A3B8);
-    final downColor = post.isDownvoted ? const Color(0xFFEF4444) : const Color(0xFF94A3B8);
+    final upColor = post.isUpvoted ? AppColors.sage : AppColors.textMuted;
+    final downColor = post.isDownvoted ? AppColors.error : AppColors.textMuted;
 
     return Row(
       children: [
@@ -226,21 +227,21 @@ class _PostActions extends StatelessWidget {
           onTap: () => context.push('/thread'),
           child: Row(
             children: [
-              const Icon(Icons.chat_bubble_outline, size: 15, color: Color(0xFF94A3B8)),
+              const Icon(Icons.chat_bubble_outline, size: 15, color: AppColors.textMuted),
               const SizedBox(width: 5),
               Text(
                 '${post.commentCount}',
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 13,
-                  color: Color(0xFF94A3B8),
+                  color: AppColors.textMuted,
                 ),
               ),
             ],
           ),
         ),
         const Spacer(),
-        const Icon(Icons.share_outlined, size: 17, color: Color(0xFF94A3B8)),
+        const Icon(Icons.share_outlined, size: 17, color: AppColors.textMuted),
       ],
     );
   }
