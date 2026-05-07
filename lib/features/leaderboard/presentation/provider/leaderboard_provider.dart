@@ -27,18 +27,16 @@ class LeaderboardProvider extends ChangeNotifier {
   }
 
   List<LeaderboardEntity> _generateDummyData(String filter) {
-    int multiplier = filter == 'This Week' ? 1 : filter == 'This Month' ? 4 : 12;
+    int mult = filter == 'This Week' ? 1 : filter == 'This Month' ? 4 : 12;
     return [
-      LeaderboardEntity(id: '1', name: 'Zainab Ali', department: 'Software Eng.', score: 1250 * multiplier, avatarUrl: 'Z'),
-      LeaderboardEntity(id: '2', name: 'Omar Farooq', department: 'Computer Science', score: 1120 * multiplier, avatarUrl: 'O'),
-      LeaderboardEntity(id: '3', name: 'Ayesha Khan', department: 'Data Science', score: 980 * multiplier, avatarUrl: 'A'),
-      LeaderboardEntity(id: '4', name: 'Bilal Ahmed', department: 'AI', score: 850 * multiplier, avatarUrl: 'B'),
-      LeaderboardEntity(id: '5', name: 'Fatima Noor', department: 'Software Eng.', score: 810 * multiplier, avatarUrl: 'F'),
-      LeaderboardEntity(id: '6', name: 'Hassan Raza', department: 'Cyber Security', score: 760 * multiplier, avatarUrl: 'H'),
-      LeaderboardEntity(id: '7', name: 'Sara Malik', department: 'Computer Science', score: 710 * multiplier, avatarUrl: 'S'),
-      LeaderboardEntity(id: '8', name: 'Usman Tariq', department: 'Information Tech.', score: 650 * multiplier, avatarUrl: 'U'),
-      LeaderboardEntity(id: '9', name: 'Hira Shah', department: 'Data Science', score: 600 * multiplier, avatarUrl: 'H'),
-      LeaderboardEntity(id: '10', name: 'Ali Zafar', department: 'AI', score: 550 * multiplier, avatarUrl: 'A'),
+      LeaderboardEntity(id: '1', name: 'Marcus Thorne',   department: 'Academic Tutor',     score: 12200, avatarUrl: 'M'),
+      LeaderboardEntity(id: '2', name: 'Sarah Jenkins',   department: 'Event Organizer',    score: 9450,  avatarUrl: 'S'),
+      LeaderboardEntity(id: '3', name: 'Elena Rodriguez', department: 'Marketplace Seller', score: 7900,  avatarUrl: 'E'),
+      LeaderboardEntity(id: '4', name: 'David Kim',       department: 'Study Group Lead',   score: 6540,  avatarUrl: 'D'),
+      LeaderboardEntity(id: '5', name: 'Aisha Patel',     department: 'Campus Guide',       score: 5890,  avatarUrl: 'A'),
+      LeaderboardEntity(id: '6', name: 'James Wilson',    department: 'Tech Support',       score: 5120,  avatarUrl: 'J'),
+      LeaderboardEntity(id: '7', name: 'Layla Hassan',    department: 'Peer Mentor',        score: 4780,  avatarUrl: 'L'),
+      LeaderboardEntity(id: '8', name: 'Omar Tariq',      department: 'Research Asst.',     score: 4210,  avatarUrl: 'O'),
     ];
   }
 }

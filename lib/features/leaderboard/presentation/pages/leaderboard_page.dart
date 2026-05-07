@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/widgets/campus_bottom_navbar.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
 import '../../../../core/widgets/app_loader.dart';
+import '../../domain/entities/leaderboard_entity.dart';
 import '../provider/leaderboard_provider.dart';
-import '../widgets/podium_widget.dart';
-import '../widgets/leaderboard_list_item.dart';
 
 class LeaderboardPage extends StatefulWidget {
   const LeaderboardPage({super.key});
@@ -14,114 +13,414 @@ class LeaderboardPage extends StatefulWidget {
   State<LeaderboardPage> createState() => _LeaderboardPageState();
 }
 
-class _LeaderboardPageState extends State<LeaderboardPage> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  final List<String> _tabs = ['This Week', 'This Month', 'All Time'];
-
+class _LeaderboardPageState extends State<LeaderboardPage> {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _tabs.length, vsync: this);
-    _tabController.addListener(_handleTabSelection);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<LeaderboardProvider>().loadLeaderboard(_tabs[0]);
+      context.read<LeaderboardProvider>().loadLeaderboard('This Week');
     });
-  }
-
-  void _handleTabSelection() {
-    if (_tabController.indexIsChanging) {
-      context.read<LeaderboardProvider>().loadLeaderboard(_tabs[_tabController.index]);
-    }
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: CampusTopNavBar(
-          onBack: context.canPop() ? () => context.pop() : null,
-        ),
-      ),
       body: Column(
         children: [
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.only(top: 10),
+          CampusTopNavBar(onBack: () => Navigator.of(context).pop()),
+          Expanded(
+            child: Consumer<LeaderboardProvider>(
+              builder: (context, provider, _) {
+                if (provider.isLoading) return const AppLoader();
+                if (provider.users.isEmpty) {
+                  return const Center(
+                    child: Text('No rankings yet.',
+                        style: TextStyle(fontFamily: 'Inter', color: Color(0xFF94A3B8))),
+                  );
+                }
+
+                final top3 = provider.users.take(3).toList();
+                final rest = provider.users.skip(3).toList();
+
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ── Page header ─────────────────────────────────────
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 4),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ShaderMask(
+                              shaderCallback: (bounds) => const LinearGradient(
+                                colors: [Color(0xFF6B8F6B), Color(0xFFB0CFAE)],
+                              ).createShader(bounds),
+                              child: const Text(
+                                'Weekly Leaderboard',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Top contributors making an impact this week.',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 13,
+                                color: Color(0xFF94A3B8),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+                      // Accent underline
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
+                        height: 2,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF6B8F6B),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // ── Top 3 stacked cards ──────────────────────────────
+                      ...List.generate(top3.length, (i) => _TopCard(
+                        user: top3[i],
+                        rank: i + 1,
+                      )),
+
+                      const SizedBox(height: 8),
+
+                      // ── Ranks 4+ table header ────────────────────────────
+                      if (rest.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
+                          child: Row(
+                            children: const [
+                              Expanded(
+                                child: Text(
+                                  'RANK & USER',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 1.2,
+                                    color: Color(0xFF94A3B8),
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                'POINTS',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 1.2,
+                                  color: Color(0xFF94A3B8),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                      // ── Ranks 4+ flat rows ──────────────────────────────
+                      ...List.generate(rest.length, (i) => _FlatRow(
+                        user: rest[i],
+                        rank: i + 4,
+                        isLast: i == rest.length - 1,
+                      )),
+
+                      // ── View all link ───────────────────────────────────
+                      const SizedBox(height: 20),
+                      Center(
+                        child: GestureDetector(
+                          onTap: () {}, // placeholder
+                          child: const Text(
+                            'VIEW ALL RANKINGS',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1.4,
+                              color: Color(0xFF6B8F6B),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          const CampusBottomNavBar(activeTab: BottomNavTab.explore),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Top card (#1, #2, #3) – vertically stacked, progressively smaller
+// ─────────────────────────────────────────────────────────────────────────────
+class _TopCard extends StatelessWidget {
+  final LeaderboardEntity user;
+  final int rank;
+
+  const _TopCard({required this.user, required this.rank});
+
+  double get _avatarRadius {
+    if (rank == 1) return 44;
+    if (rank == 2) return 36;
+    return 30;
+  }
+
+  double get _nameSize {
+    if (rank == 1) return 19;
+    if (rank == 2) return 16;
+    return 15;
+  }
+
+  Color get _pointsBg {
+    if (rank == 1) return const Color(0xFF3D5C3D);
+    if (rank == 2) return const Color(0xFFFAEDD6);
+    return const Color(0xFFEDF4E9);
+  }
+
+  Color get _pointsText {
+    if (rank == 1) return Colors.white;
+    if (rank == 2) return const Color(0xFFB07D3A);
+    return const Color(0xFF6B8F6B);
+  }
+
+  Color get _accentBar {
+    if (rank == 1) return const Color(0xFF7A9B7A);  // sage green
+    if (rank == 2) return const Color(0xFFC8A97A);  // warm caramel
+    return const Color(0xFFB8B8BC);                  // cool silver-gray
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFEEEEE8)),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Column(
+          children: [
+            // ── Coloured top accent bar ──────────────────────────────────
+            Container(
+              height: 5,
+              width: double.infinity,
+              color: _accentBar,
+            ),
+            // ── Card body ────────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
+              child: Column(
+                children: [
+                  // Avatar
+                  CircleAvatar(
+                    radius: _avatarRadius,
+                    backgroundColor: const Color(0xFF2E3D2E),
+                    child: Text(
+                      user.avatarUrl,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: _avatarRadius * 0.7,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Rank with emoji
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (rank == 1)
+                        const Text('🏅 ', style: TextStyle(fontSize: 14)),
+                      Text(
+                        '#$rank',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: rank == 1 ? 22 : 18,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF1A1A1A),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  // Name
+                  Text(
+                    user.name,
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: _nameSize,
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFF1A1A1A),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  // Department / role
+                  Text(
+                    user.department,
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      color: Color(0xFF94A3B8),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Points badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+                    decoration: BoxDecoration(
+                      color: _pointsBg,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      '${_formatScore(user.score)} PTS',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.5,
+                        color: _pointsText,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatScore(int score) {
+    if (score >= 1000) return '${(score / 1000).toStringAsFixed(1).replaceAll('.0', '')},${(score % 1000).toString().padLeft(3, '0')}';
+    return '$score';
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Flat row for ranks 4 and below
+// ─────────────────────────────────────────────────────────────────────────────
+class _FlatRow extends StatelessWidget {
+  final LeaderboardEntity user;
+  final int rank;
+  final bool isLast;
+
+  const _FlatRow({required this.user, required this.rank, required this.isLast});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: isLast
+              ? BorderSide.none
+              : const BorderSide(color: Color(0xFFF0F0EC), width: 1),
+        ),
+      ),
+      child: Row(
+        children: [
+          // Rank number
+          SizedBox(
+            width: 22,
+            child: Text(
+              '$rank',
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF94A3B8),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          // Avatar
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: const Color(0xFF2E3D2E),
+            child: Text(
+              user.avatarUrl,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Inter',
+                fontSize: 13,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          // Name + department
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'Leaderboard',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF1A1A1A),
-                    ),
+                Text(
+                  user.name,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1A1A1A),
                   ),
                 ),
-                const SizedBox(height: 16),
-                TabBar(
-                  controller: _tabController,
-                  indicatorColor: const Color(0xFF1E3A8A),
-                  labelColor: const Color(0xFF1E3A8A),
-                  unselectedLabelColor: const Color(0xFF94A3B8),
-                  labelStyle: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700),
-                  tabs: _tabs.map((t) => Tab(text: t)).toList(),
+                Text(
+                  user.department.toUpperCase(),
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.8,
+                    color: Color(0xFF94A3B8),
+                  ),
                 ),
               ],
             ),
           ),
-          Expanded(
-            child: Consumer<LeaderboardProvider>(
-              builder: (context, provider, child) {
-                if (provider.isLoading) {
-                  return const Center(child: AppLoader());
-                }
-
-                if (provider.users.isEmpty) {
-                  return const Center(child: Text('No ranking available.'));
-                }
-
-                final topThree = provider.users.take(3).toList();
-                final others = provider.users.skip(3).toList();
-
-                return CustomScrollView(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: PodiumWidget(topThree: topThree),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return LeaderboardListItem(
-                            user: others[index],
-                            rank: index + 4,
-                          );
-                        },
-                        childCount: others.length,
-                      ),
-                    ),
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: 20),
-                    ),
-                  ],
-                );
-              },
+          // Points
+          Text(
+            _formatScore(user.score),
+            style: const TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF1A1A1A),
             ),
           ),
         ],
       ),
     );
+  }
+
+  String _formatScore(int score) {
+    if (score >= 1000) {
+      final thousands = score ~/ 1000;
+      final hundreds = score % 1000;
+      return '$thousands,${hundreds.toString().padLeft(3, '0')}';
+    }
+    return '$score';
   }
 }
