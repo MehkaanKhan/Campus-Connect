@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/widgets/campus_bottom_navbar.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
@@ -34,12 +33,6 @@ class _FeedPageState extends State<FeedPage> {
           Expanded(child: _FeedBody()),
           const CampusBottomNavBar(activeTab: BottomNavTab.home),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/create-post'),
-        backgroundColor: const Color(0xFF1A1A1A),
-        elevation: 4,
-        child: const Icon(Icons.add, color: Colors.white, size: 26),
       ),
     );
   }

@@ -25,7 +25,7 @@ class CampusBottomNavBar extends StatelessWidget {
                 icon: Icons.home_outlined,
                 label: 'HOME',
                 isActive: activeTab == BottomNavTab.home,
-                onTap: () => context.go('/thread')),
+                onTap: () => context.go('/feed')),
             _NavItem(
                 icon: Icons.explore_outlined,
                 label: 'EXPLORE',

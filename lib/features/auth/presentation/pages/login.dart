@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_theme.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../provider/auth_provider.dart';
 import '../widgets/auth_button.dart';
@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     await provider.login(email: _emailCtrl.text.trim(), password: _passwordCtrl.text);
     if (!mounted) return;
     if (provider.isAuthenticated) {
-      context.go('/thread');
+      context.go('/feed');
     } else if (provider.errorMessage != null) {
       AppSnackbar.show(context, provider.errorMessage!, isError: true);
       provider.clearError();
@@ -45,61 +45,87 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final isLoading = context.watch<AuthProvider>().isLoading;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.onboardingBg, // Matches Onboarding background
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 40),
-                const Icon(Icons.school, size: 72, color: AppColors.primary),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
                 const AuthHeading(
                   title: 'Welcome back',
-                  subtitle: 'Sign in to your Campus Connect account',
+                  subtitle: 'Sign in to your account with your university email.',
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 48),
                 AuthTextField(
-                  label: 'Email',
+                  label: 'University Email',
                   controller: _emailCtrl,
+                  hint: 'name@university.edu',
                   keyboardType: TextInputType.emailAddress,
-                  prefixIcon: const Icon(Icons.email_outlined),
                   validator: (v) {
                     if (v == null || v.isEmpty) return 'Enter your email';
                     if (!v.contains('@')) return 'Enter a valid email';
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 AuthTextField(
                   label: 'Password',
                   controller: _passwordCtrl,
                   obscureText: _obscurePassword,
-                  prefixIcon: const Icon(Icons.lock_outline),
+                  hint: '••••••••',
                   suffixIcon: IconButton(
-                    icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                    icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined, color: AppColors.textLabel),
                     onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
                   validator: (v) => (v == null || v.isEmpty) ? 'Enter your password' : null,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () => context.push('/reset-password'),
-                    child: const Text('Forgot Password?'),
+                    child: const Text(
+                      'Forgot Password?',
+                      style: TextStyle(
+                        color: AppColors.textCaption,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                AuthButton(label: 'Login', onPressed: _submit, isLoading: isLoading),
-                const SizedBox(height: 12),
-                AuthButton(
-                  label: 'Create Account',
-                  onPressed: () => context.go('/signup'),
-                  outlined: true,
+                const SizedBox(height: 32),
+                AuthButton(label: 'Sign In  →', onPressed: _submit, isLoading: isLoading),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Don\'t have an account? ',
+                      style: TextStyle(
+                        color: AppColors.textLabel,
+                        fontSize: 14,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => context.go('/signup'),
+                      child: const Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

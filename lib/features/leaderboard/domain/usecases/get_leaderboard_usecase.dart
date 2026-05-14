@@ -1,0 +1,3 @@
+class GetLeaderboardUsecase {
+  // Boilerplate usecase
+}

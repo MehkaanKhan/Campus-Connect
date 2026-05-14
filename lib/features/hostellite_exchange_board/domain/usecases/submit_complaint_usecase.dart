@@ -1,0 +1,3 @@
+class SubmitComplaintUsecase {
+  // Boilerplate usecase
+}

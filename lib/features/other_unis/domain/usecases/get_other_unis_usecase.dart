@@ -1,0 +1,3 @@
+class GetOtherUnisUsecase {
+  // Boilerplate usecase
+}

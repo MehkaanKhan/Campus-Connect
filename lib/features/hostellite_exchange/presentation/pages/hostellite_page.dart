@@ -168,15 +168,17 @@ class _ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEEEEE8)),
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: Column(
+    return GestureDetector(
+      onTap: () => context.push('/hostellite-exchange/detail', extra: item),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFFEEEEE8)),
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
@@ -279,7 +281,7 @@ class _ItemCard extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _placeholder() => Container(
