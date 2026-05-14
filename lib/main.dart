@@ -45,6 +45,27 @@ import 'features/thread/data/datasources/thread_local_datasource.dart';
 import 'features/thread/domain/usecases/thread_usecases.dart';
 import 'features/thread/presentation/provider/thread_provider.dart';
 
+import 'features/feed/data/datasources/feed_local_datasource.dart';
+import 'features/feed/data/repositories/feed_repository_impl.dart';
+import 'features/feed/domain/usecases/get_feed_usecase.dart';
+import 'features/feed/presentation/provider/feed_provider.dart';
+
+import 'features/notifications/data/datasources/notifications_local_datasource.dart';
+import 'features/notifications/data/repositories/notifications_repository_impl.dart';
+import 'features/notifications/domain/usecases/get_notifications_usecase.dart';
+import 'features/notifications/domain/usecases/mark_all_read_usecase.dart';
+import 'features/notifications/presentation/provider/notifications_provider.dart';
+
+import 'features/user_profile/data/datasources/user_profile_local_datasource.dart';
+import 'features/user_profile/data/repositories/user_profile_repository_impl.dart';
+import 'features/user_profile/domain/usecases/get_user_profile_usecase.dart';
+import 'features/user_profile/presentation/provider/user_profile_provider.dart';
+
+import 'features/hostellite_exchange/data/datasources/hostellite_local_datasource.dart';
+import 'features/hostellite_exchange/data/repositories/hostellite_repository_impl.dart';
+import 'features/hostellite_exchange/domain/usecases/get_items_usecase.dart';
+import 'features/hostellite_exchange/presentation/provider/hostellite_provider.dart';
+
 void main() {
   runApp(const CampusConnectApp());
 }
@@ -65,8 +86,16 @@ class CampusConnectApp extends StatelessWidget {
     final cpRepo      = CreatePostRepositoryImpl(cpSource);
     final ppSource    = ProjectPartnersLocalDataSource();
     final ppRepo      = ProjectPartnersRepositoryImpl(ppSource);
-    final threadSource = ThreadLocalDataSource();
-    final threadRepo   = ThreadRepositoryImpl(threadSource);
+    final threadSource  = ThreadLocalDataSource();
+    final threadRepo    = ThreadRepositoryImpl(threadSource);
+    final feedSource    = FeedLocalDataSourceImpl();
+    final feedRepo      = FeedRepositoryImpl(feedSource);
+    final notifSource   = NotificationsLocalDataSourceImpl();
+    final notifRepo     = NotificationsRepositoryImpl(notifSource);
+    final upSource      = UserProfileLocalDataSourceImpl();
+    final upRepo        = UserProfileRepositoryImpl(upSource);
+    final heSource      = HostelliteLocalDataSourceImpl();
+    final heRepo        = HostelliteRepositoryImpl(heSource);
 
     return MultiProvider(
       providers: [
@@ -117,6 +146,27 @@ class CampusConnectApp extends StatelessWidget {
             repo:          cartRepo,
             addUsecase:    AddToCartUsecase(cartRepo),
             removeUsecase: RemoveFromCartUsecase(cartRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => FeedProvider(
+            getFeedUsecase: GetFeedUsecase(feedRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => NotificationsProvider(
+            getUsecase:      GetNotificationsUsecase(notifRepo),
+            markReadUsecase: MarkAllReadUsecase(notifRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => UserProfileProvider(
+            usecase: GetUserProfileUsecase(upRepo),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => HostelliteProvider(
+            usecase: GetExchangeItemsUsecase(heRepo),
           ),
         ),
       ],
