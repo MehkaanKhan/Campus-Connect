@@ -3,7 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/post_entity.dart';
 import '../provider/feed_provider.dart';
-import '../../../../core/constants/app_theme.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/size_config.dart';
 
 class PostCard extends StatelessWidget {
   final PostEntity post;
@@ -12,42 +13,42 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 0),
+            padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _PostHeader(post: post),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
                 _FlairChip(label: post.flair, color: post.flairColor),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Text(
                   post.title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Inter',
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
                     height: 1.3,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   post.excerpt,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Inter',
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     color: AppColors.textSecondary,
                     height: 1.5,
                   ),
@@ -56,28 +57,28 @@ class PostCard extends StatelessWidget {
             ),
           ),
           if (post.imageUrl != null) ...[
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             ClipRRect(
               borderRadius: const BorderRadius.vertical(bottom: Radius.circular(0)),
               child: post.imageUrl!.startsWith('http')
                   ? Image.network(
                       post.imageUrl!,
                       width: double.infinity,
-                      height: 180,
+                      height: 180.h,
                       fit: BoxFit.cover,
                       errorBuilder: (_, _, _) => _imagePlaceholder(),
                     )
                   : Image.asset(
                       post.imageUrl!,
                       width: double.infinity,
-                      height: 180,
+                      height: 180.h,
                       fit: BoxFit.cover,
                       errorBuilder: (_, _, _) => _imagePlaceholder(),
                     ),
             ),
           ],
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+            padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 12.h),
             child: _PostActions(post: post),
           ),
         ],
@@ -87,9 +88,9 @@ class PostCard extends StatelessWidget {
 
   Widget _imagePlaceholder() => Container(
         width: double.infinity,
-        height: 180,
+        height: 180.h,
         color: AppColors.borderLight,
-        child: const Icon(Icons.image_outlined, size: 36, color: Color(0xFFCCCCC8)),
+        child: Icon(Icons.image_outlined, size: 36.w, color: AppColors.imagePlaceholder),
       );
 }
 
@@ -102,7 +103,7 @@ class _PostHeader extends StatelessWidget {
     return Row(
       children: [
         CircleAvatar(
-          radius: 17,
+          radius: 17.r,
           backgroundColor: AppColors.primary,
           backgroundImage: post.authorAvatarUrl != null
               ? NetworkImage(post.authorAvatarUrl!)
@@ -110,29 +111,29 @@ class _PostHeader extends StatelessWidget {
           child: post.authorAvatarUrl == null
               ? Text(
                   post.authorName[0].toUpperCase(),
-                  style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.white, fontSize: 13.sp, fontWeight: FontWeight.bold),
                 )
               : null,
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 post.authorName,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Inter',
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
               ),
               Text(
                 post.timeAgo,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Inter',
-                  fontSize: 10,
+                  fontSize: 10.sp,
                   color: AppColors.textMuted,
                   letterSpacing: 0.2,
                 ),
@@ -140,7 +141,7 @@ class _PostHeader extends StatelessWidget {
             ],
           ),
         ),
-        const Icon(Icons.more_horiz, color: AppColors.textMuted, size: 20),
+        Icon(Icons.more_horiz, color: AppColors.textMuted, size: 20.w),
       ],
     );
   }
@@ -165,21 +166,21 @@ class _FlairChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(5.r),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(_icon, size: 11, color: AppColors.filterInactiveText),
-          const SizedBox(width: 4),
+          Icon(_icon, size: 11.w, color: AppColors.filterInactiveText),
+          SizedBox(width: 4.w),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 10,
+              fontSize: 10.sp,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.3,
               color: AppColors.filterInactiveText,
@@ -205,35 +206,35 @@ class _PostActions extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () => feed.toggleUpvote(post.id),
-          child: Icon(Icons.arrow_upward_rounded, size: 16, color: upColor),
+          child: Icon(Icons.arrow_upward_rounded, size: 16.w, color: upColor),
         ),
-        const SizedBox(width: 4),
+        SizedBox(width: 4.w),
         Text(
           '${post.upvotes}',
           style: TextStyle(
             fontFamily: 'Inter',
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w600,
             color: upColor,
           ),
         ),
-        const SizedBox(width: 4),
+        SizedBox(width: 4.w),
         GestureDetector(
           onTap: () => feed.toggleDownvote(post.id),
-          child: Icon(Icons.arrow_downward_rounded, size: 16, color: downColor),
+          child: Icon(Icons.arrow_downward_rounded, size: 16.w, color: downColor),
         ),
-        const SizedBox(width: 20),
+        SizedBox(width: 20.w),
         GestureDetector(
           onTap: () => context.push('/thread'),
           child: Row(
             children: [
-              const Icon(Icons.chat_bubble_outline, size: 15, color: AppColors.textMuted),
-              const SizedBox(width: 5),
+              Icon(Icons.chat_bubble_outline, size: 15.w, color: AppColors.textMuted),
+              SizedBox(width: 5.w),
               Text(
                 '${post.commentCount}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Inter',
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   color: AppColors.textMuted,
                 ),
               ),
@@ -241,7 +242,7 @@ class _PostActions extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        const Icon(Icons.share_outlined, size: 17, color: AppColors.textMuted),
+        Icon(Icons.share_outlined, size: 17.w, color: AppColors.textMuted),
       ],
     );
   }

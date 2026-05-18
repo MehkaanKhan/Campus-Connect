@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../provider/settings_provider.dart';
+import '../widgets/settings_tile.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -12,12 +13,12 @@ class SettingsPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: [
-          _SettingsTile(
+          SettingsTile(
             icon: Icons.person_outline,
             title: 'Change Profile',
             onTap: () => context.push('/settings/profile'),
           ),
-          _SettingsTile(
+          SettingsTile(
             icon: Icons.language_outlined,
             title: 'Language',
             trailing: Text(
@@ -26,7 +27,7 @@ class SettingsPage extends StatelessWidget {
             ),
             onTap: () => context.push('/settings/language'),
           ),
-          _SettingsTile(
+          SettingsTile(
             icon: Icons.notifications_outlined,
             title: 'Notifications',
             trailing: Switch.adaptive(
@@ -37,30 +38,6 @@ class SettingsPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _SettingsTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final Widget? trailing;
-  final VoidCallback onTap;
-
-  const _SettingsTile({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-    this.trailing,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      trailing: trailing ?? const Icon(Icons.chevron_right),
-      onTap: onTap,
     );
   }
 }

@@ -16,16 +16,16 @@ class ProfileSetupModel extends ProfileSetupEntity {
 
   factory ProfileSetupModel.fromJson(Map<String, dynamic> json) =>
       ProfileSetupModel(
-        fullName: json['fullName'] as String,
+        fullName: json['full_name'] as String,
         department: json['department'] as String,
         semester: json['semester'] as String,
-        photoPath: json['photoPath'] as String?,
+        photoPath: json['photo_path'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
-        'fullName': fullName,
+        'full_name': fullName,
         'department': department,
         'semester': semester,
-        'photoPath': photoPath,
+        'photo_path': photoPath,
       };
 }

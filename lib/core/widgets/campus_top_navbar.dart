@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_assets.dart';
+import '../constants/app_colors.dart';
 
 class CampusTopNavBar extends StatelessWidget {
   final VoidCallback? onBack;
@@ -9,10 +10,10 @@ class CampusTopNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: AppColors.cardBg,
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF0F0F0), width: 1),
+          bottom: BorderSide(color: AppColors.navBorderTop, width: 1),
         ),
       ),
       padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
@@ -23,12 +24,12 @@ class CampusTopNavBar extends StatelessWidget {
             if (onBack != null) ...[
               GestureDetector(
                 onTap: onBack,
-                child: const Padding(
-                  padding: EdgeInsets.only(right: 10),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10),
                   child: Icon(
                     Icons.arrow_back_ios_rounded,
                     size: 20,
-                    color: Color(0xFF1A1A1A),
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ),
@@ -38,13 +39,13 @@ class CampusTopNavBar extends StatelessWidget {
               children: [
                 Image.asset(AppAssets.headerLogo, width: 24, height: 24),
                 const SizedBox(width: 10),
-                const Text(
+                Text(
                   'Campus Connect',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A1A1A),
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ],

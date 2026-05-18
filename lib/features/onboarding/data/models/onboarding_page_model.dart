@@ -11,12 +11,12 @@ class OnboardingPageModel extends OnboardingPageEntity {
       OnboardingPageModel(
         title: json['title'] as String,
         subtitle: json['subtitle'] as String,
-        imagePath: json['imagePath'] as String,
+        imagePath: json['image_path'] as String,
       );
 
   Map<String, dynamic> toJson() => {
         'title': title,
         'subtitle': subtitle,
-        'imagePath': imagePath,
+        'image_path': imagePath,
       };
 }

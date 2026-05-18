@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../constants/app_colors.dart';
 
 enum BottomNavTab { home, explore, create, alerts, profile }
 
@@ -12,40 +13,20 @@ class CampusBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFEEEEE8), width: 1)),
+      decoration: BoxDecoration(
+        color: AppColors.cardBg,
+        border: Border(top: BorderSide(color: AppColors.border, width: 1)),
       ),
       child: SizedBox(
         height: 64,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _NavItem(
-                icon: Icons.home_outlined,
-                label: 'HOME',
-                isActive: activeTab == BottomNavTab.home,
-                onTap: () => context.go('/feed')),
-            _NavItem(
-                icon: Icons.explore_outlined,
-                label: 'EXPLORE',
-                isActive: activeTab == BottomNavTab.explore,
-                onTap: () => context.go('/explore')),
-            _NavItem(
-                icon: Icons.add_circle_outline,
-                label: 'CREATE',
-                isActive: activeTab == BottomNavTab.create,
-                onTap: () => context.go('/create-post')),
-            _NavItem(
-                icon: Icons.notifications_none_rounded,
-                label: 'ALERTS',
-                isActive: activeTab == BottomNavTab.alerts,
-                onTap: () => context.go('/notifications')),
-            _NavItem(
-                icon: Icons.person_outline_rounded,
-                label: 'PROFILE',
-                isActive: activeTab == BottomNavTab.profile,
-                onTap: () => context.go('/user-profile')),
+            _NavItem(icon: Icons.home_outlined,               label: 'HOME',    isActive: activeTab == BottomNavTab.home,    onTap: () => context.go('/feed')),
+            _NavItem(icon: Icons.explore_outlined,            label: 'EXPLORE', isActive: activeTab == BottomNavTab.explore, onTap: () => context.go('/explore')),
+            _NavItem(icon: Icons.add_circle_outline,          label: 'CREATE',  isActive: activeTab == BottomNavTab.create,  onTap: () => context.go('/create-post')),
+            _NavItem(icon: Icons.notifications_none_rounded,  label: 'ALERTS',  isActive: activeTab == BottomNavTab.alerts,  onTap: () => context.go('/notifications')),
+            _NavItem(icon: Icons.person_outline_rounded,      label: 'PROFILE', isActive: activeTab == BottomNavTab.profile, onTap: () => context.go('/user-profile')),
           ],
         ),
       ),
@@ -68,9 +49,7 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        isActive ? const Color(0xFF6B8F6B) : const Color(0xFF999990);
-
+    final color = isActive ? AppColors.sage : AppColors.navInactive;
     return GestureDetector(
       onTap: onTap,
       child: Column(

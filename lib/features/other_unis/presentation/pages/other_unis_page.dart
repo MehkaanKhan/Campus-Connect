@@ -1,12 +1,12 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/size_config.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
 import '../../../../core/widgets/app_loader.dart';
-import '../../domain/entities/other_uni_entity.dart';
 import '../provider/other_unis_provider.dart';
+import '../widgets/uni_overlay_modal.dart';
 
 class OtherUnisPage extends StatefulWidget {
   const OtherUnisPage({super.key});
@@ -32,7 +32,7 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
     super.dispose();
   }
 
-  void _showUniOverlay(BuildContext context, OtherUniEntity uni) {
+  void _showUniOverlay(BuildContext context, uni) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -46,7 +46,7 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
         );
       },
       pageBuilder: (ctx, anim, secondAnim) {
-        return _UniOverlayModal(uni: uni);
+        return UniOverlayModal(uni: uni);
       },
     );
   }
@@ -54,7 +54,7 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.pageBg,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CampusTopNavBar(
@@ -64,31 +64,31 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
       body: Column(
         children: [
           Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(16),
+            color: AppColors.cardBg,
+            padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Other Universities',
                   style: TextStyle(
                     fontFamily: 'Inter',
-                    fontSize: 24,
+                    fontSize: 24.sp,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1A1A1A),
+                    color: AppColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 TextField(
                   controller: _searchController,
                   onChanged: (val) => context.read<OtherUnisProvider>().search(val),
                   decoration: InputDecoration(
                     hintText: 'Search by name or region...',
-                    prefixIcon: const Icon(Icons.search, color: Color(0xFF94A3B8)),
+                    prefixIcon: Icon(Icons.search, color: AppColors.textMuted),
                     filled: true,
-                    fillColor: const Color(0xFFF1F5F9),
+                    fillColor: AppColors.filterInactiveBg,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                       borderSide: BorderSide.none,
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 0),
@@ -100,21 +100,17 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
           Expanded(
             child: Consumer<OtherUnisProvider>(
               builder: (context, provider, child) {
-                if (provider.isLoading) {
-                  return const Center(child: AppLoader());
-                }
-
+                if (provider.isLoading) return const Center(child: AppLoader());
                 if (provider.unis.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Text(
                       'No universities found.',
-                      style: TextStyle(color: Color(0xFF94A3B8)),
+                      style: TextStyle(color: AppColors.textMuted, fontSize: 13.sp),
                     ),
                   );
                 }
-
                 return GridView.builder(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16.w),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 0.85,
@@ -128,9 +124,9 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
                       onTap: () => _showUniOverlay(context, uni),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                          color: AppColors.cardBg,
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(color: AppColors.border),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.03),
@@ -145,54 +141,54 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
                             Hero(
                               tag: 'uni_logo_${uni.id}',
                               child: CircleAvatar(
-                                radius: 35,
+                                radius: 35.r,
                                 backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                                 child: Text(
                                   uni.logoText,
-                                  style: const TextStyle(
-                                    fontSize: 28,
+                                  style: TextStyle(
+                                    fontSize: 28.sp,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.primary,
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 12),
+                            SizedBox(height: 12.h),
                             Text(
                               uni.name,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'Inter',
-                                fontSize: 16,
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF1A1A1A),
+                                color: AppColors.textPrimary,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            SizedBox(height: 4.h),
                             Text(
                               uni.region,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'Inter',
-                                fontSize: 12,
-                                color: Color(0xFF64748B),
+                                fontSize: 12.sp,
+                                color: AppColors.textSecondary,
                               ),
                             ),
-                            const SizedBox(height: 12),
+                            SizedBox(height: 12.h),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF1F5F9),
-                                borderRadius: BorderRadius.circular(20),
+                                color: AppColors.filterInactiveBg,
+                                borderRadius: BorderRadius.circular(20.r),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.people, size: 14, color: AppColors.secondary),
-                                  const SizedBox(width: 4),
+                                  Icon(Icons.people, size: 14.w, color: AppColors.secondary),
+                                  SizedBox(width: 4.w),
                                   Text(
                                     '${uni.memberCount}',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontFamily: 'Inter',
-                                      fontSize: 12,
+                                      fontSize: 12.sp,
                                       fontWeight: FontWeight.w600,
                                       color: AppColors.secondary,
                                     ),
@@ -207,165 +203,6 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
                   },
                 );
               },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Modal overlay – matches Figma CSS specs exactly
-// ─────────────────────────────────────────────────────────────────────────────
-class _UniOverlayModal extends StatelessWidget {
-  final OtherUniEntity uni;
-
-  const _UniOverlayModal({required this.uni});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: Stack(
-        children: [
-          // ── Blurred background ──────────────────────────────────────────
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: () => Navigator.of(context).pop(),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                child: Container(
-                  color: const Color(0xFFF2F2EF).withValues(alpha: 0.6),
-                ),
-              ),
-            ),
-          ),
-
-          // ── Centered modal card ─────────────────────────────────────────
-          Center(
-            child: Container(
-              width: 358,
-              constraints: const BoxConstraints(maxWidth: 448),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: const Color(0xFFC3C8BC)),
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.25),
-                    blurRadius: 50,
-                    spreadRadius: -12,
-                    offset: const Offset(0, 25),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.all(48),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // ── University icon ─────────────────────────────────────
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFEBEBE8),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.account_balance_rounded,
-                        size: 28,
-                        color: Color(0xFF98A895),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // ── University name ─────────────────────────────────────
-                  Text(
-                    uni.name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400,
-                      height: 32 / 24,
-                      color: Color(0xFF1A1C19),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // ── Description ─────────────────────────────────────────
-                  Text(
-                    uni.description,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      height: 24 / 16,
-                      color: Color(0xFF434940),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // ── Member stats ────────────────────────────────────────
-                  Text(
-                    '${uni.memberCount} members · ${uni.region}',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      height: 24 / 16,
-                      color: Color(0xFF1A1C19),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // ── Explore button ──────────────────────────────────────
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        context.push('/other-unis/profile', extra: uni);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF18181B),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 16,
-                        ),
-                        elevation: 0,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.open_in_new_rounded, size: 13.33, color: Colors.white),
-                          SizedBox(width: 8),
-                          Text(
-                            'Explore University',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              height: 24 / 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
         ],

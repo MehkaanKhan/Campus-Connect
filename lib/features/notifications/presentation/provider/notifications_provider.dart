@@ -21,9 +21,9 @@ class NotificationsProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   NotificationsFilter get filter => _filter;
-  int get unreadCount => _all.where((n) => !n.isRead).length;
+  int get unreadCount => _all.where((n) => !n.isRead).length; // live -> acounted directly from all
 
-  List<NotificationEntity> get filtered {
+  List<NotificationEntity> get filtered { //  you never need to remember to re-filter after marking as read — it's always correct.
     switch (_filter) {
       case NotificationsFilter.comments:
         return _all.where((n) => n.type == NotificationType.comment).toList();
@@ -49,7 +49,7 @@ class NotificationsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> markAllRead() async {
+  Future<void> markAllRead() async { // creates a new list of object read
     await _markReadUsecase();
     _all = _all.map((n) => n.copyWith(isRead: true)).toList();
     notifyListeners();

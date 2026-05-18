@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
+import 'core/utils/size_config.dart';
 
 import 'features/auth/data/datasources/auth_remote_datasource.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
@@ -198,6 +199,10 @@ class CampusConnectApp extends StatelessWidget {
         theme: AppTheme.light,
         routerConfig: appRouter,
         debugShowCheckedModeBanner: false,
+        builder: (context, child) {
+          SizeConfig.init(context);
+          return child!;
+        },
       ),
     );
   }

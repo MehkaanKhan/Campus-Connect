@@ -114,7 +114,7 @@ class _ComplaintFormPageState extends State<ComplaintFormPage> {
                   ),
                 ),
                 hint: const Text('Select a reason'),
-                value: _selectedReason,
+                initialValue: _selectedReason,
                 items: _reasons.map((r) {
                   return DropdownMenuItem(value: r, child: Text(r));
                 }).toList(),

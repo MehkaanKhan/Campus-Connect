@@ -8,14 +8,14 @@ class UserProfileProvider extends ChangeNotifier {
   UserProfileProvider({required GetUserProfileUsecase usecase}) : _usecase = usecase;
 
   UserProfileEntity? _profile;
-  bool _isLoading = false;
+  bool _isLoading = true;
   String? _error;
 
   UserProfileEntity? get profile => _profile;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  Future<void> load(String userId) async {
+  Future<void> load(String userId) async { // takes userId parameter so any user's profile can be loaded
     _isLoading = true;
     notifyListeners();
     try {
