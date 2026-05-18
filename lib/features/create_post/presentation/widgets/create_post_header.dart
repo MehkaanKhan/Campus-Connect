@@ -17,7 +17,13 @@ class CreatePostHeader extends StatelessWidget {
       child: Row(
         children: [
           GestureDetector(
-            onTap: () => context.go('/thread'),
+            onTap: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/feed');
+              }
+            },
             child: Icon(Icons.close, size: 22.w, color: AppColors.textPrimary),
           ),
           Expanded(

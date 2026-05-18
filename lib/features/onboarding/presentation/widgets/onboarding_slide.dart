@@ -16,18 +16,21 @@ class OnboardingSlide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 12.h),
-          Expanded(
-            flex: 6,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(height: 12.h),
+        Expanded(
+          flex: 6,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: _HeroImageCard(imagePath: imagePath),
           ),
-          SizedBox(height: 28.h),
-          Text(
+        ),
+        SizedBox(height: 18.h),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          child: Text(
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -39,8 +42,11 @@ class OnboardingSlide extends StatelessWidget {
               color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 14.h),
-          Text(
+        ),
+        SizedBox(height: 10.h),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          child: Text(
             subtitle,
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -50,9 +56,9 @@ class OnboardingSlide extends StatelessWidget {
               color: AppColors.textCaption,
             ),
           ),
-          SizedBox(height: 28.h),
-        ],
-      ),
+        ),
+        SizedBox(height: 16.h),
+      ],
     );
   }
 }
@@ -63,17 +69,15 @@ class _HeroImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(22.r),
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
-          ),
-        );
-      },
+    return AspectRatio(
+      aspectRatio: 1.0,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(22.r),
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.contain,
+        ),
+      ),
     );
   }
 }

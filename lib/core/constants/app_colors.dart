@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // ── Brand ────────────────────────────────────────────────
-  static const primary    = Color(0xFF1E3A8A); // brand blue — ThemeData seed, buttons
-  static const secondary  = Color(0xFF3B82F6); // medium blue
+  static const primary    = Color(0xFF3D5C3D); // brand sage green — ThemeData seed, buttons
+  static const secondary  = Color(0xFF6B8F6B); // medium sage green
   static const accent     = Color(0xFFF59E0B); // amber — cart, highlights
   static const sage       = Color(0xFF6B8F6B); // sage green — active states, carpool chips
   static const sageDark   = Color(0xFF3D5C3D);
