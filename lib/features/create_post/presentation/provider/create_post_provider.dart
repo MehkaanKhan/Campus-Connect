@@ -42,15 +42,32 @@ class CreatePostProvider extends ChangeNotifier {
   CreatePostStatus _status = CreatePostStatus.idle;
   CreatePostStatus get status => _status;
 
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
   bool get isFormValid => _content.trim().isNotEmpty;
 
+  void reset() {
+    _activeTab = PostTab.text;
+    _content = '';
+    _selectedFlair = null;
+    _status = CreatePostStatus.idle;
+    _errorMessage = null;
+    notifyListeners();
+  }
+
   // ── Actions ──
-  Future<void> submitPost() async {
-    if (!isFormValid) return;
+  Future<String?> submitPost() async {
+    if (!isFormValid) {
+      _errorMessage = 'Post content cannot be empty';
+      notifyListeners();
+      return null;
+    }
     _status = CreatePostStatus.loading;
+    _errorMessage = null;
     notifyListeners();
     try {
-      await submitPostUsecase(
+      final postId = await submitPostUsecase(
         CreatePostEntity(
           title: '',
           content: _content.trim(),
@@ -58,9 +75,14 @@ class CreatePostProvider extends ChangeNotifier {
         ),
       );
       _status = CreatePostStatus.success;
-    } catch (_) {
+      notifyListeners();
+      return postId;
+    } catch (e) {
+      print('SubmitPost Error: $e');
+      _errorMessage = e.toString();
       _status = CreatePostStatus.error;
+      notifyListeners();
+      return null;
     }
-    notifyListeners();
   }
 }

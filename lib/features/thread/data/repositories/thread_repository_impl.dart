@@ -7,13 +7,13 @@ class ThreadRepositoryImpl implements ThreadRepository {
   const ThreadRepositoryImpl(this.remoteSource);
 
   @override
-  Future<ThreadEntity> getThread() => remoteSource.getThread('1'); // '1' is stub ID until UI passes real ID
+  Future<ThreadEntity> getThread(String postId) => remoteSource.getThread(postId);
 
   @override
-  Future<void> postComment(String content) =>
-      remoteSource.postComment('1', content); // '1' is stub ID
+  Future<void> postComment(String postId, String content) =>
+      remoteSource.postComment(postId, content);
 
   @override
-  Future<void> toggleAllowReplies(bool value) =>
-      remoteSource.toggleAllowReplies('1', value); // '1' is stub ID
+  Future<void> toggleAllowReplies(String postId, bool value) =>
+      remoteSource.toggleAllowReplies(postId, value);
 }

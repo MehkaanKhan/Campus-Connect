@@ -5,7 +5,8 @@ import '../../../../core/utils/size_config.dart';
 import '../provider/create_post_provider.dart';
 
 class CreatePostInputCard extends StatelessWidget {
-  const CreatePostInputCard({super.key});
+  final TextEditingController controller;
+  const CreatePostInputCard({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class CreatePostInputCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _AvatarRow(provider: provider),
+          _AvatarRow(provider: provider, controller: controller),
           SizedBox(height: 16.h),
           _FlairRow(provider: provider),
         ],
@@ -29,7 +30,8 @@ class CreatePostInputCard extends StatelessWidget {
 
 class _AvatarRow extends StatelessWidget {
   final CreatePostProvider provider;
-  const _AvatarRow({required this.provider});
+  final TextEditingController controller;
+  const _AvatarRow({required this.provider, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +53,9 @@ class _AvatarRow extends StatelessWidget {
         SizedBox(width: 14.w),
         Expanded(
           child: TextField(
+            controller: controller,
             maxLines: null,
             maxLength: 280,
-            onChanged: provider.setContent,
             autofocus: false,
             style: TextStyle(
               fontSize: 17.sp,

@@ -40,10 +40,22 @@ class CreatePostHeader extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () async {
-              await provider.submitPost();
-              if (context.mounted &&
-                  provider.status == CreatePostStatus.success) {
-                context.go('/thread');
+              if (provider.status == CreatePostStatus.loading) return;
+
+              final postId = await provider.submitPost();
+
+              if (!context.mounted) return;
+
+              if (postId != null && provider.status == CreatePostStatus.success) {
+                context.go('/thread?id=$postId');
+              } else {
+                final error = provider.errorMessage ?? 'An unknown error occurred';
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(error),
+                    backgroundColor: AppColors.negativeVote,
+                  ),
+                );
               }
             },
             child: Container(

@@ -39,7 +39,13 @@ final appRouter = GoRouter(
     GoRoute(path: '/create-post',          builder: (ctx, _) => const CreatePostPage()),
     GoRoute(path: '/explore',              builder: (ctx, _) => const ExploreHubPage()),
     GoRoute(path: '/project-partners',     builder: (ctx, _) => const ProjectPartnersPage()),
-    GoRoute(path: '/thread',               builder: (ctx, _) => const ThreadPage()),
+    GoRoute(
+      path: '/thread',
+      builder: (ctx, state) {
+        final postId = state.uri.queryParameters['id'] ?? '';
+        return ThreadPage(postId: postId);
+      },
+    ),
     GoRoute(path: '/feed',                 builder: (ctx, _) => const FeedPage()),
     GoRoute(path: '/carpool',              builder: (ctx, _) => const CarpoolFeedPage()),
     GoRoute(path: '/notifications',        builder: (ctx, _) => const NotificationsPage()),

@@ -7,6 +7,6 @@ class CreatePostRepositoryImpl implements CreatePostRepository {
   const CreatePostRepositoryImpl(this.remoteSource);
 
   @override
-  Future<void> submitPost(CreatePostEntity post) =>
+  Future<String> submitPost(CreatePostEntity post) =>
       remoteSource.submitPost(post);
 }

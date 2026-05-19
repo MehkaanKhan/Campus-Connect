@@ -13,12 +13,13 @@ class ThreadProvider extends ChangeNotifier {
     required this.getThreadUsecase,
     required this.postCommentUsecase,
     required this.toggleAllowRepliesUsecase,
-  }) {
-    _loadData();
-  }
+  });
 
   ThreadEntity? _thread;
   ThreadEntity? get thread => _thread;
+
+  String? _activePostId;
+  String? get activePostId => _activePostId;
 
   bool _allowReplies = true;
   bool get allowReplies => _allowReplies;
@@ -29,11 +30,12 @@ class ThreadProvider extends ChangeNotifier {
   ThreadStatus _status = ThreadStatus.idle;
   ThreadStatus get status => _status;
 
-  Future<void> _loadData() async {
+  Future<void> loadThread(String postId) async {
+    _activePostId = postId;
     _status = ThreadStatus.loading;
     notifyListeners();
     try {
-      _thread = await getThreadUsecase();
+      _thread = await getThreadUsecase(postId);
       _allowReplies = _thread?.allowReplies ?? true;
       _status = ThreadStatus.success;
     } catch (_) {
@@ -47,23 +49,33 @@ class ThreadProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleReplies(bool val) {
-    _allowReplies = val;
-    notifyListeners();
-    toggleAllowRepliesUsecase(val);
-  }
-
   Future<void> submitComment() async {
-    if (_commentDraft.trim().isEmpty) return;
+    if (_commentDraft.trim().isEmpty || _activePostId == null) return;
     _status = ThreadStatus.loading;
     notifyListeners();
     try {
-      await postCommentUsecase(_commentDraft.trim());
+      await postCommentUsecase(_activePostId!, _commentDraft.trim());
       _commentDraft = '';
       _status = ThreadStatus.success;
+      
+      // Reload thread to show new comment
+      await loadThread(_activePostId!);
     } catch (_) {
       _status = ThreadStatus.error;
     }
     notifyListeners();
+  }
+
+  Future<void> toggleReplies(bool val) async {
+    if (_activePostId == null) return;
+    _allowReplies = val;
+    notifyListeners();
+    try {
+      await toggleAllowRepliesUsecase(_activePostId!, val);
+    } catch (_) {
+      // Revert if error
+      _allowReplies = !_allowReplies;
+      notifyListeners();
+    }
   }
 }

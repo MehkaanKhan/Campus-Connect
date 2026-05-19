@@ -10,7 +10,8 @@ import '../widgets/thread_comment_tile.dart';
 import '../widgets/thread_comment_input_bar.dart';
 
 class ThreadPage extends StatefulWidget {
-  const ThreadPage({super.key});
+  final String postId;
+  const ThreadPage({super.key, required this.postId});
 
   @override
   State<ThreadPage> createState() => _ThreadPageState();
@@ -18,6 +19,16 @@ class ThreadPage extends StatefulWidget {
 
 class _ThreadPageState extends State<ThreadPage> {
   final _commentController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.postId.isNotEmpty) {
+        context.read<ThreadProvider>().loadThread(widget.postId);
+      }
+    });
+  }
 
   @override
   void dispose() {

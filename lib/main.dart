@@ -52,7 +52,7 @@ import 'features/thread/data/repositories/thread_repository_impl.dart';
 import 'features/thread/domain/usecases/thread_usecases.dart';
 import 'features/thread/presentation/provider/thread_provider.dart';
 
-import 'features/feed/data/datasources/feed_local_datasource.dart';
+import 'features/feed/data/datasources/feed_remote_datasource.dart';
 import 'features/feed/data/repositories/feed_repository_impl.dart';
 import 'features/feed/domain/usecases/get_feed_usecase.dart';
 import 'features/feed/presentation/provider/feed_provider.dart';
@@ -130,9 +130,11 @@ class CampusConnectApp extends StatelessWidget {
     final threadRemote = ThreadRemoteDataSourceImpl();
     final threadRepo   = ThreadRepositoryImpl(threadRemote);
 
+    // ── Feed ──
+    final feedRemote   = FeedRemoteDataSourceImpl();
+    final feedRepo     = FeedRepositoryImpl(feedRemote);
+
     // ── Existing Locals (Not yet converted) ──
-    final feedSource   = FeedLocalDataSourceImpl();
-    final feedRepo     = FeedRepositoryImpl(feedSource);
     final notifSource  = NotificationsLocalDataSourceImpl();
     final notifRepo    = NotificationsRepositoryImpl(notifSource);
     final upSource     = UserProfileLocalDataSourceImpl();

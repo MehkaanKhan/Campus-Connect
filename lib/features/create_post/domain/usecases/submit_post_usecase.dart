@@ -5,5 +5,5 @@ class SubmitPostUsecase {
   final CreatePostRepository repository;
   const SubmitPostUsecase(this.repository);
 
-  Future<void> call(CreatePostEntity post) => repository.submitPost(post);
+  Future<String> call(CreatePostEntity post) => repository.submitPost(post);
 }

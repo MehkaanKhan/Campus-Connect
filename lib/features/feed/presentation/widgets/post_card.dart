@@ -12,13 +12,15 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.border),
-      ),
+    return GestureDetector(
+      onTap: () => context.push('/thread?id=${post.id}'),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: AppColors.border),
+        ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -83,6 +85,7 @@ class PostCard extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 
@@ -225,7 +228,7 @@ class _PostActions extends StatelessWidget {
         ),
         SizedBox(width: 20.w),
         GestureDetector(
-          onTap: () => context.push('/thread'),
+          onTap: () => context.push('/thread?id=${post.id}'),
           child: Row(
             children: [
               Icon(Icons.chat_bubble_outline, size: 15.w, color: AppColors.textMuted),
