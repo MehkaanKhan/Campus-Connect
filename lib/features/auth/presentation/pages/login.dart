@@ -67,7 +67,8 @@ class _LoginPageState extends State<LoginPage> {
                   keyboardType: TextInputType.emailAddress,
                   validator: (v) {
                     if (v == null || v.isEmpty) return 'Enter your email';
-                    if (!v.contains('@')) return 'Enter a valid email';
+                    final eduEmail = RegExp(r'^[^@]+@[^@]+\.edu(\.[a-z]{2,})?$', caseSensitive: false);
+                    if (!eduEmail.hasMatch(v.trim())) return 'Only university .edu emails are allowed';
                     return null;
                   },
                 ),

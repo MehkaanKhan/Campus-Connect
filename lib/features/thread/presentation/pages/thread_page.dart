@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
@@ -43,9 +44,11 @@ class _ThreadPageState extends State<ThreadPage> {
 
     return Scaffold(
       backgroundColor: AppColors.altPageBg,
+      bottomNavigationBar: const CampusBottomNavBar(activeTab: BottomNavTab.home),
+      bottomSheet: ThreadCommentInputBar(controller: _commentController),
       body: Column(
         children: [
-          const CampusTopNavBar(),
+          CampusTopNavBar(onBack: () => context.pop()),
           Expanded(
             child: thread == null
                 ? const Center(
@@ -67,13 +70,6 @@ class _ThreadPageState extends State<ThreadPage> {
                     ],
                   ),
           ),
-        ],
-      ),
-      bottomSheet: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ThreadCommentInputBar(controller: _commentController),
-          const CampusBottomNavBar(activeTab: BottomNavTab.home),
         ],
       ),
     );

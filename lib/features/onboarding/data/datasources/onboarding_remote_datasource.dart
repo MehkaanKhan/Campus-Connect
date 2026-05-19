@@ -30,10 +30,11 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
 
   @override
   Future<void> markOnboardingSeen() async {
-    final userId = SupabaseService.uid;
+    final user = SupabaseService.currentUser;
+    if (user == null) return; // not authenticated yet; flag is set post-signup
     await _client
         .from('profiles')
         .update({'onboarding_seen': true})
-        .eq('id', userId);
+        .eq('id', user.id);
   }
 }

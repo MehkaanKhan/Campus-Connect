@@ -20,7 +20,7 @@ create table public.profiles (
   updated_at       timestamptz not null default now(),
 
   -- Enforce .edu email addresses at the database level
-  constraint email_must_be_edu check (email ~* '^[^@]+@[^@]+\\.edu(\\.[a-z]{2,})?$')
+  constraint email_must_be_edu check (email ~* '^[^@]+@[^@]+\.edu(\.[a-z]{2,})?$')
 );
 
 -- Index for fast university-based lookups (other unis feed)

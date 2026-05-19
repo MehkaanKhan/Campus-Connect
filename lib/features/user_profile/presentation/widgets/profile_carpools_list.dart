@@ -9,8 +9,15 @@ class ProfileCarpoolsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (carpools.isEmpty) {
-      return Center(
-        child: Text('No carpools joined yet', style: TextStyle(color: AppColors.textMuted, fontSize: 13.sp)),
+      return CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverFillRemaining(
+            child: Center(
+              child: Text('No carpools joined yet', style: TextStyle(color: AppColors.textMuted, fontSize: 13.sp)),
+            ),
+          ),
+        ],
       );
     }
     return ListView.builder(

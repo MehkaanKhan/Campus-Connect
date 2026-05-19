@@ -5,7 +5,6 @@ import '../../../../core/utils/size_config.dart';
 import '../../../../core/widgets/app_loader.dart';
 import '../provider/user_profile_provider.dart';
 import 'profile_card.dart';
-import 'profile_tab_bar_delegate.dart';
 import 'profile_posts_list.dart';
 import 'profile_carpools_list.dart';
 
@@ -16,19 +15,65 @@ class ProfileBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<UserProfileProvider>();
+
     if (provider.isLoading) return const AppLoader();
+
     if (provider.profile == null) {
       return Center(
-        child: Text('Profile not found', style: TextStyle(color: AppColors.textMuted, fontSize: 13.sp)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.person_outline, size: 48.w, color: AppColors.imagePlaceholder),
+            SizedBox(height: 12.h),
+            Text(
+              provider.error != null ? 'Failed to load profile' : 'Profile not found',
+              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+            ),
+            if (provider.error != null) ...[
+              SizedBox(height: 6.h),
+              Text(
+                provider.error!,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12.sp, color: AppColors.textMuted),
+              ),
+            ],
+          ],
+        ),
       );
     }
+
     final p = provider.profile!;
+
+    final tabBar = TabBar(
+      controller: tabController,
+      labelStyle: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w700,
+      ),
+      unselectedLabelStyle: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w400,
+      ),
+      labelColor: AppColors.textPrimary,
+      unselectedLabelColor: AppColors.textMuted,
+      indicatorColor: AppColors.sage,
+      indicatorWeight: 2.5,
+      dividerColor: AppColors.border,
+      tabs: const [
+        Tab(text: 'Posts'),
+        Tab(text: 'Reactions'),
+        Tab(text: 'Carpools'),
+      ],
+    );
+
     return NestedScrollView(
-      headerSliverBuilder: (ctx, _) => [
+      headerSliverBuilder: (context, innerBoxIsScrolled) => [
         SliverToBoxAdapter(child: ProfileCard(profile: p)),
         SliverPersistentHeader(
           pinned: true,
-          delegate: ProfileTabBarDelegate(tabController),
+          delegate: _TabBarDelegate(tabBar),
         ),
       ],
       body: TabBarView(
@@ -41,4 +86,26 @@ class ProfileBody extends StatelessWidget {
       ),
     );
   }
+}
+
+class _TabBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabBar tabBar;
+  _TabBarDelegate(this.tabBar);
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
+
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: AppColors.cardBg,
+      child: tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_TabBarDelegate oldDelegate) => false;
 }

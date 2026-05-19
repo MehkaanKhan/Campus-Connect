@@ -11,8 +11,15 @@ class ProfilePostsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (posts.isEmpty) {
-      return Center(
-        child: Text(emptyLabel, style: TextStyle(color: AppColors.textMuted, fontSize: 13.sp)),
+      return CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverFillRemaining(
+            child: Center(
+              child: Text(emptyLabel, style: TextStyle(color: AppColors.textMuted, fontSize: 13.sp)),
+            ),
+          ),
+        ],
       );
     }
     return ListView.builder(
@@ -38,6 +45,7 @@ class ProfilePostCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.cardBg,
         borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: AppColors.border, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

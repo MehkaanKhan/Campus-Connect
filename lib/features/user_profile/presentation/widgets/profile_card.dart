@@ -11,15 +11,18 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.cardBg,
-      padding: EdgeInsets.fromLTRB(24.w, 28.h, 24.w, 22.h),
+      decoration: BoxDecoration(
+        color: AppColors.cardBg,
+        border: Border(bottom: BorderSide(color: AppColors.border, width: 1)),
+      ),
+      padding: EdgeInsets.fromLTRB(24.w, 18.h, 24.w, 16.h),
       child: Column(
         children: [
           Stack(
             alignment: Alignment.bottomRight,
             children: [
               CircleAvatar(
-                radius: 50.r,
+                radius: 44.r,
                 backgroundColor: AppColors.avatarBg,
                 backgroundImage: profile.avatarUrl != null
                     ? NetworkImage(profile.avatarUrl!)
@@ -28,7 +31,7 @@ class ProfileCard extends StatelessWidget {
                     ? Text(
                         profile.name[0].toUpperCase(),
                         style: TextStyle(
-                          fontSize: 38.sp,
+                          fontSize: 32.sp,
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary,
                         ),
@@ -46,7 +49,7 @@ class ProfileCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 10.h),
           Text(
             profile.name,
             textAlign: TextAlign.center,
@@ -67,10 +70,10 @@ class ProfileCard extends StatelessWidget {
               color: AppColors.textLabel,
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 10.h),
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
+            padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 8.h),
             decoration: BoxDecoration(
               color: AppColors.cardBg,
               borderRadius: BorderRadius.circular(12.r),
@@ -86,7 +89,7 @@ class ProfileCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 22.h),
+          SizedBox(height: 14.h),
           Row(
             children: [
               Expanded(

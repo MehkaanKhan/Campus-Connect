@@ -33,7 +33,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   void _onContinue(BuildContext context, OnboardingProvider provider) async {
     if (provider.isLastPage) {
-      await provider.completeOnboarding();
+      try {
+        await provider.completeOnboarding();
+      } catch (_) {}
       if (context.mounted) context.go('/login');
     } else {
       _pageController.nextPage(

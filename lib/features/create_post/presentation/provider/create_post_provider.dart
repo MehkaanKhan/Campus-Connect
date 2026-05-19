@@ -78,7 +78,7 @@ class CreatePostProvider extends ChangeNotifier {
       notifyListeners();
       return postId;
     } catch (e) {
-      print('SubmitPost Error: $e');
+      debugPrint('SubmitPost Error: $e');
       _errorMessage = e.toString();
       _status = CreatePostStatus.error;
       notifyListeners();
