@@ -1,14 +1,14 @@
 import '../../domain/entities/project_partner_entity.dart';
 import '../../domain/repositories/project_partners_repository.dart';
-import '../datasources/project_partners_local_datasource.dart';
+import '../datasources/project_partners_remote_datasource.dart';
 
 class ProjectPartnersRepositoryImpl implements ProjectPartnersRepository {
-  final ProjectPartnersLocalDataSource localSource;
-  const ProjectPartnersRepositoryImpl(this.localSource);
+  final ProjectPartnersRemoteDataSource remoteSource;
+  const ProjectPartnersRepositoryImpl(this.remoteSource);
 
   @override
-  List<ProjectPartnerEntity> getProjects() => localSource.getProjects();
+  Future<List<ProjectPartnerEntity>> getProjects() => remoteSource.getProjects();
 
   @override
-  List<String> getFilterChips() => localSource.getFilterChips();
+  Future<List<String>> getFilterChips() => remoteSource.getFilterChips();
 }

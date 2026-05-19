@@ -5,12 +5,12 @@ class GetProjectPartnersUsecase {
   final ProjectPartnersRepository repository;
   const GetProjectPartnersUsecase(this.repository);
 
-  List<ProjectPartnerEntity> call() => repository.getProjects();
+  Future<List<ProjectPartnerEntity>> call() => repository.getProjects();
 }
 
 class GetFilterChipsUsecase {
   final ProjectPartnersRepository repository;
   const GetFilterChipsUsecase(this.repository);
 
-  List<String> call() => repository.getFilterChips();
+  Future<List<String>> call() => repository.getFilterChips();
 }

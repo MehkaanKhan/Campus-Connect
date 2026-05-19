@@ -5,7 +5,7 @@ class GetThreadUsecase {
   final ThreadRepository repository;
   const GetThreadUsecase(this.repository);
 
-  ThreadEntity call() => repository.getThread();
+  Future<ThreadEntity> call() => repository.getThread();
 }
 
 class PostCommentUsecase {

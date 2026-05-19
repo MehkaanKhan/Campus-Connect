@@ -36,21 +36,25 @@ class _ThreadPageState extends State<ThreadPage> {
         children: [
           const CampusTopNavBar(),
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                ThreadPost(thread: thread),
-                ThreadDiscussionBar(
-                  commentCount: thread.commentCount,
-                  allowReplies: provider.allowReplies,
-                  onToggle: provider.toggleReplies,
-                ),
-                ...thread.comments.map(
-                  (c) => ThreadCommentTile(comment: c, isNested: false),
-                ),
-                const SizedBox(height: 80),
-              ],
-            ),
+            child: thread == null
+                ? const Center(
+                    child: CircularProgressIndicator(color: AppColors.primary),
+                  )
+                : ListView(
+                    padding: EdgeInsets.zero,
+                    children: [
+                      ThreadPost(thread: thread),
+                      ThreadDiscussionBar(
+                        commentCount: thread.commentCount,
+                        allowReplies: provider.allowReplies,
+                        onToggle: provider.toggleReplies,
+                      ),
+                      ...thread.comments.map(
+                        (c) => ThreadCommentTile(comment: c, isNested: false),
+                      ),
+                      const SizedBox(height: 80),
+                    ],
+                  ),
           ),
         ],
       ),

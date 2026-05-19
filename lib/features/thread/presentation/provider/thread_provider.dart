@@ -14,14 +14,13 @@ class ThreadProvider extends ChangeNotifier {
     required this.postCommentUsecase,
     required this.toggleAllowRepliesUsecase,
   }) {
-    _thread = getThreadUsecase();
-    _allowReplies = _thread.allowReplies;
+    _loadData();
   }
 
-  late ThreadEntity _thread;
-  ThreadEntity get thread => _thread;
+  ThreadEntity? _thread;
+  ThreadEntity? get thread => _thread;
 
-  late bool _allowReplies;
+  bool _allowReplies = true;
   bool get allowReplies => _allowReplies;
 
   String _commentDraft = '';
@@ -29,6 +28,19 @@ class ThreadProvider extends ChangeNotifier {
 
   ThreadStatus _status = ThreadStatus.idle;
   ThreadStatus get status => _status;
+
+  Future<void> _loadData() async {
+    _status = ThreadStatus.loading;
+    notifyListeners();
+    try {
+      _thread = await getThreadUsecase();
+      _allowReplies = _thread?.allowReplies ?? true;
+      _status = ThreadStatus.success;
+    } catch (_) {
+      _status = ThreadStatus.error;
+    }
+    notifyListeners();
+  }
 
   void setCommentDraft(String val) {
     _commentDraft = val;

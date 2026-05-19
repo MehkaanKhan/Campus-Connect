@@ -1,18 +1,12 @@
 import '../../domain/entities/create_post_entity.dart';
 import '../../domain/repositories/create_post_repository.dart';
-
-class CreatePostLocalDataSourceImpl {
-  Future<void> submitPost(CreatePostEntity post) async {
-    // TODO: replace with real API / local DB call
-    await Future.delayed(const Duration(milliseconds: 400));
-  }
-}
+import '../datasources/create_post_remote_datasource.dart';
 
 class CreatePostRepositoryImpl implements CreatePostRepository {
-  final CreatePostLocalDataSourceImpl localSource;
-  const CreatePostRepositoryImpl(this.localSource);
+  final CreatePostRemoteDataSource remoteSource;
+  const CreatePostRepositoryImpl(this.remoteSource);
 
   @override
   Future<void> submitPost(CreatePostEntity post) =>
-      localSource.submitPost(post);
+      remoteSource.submitPost(post);
 }

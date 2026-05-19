@@ -1,5 +1,4 @@
 import '../../domain/entities/thread_entity.dart';
-import '../../domain/repositories/thread_repository.dart';
 
 class ThreadLocalDataSource {
   ThreadEntity getThread() => const ThreadEntity(
@@ -59,18 +58,4 @@ class ThreadLocalDataSource {
   }
 }
 
-class ThreadRepositoryImpl implements ThreadRepository {
-  final ThreadLocalDataSource localSource;
-  const ThreadRepositoryImpl(this.localSource);
 
-  @override
-  ThreadEntity getThread() => localSource.getThread();
-
-  @override
-  Future<void> postComment(String content) =>
-      localSource.postComment(content);
-
-  @override
-  Future<void> toggleAllowReplies(bool value) =>
-      localSource.toggleAllowReplies(value);
-}
