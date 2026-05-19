@@ -7,6 +7,7 @@ import '../../domain/entities/project_partner_entity.dart';
 abstract class ProjectPartnersRemoteDataSource {
   Future<List<ProjectPartnerEntity>> getProjects();
   Future<List<String>> getFilterChips();
+  Future<void> addProject(ProjectPartnerEntity project);
 }
 
 class ProjectPartnersRemoteDataSourceImpl
@@ -55,5 +56,27 @@ class ProjectPartnersRemoteDataSourceImpl
       'Business',
       'Engineering',
     ];
+  }
+
+  @override
+  Future<void> addProject(ProjectPartnerEntity project) async {
+    final userId = SupabaseService.uid;
+
+    final inserted = await _client.from('project_listings').insert({
+      'creator_id': userId,
+      'badge': project.badge,
+      'badge_color': project.badgeColor,
+      'title': project.title,
+      'description': project.description,
+    }).select('id').single();
+
+    final listingId = inserted['id'] as String;
+
+    if (project.skills.isNotEmpty) {
+      final skillRows = project.skills
+          .map((skill) => {'listing_id': listingId, 'skill_name': skill})
+          .toList();
+      await _client.from('project_skills').insert(skillRows);
+    }
   }
 }

@@ -11,4 +11,7 @@ class ProjectPartnersRepositoryImpl implements ProjectPartnersRepository {
 
   @override
   Future<List<String>> getFilterChips() => remoteSource.getFilterChips();
+
+  @override
+  Future<void> addProject(ProjectPartnerEntity project) => remoteSource.addProject(project);
 }

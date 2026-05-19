@@ -6,6 +6,7 @@ import '../../../../core/widgets/campus_top_navbar.dart';
 import '../../../../core/widgets/campus_bottom_navbar.dart';
 import '../widgets/project_filter_chips.dart';
 import '../widgets/project_list.dart';
+import '../widgets/create_project_bottom_sheet.dart';
 
 class ProjectPartnersPage extends StatelessWidget {
   const ProjectPartnersPage({super.key});
@@ -13,7 +14,7 @@ class ProjectPartnersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cardBg,
+      backgroundColor: AppColors.pageBg,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -47,7 +48,72 @@ class ProjectPartnersPage extends StatelessWidget {
                       color: AppColors.textFaint,
                     ),
                   ),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 24.h),
+                  
+                  // Twitter-style project detail sharing bar
+                  Container(
+                    padding: EdgeInsets.all(16.w),
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBg,
+                      borderRadius: BorderRadius.circular(14.r),
+                      border: Border.all(color: AppColors.border, width: 1),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.03),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 42.w,
+                          height: 42.w,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xFFE8F3E8), // Beautiful light sage green bg
+                          ),
+                          child: const Icon(
+                            Icons.group_add_outlined,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
+                        ),
+                        SizedBox(width: 14.w),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => const CreateProjectBottomSheet(),
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),
+                              decoration: BoxDecoration(
+                                color: AppColors.pageBg,
+                                borderRadius: BorderRadius.circular(100.r),
+                                border: Border.all(color: AppColors.border, width: 1),
+                              ),
+                              child: Text(
+                                'Looking for a partner? Share your project...',
+                                style: TextStyle(
+                                  fontSize: 13.5.sp,
+                                  color: AppColors.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  SizedBox(height: 24.h),
                   const ProjectFilterChips(),
                   SizedBox(height: 22.h),
                   const ProjectList(),

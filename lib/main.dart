@@ -45,6 +45,7 @@ import 'features/create_post/presentation/provider/create_post_provider.dart';
 import 'features/project_partners/data/datasources/project_partners_remote_datasource.dart';
 import 'features/project_partners/data/repositories/project_partners_repository_impl.dart';
 import 'features/project_partners/domain/usecases/get_project_partners_usecase.dart';
+import 'features/project_partners/domain/usecases/add_project_partner_usecase.dart';
 import 'features/project_partners/presentation/provider/project_partners_provider.dart';
 
 import 'features/thread/data/datasources/thread_remote_datasource.dart';
@@ -168,6 +169,7 @@ class CampusConnectApp extends StatelessWidget {
           create: (_) => ProjectPartnersProvider(
             getProjectsUsecase:    GetProjectPartnersUsecase(ppRepo),
             getFilterChipsUsecase: GetFilterChipsUsecase(ppRepo),
+            addProjectUseCase:     AddProjectPartnerUseCase(ppRepo),
           ),
         ),
         ChangeNotifierProvider(
