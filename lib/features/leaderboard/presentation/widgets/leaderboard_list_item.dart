@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../domain/entities/leaderboard_entity.dart';
 
 class LeaderboardListItem extends StatelessWidget {
@@ -22,7 +23,7 @@ class LeaderboardListItem extends StatelessWidget {
             offset: const Offset(0, 2),
           ),
         ],
-        border: Border.all(color: const Color(0xFFF2F2F0)),
+        border: Border.all(color: AppColors.listItemBorder),
       ),
       child: Row(
         children: [
@@ -34,17 +35,17 @@ class LeaderboardListItem extends StatelessWidget {
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w700,
                 fontSize: 14,
-                color: Color(0xFF94A3B8),
+                color: AppColors.textMuted,
               ),
             ),
           ),
           CircleAvatar(
             radius: 20,
-            backgroundColor: const Color(0xFFE8EDF8),
+            backgroundColor: AppColors.avatarBlueBg,
             child: Text(
               user.avatarUrl,
               style: const TextStyle(
-                color: Color(0xFF1E3A8A),
+                color: AppColors.navyBlue,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -60,7 +61,7 @@ class LeaderboardListItem extends StatelessWidget {
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
-                    color: Color(0xFF1A1A1A),
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 Text(
@@ -68,7 +69,7 @@ class LeaderboardListItem extends StatelessWidget {
                   style: const TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 12,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.textMuted,
                   ),
                 ),
               ],
@@ -84,7 +85,7 @@ class LeaderboardListItem extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
-                  color: Color(0xFF3B82F6),
+                  color: AppColors.scoreBlue,
                 ),
               );
             },

@@ -57,7 +57,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           children: [
                             ShaderMask(
                               shaderCallback: (bounds) => const LinearGradient(
-                                colors: [AppColors.sage, Color(0xFFB0CFAE)],
+                                colors: [AppColors.sage, AppColors.sageGradientEnd],
                               ).createShader(bounds),
                               child: Text(
                                 'Weekly Leaderboard',

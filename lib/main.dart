@@ -56,20 +56,21 @@ import 'features/thread/presentation/provider/thread_provider.dart';
 import 'features/feed/data/datasources/feed_remote_datasource.dart';
 import 'features/feed/data/repositories/feed_repository_impl.dart';
 import 'features/feed/domain/usecases/get_feed_usecase.dart';
+import 'features/feed/domain/usecases/vote_on_post_usecase.dart';
 import 'features/feed/presentation/provider/feed_provider.dart';
 
-import 'features/notifications/data/datasources/notifications_local_datasource.dart';
+import 'features/notifications/data/datasources/notifications_remote_datasource.dart';
 import 'features/notifications/data/repositories/notifications_repository_impl.dart';
 import 'features/notifications/domain/usecases/get_notifications_usecase.dart';
 import 'features/notifications/domain/usecases/mark_all_read_usecase.dart';
 import 'features/notifications/presentation/provider/notifications_provider.dart';
 
-import 'features/user_profile/data/datasources/user_profile_local_datasource.dart';
+import 'features/user_profile/data/datasources/user_profile_remote_datasource.dart';
 import 'features/user_profile/data/repositories/user_profile_repository_impl.dart';
 import 'features/user_profile/domain/usecases/get_user_profile_usecase.dart';
 import 'features/user_profile/presentation/provider/user_profile_provider.dart';
 
-import 'features/hostellite_exchange/data/datasources/hostellite_local_datasource.dart';
+import 'features/hostellite_exchange/data/datasources/hostellite_remote_datasource.dart';
 import 'features/hostellite_exchange/data/repositories/hostellite_repository_impl.dart';
 import 'features/hostellite_exchange/domain/usecases/get_items_usecase.dart';
 import 'features/hostellite_exchange/presentation/provider/hostellite_provider.dart';
@@ -79,7 +80,7 @@ import 'features/hostellite_exchange_board/presentation/provider/exchange_board_
 import 'features/uni_graph/presentation/provider/uni_graph_provider.dart';
 import 'features/other_unis/presentation/provider/other_unis_provider.dart';
 
-import 'features/carpool/data/datasources/carpool_local_datasource.dart';
+import 'features/carpool/data/datasources/carpool_remote_datasource.dart';
 import 'features/carpool/data/repositories/carpool_repository_impl.dart';
 import 'features/carpool/domain/usecases/get_carpool_rides_usecase.dart';
 import 'features/carpool/domain/usecases/join_carpool_ride_usecase.dart';
@@ -95,6 +96,9 @@ Future<void> main() async {
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+    authOptions: const FlutterAuthClientOptions(
+      authFlowType: AuthFlowType.pkce,
+    ),
   );
 
   runApp(const CampusConnectApp());
@@ -107,6 +111,15 @@ class CampusConnectApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final authRemote  = AuthRemoteDataSourceImpl();
     final authRepo    = AuthRepositoryImpl(authRemote);
+
+    // AuthProvider is created here so it can be shared with the router
+    final authProvider = AuthProvider(
+      loginUsecase:         LoginUsecase(authRepo),
+      signupUsecase:        SignupUsecase(authRepo),
+      logoutUsecase:        LogoutUsecase(authRepo),
+      resetPasswordUsecase: ResetPasswordUsecase(authRepo),
+    );
+
     final cartRepo    = CartRepositoryImpl();
 
     // ── Onboarding ──
@@ -135,14 +148,20 @@ class CampusConnectApp extends StatelessWidget {
     final feedRemote   = FeedRemoteDataSourceImpl();
     final feedRepo     = FeedRepositoryImpl(feedRemote);
 
-    // ── Existing Locals (Not yet converted) ──
-    final notifSource  = NotificationsLocalDataSourceImpl();
+    // ── Notifications ──
+    final notifSource  = NotificationsRemoteDataSourceImpl();
     final notifRepo    = NotificationsRepositoryImpl(notifSource);
-    final upSource     = UserProfileLocalDataSourceImpl();
+
+    // ── User Profile ──
+    final upSource     = UserProfileRemoteDataSourceImpl();
     final upRepo       = UserProfileRepositoryImpl(upSource);
-    final heSource     = HostelliteLocalDataSourceImpl();
+
+    // ── Hostellite Exchange ──
+    final heSource     = HostelliteRemoteDataSourceImpl();
     final heRepo       = HostelliteRepositoryImpl(heSource);
-    final carpoolSource = CarpoolLocalDataSourceImpl();
+
+    // ── Carpool ──
+    final carpoolSource = CarpoolRemoteDataSourceImpl();
     final carpoolRepo   = CarpoolRepositoryImpl(carpoolSource);
 
     return MultiProvider(
@@ -179,14 +198,7 @@ class CampusConnectApp extends StatelessWidget {
             toggleAllowRepliesUsecase: ToggleAllowRepliesUsecase(threadRepo),
           ),
         ),
-        ChangeNotifierProvider(
-          create: (_) => AuthProvider(
-            loginUsecase:         LoginUsecase(authRepo),
-            signupUsecase:        SignupUsecase(authRepo),
-            logoutUsecase:        LogoutUsecase(authRepo),
-            resetPasswordUsecase: ResetPasswordUsecase(authRepo),
-          ),
-        ),
+        ChangeNotifierProvider.value(value: authProvider),
         ChangeNotifierProvider(
           create: (_) => SettingsProvider()..load(),
         ),
@@ -200,6 +212,7 @@ class CampusConnectApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => FeedProvider(
             getFeedUsecase: GetFeedUsecase(feedRepo),
+            voteUsecase:    VoteOnPostUsecase(feedRepo),
           ),
         ),
         ChangeNotifierProvider(
@@ -232,7 +245,7 @@ class CampusConnectApp extends StatelessWidget {
       child: MaterialApp.router(
         title: 'Campus Connect',
         theme: AppTheme.light,
-        routerConfig: appRouter,
+        routerConfig: createRouter(authProvider),
         debugShowCheckedModeBanner: false,
         builder: (context, child) {
           SizeConfig.init(context);

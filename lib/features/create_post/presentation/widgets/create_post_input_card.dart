@@ -5,8 +5,14 @@ import '../../../../core/utils/size_config.dart';
 import '../provider/create_post_provider.dart';
 
 class CreatePostInputCard extends StatelessWidget {
-  final TextEditingController controller;
-  const CreatePostInputCard({super.key, required this.controller});
+  final TextEditingController titleController;
+  final TextEditingController contentController;
+
+  const CreatePostInputCard({
+    super.key,
+    required this.titleController,
+    required this.contentController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +25,10 @@ class CreatePostInputCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _AvatarRow(provider: provider, controller: controller),
+          _AvatarRow(
+            titleController: titleController,
+            contentController: contentController,
+          ),
           SizedBox(height: 16.h),
           _FlairRow(provider: provider),
         ],
@@ -29,9 +38,36 @@ class CreatePostInputCard extends StatelessWidget {
 }
 
 class _AvatarRow extends StatelessWidget {
-  final CreatePostProvider provider;
-  final TextEditingController controller;
-  const _AvatarRow({required this.provider, required this.controller});
+  final TextEditingController titleController;
+  final TextEditingController contentController;
+
+  const _AvatarRow({
+    required this.titleController,
+    required this.contentController,
+  });
+
+  static InputDecoration _fieldDecoration({
+    required String hint,
+    required double hintSize,
+    required double fontSize,
+  }) =>
+      InputDecoration(
+        hintText: hint,
+        hintStyle: TextStyle(
+          fontSize: hintSize,
+          fontWeight: FontWeight.w400,
+          color: AppColors.textHint,
+          height: 1.35,
+        ),
+        filled: true,
+        fillColor: Colors.transparent,
+        border: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.zero),
+        enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.zero),
+        focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.zero),
+        counterText: '',
+        isDense: true,
+        contentPadding: EdgeInsets.zero,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +80,7 @@ class _AvatarRow extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(color: AppColors.inputBorder, width: 1.5),
-            color: const Color(0xFF1A2C3D),
+            color: AppColors.avatarFallbackBg,
           ),
           child: const ClipOval(
             child: Icon(Icons.person, color: Colors.white54, size: 26),
@@ -52,45 +88,46 @@ class _AvatarRow extends StatelessWidget {
         ),
         SizedBox(width: 14.w),
         Expanded(
-          child: TextField(
-            controller: controller,
-            maxLines: null,
-            maxLength: 280,
-            autofocus: false,
-            style: TextStyle(
-              fontSize: 17.sp,
-              color: AppColors.textPrimary,
-              height: 1.4,
-              letterSpacing: -0.1,
-            ),
-            decoration: InputDecoration(
-              hintText: "What's happening on campus?",
-              hintMaxLines: 1,
-              hintStyle: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w400,
-                color: AppColors.disabled,
-                height: 1.35,
-                letterSpacing: -0.2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: titleController,
+                maxLines: null,
+                maxLength: 120,
+                autofocus: true,
+                style: TextStyle(
+                  fontSize: 17.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                  height: 1.4,
+                  letterSpacing: -0.2,
+                ),
+                decoration: _fieldDecoration(
+                  hint: 'Add a title...',
+                  hintSize: 17.sp,
+                  fontSize: 17.sp,
+                ),
               ),
-              filled: true,
-              fillColor: Colors.transparent,
-              border: const OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.zero,
+              SizedBox(height: 6.h),
+              Divider(color: AppColors.border, height: 1, thickness: 1),
+              SizedBox(height: 10.h),
+              TextField(
+                controller: contentController,
+                maxLines: null,
+                maxLength: 500,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+                decoration: _fieldDecoration(
+                  hint: "What's happening on campus?",
+                  hintSize: 14.sp,
+                  fontSize: 14.sp,
+                ),
               ),
-              enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.zero,
-              ),
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.zero,
-              ),
-              counterText: '',
-              isDense: true,
-              contentPadding: EdgeInsets.only(top: 6.h),
-            ),
+            ],
           ),
         ),
       ],
@@ -104,14 +141,14 @@ class _FlairRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const flairs = ['SELECT FLAIR', 'EVENT', 'MARKETPLACE'];
+    const flairs = ['Select flair', 'Event', 'Marketplace'];
 
     return Wrap(
       spacing: 8.w,
       runSpacing: 8.h,
       children: flairs.map((flair) {
         final isSelected = provider.selectedFlair == flair;
-        final isSelector = flair == 'SELECT FLAIR';
+        final isSelector = flair == 'Select flair';
 
         return GestureDetector(
           onTap: () {

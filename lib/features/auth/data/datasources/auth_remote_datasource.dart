@@ -1,3 +1,5 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../../core/services/supabase_service.dart';
 import '../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
@@ -8,13 +10,15 @@ abstract class AuthRemoteDataSource {
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  // inject http client here when connecting to a real API
-
   @override
   Future<UserModel> login({required String email, required String password}) async {
-    // TODO: replace with real API call
-    await Future.delayed(const Duration(seconds: 1));
-    return UserModel(id: '1', name: 'Demo User', email: email);
+    final response = await SupabaseService.auth.signInWithPassword(
+      email: email,
+      password: password,
+    );
+    final user = response.user;
+    if (user == null) throw Exception('Login failed');
+    return _fromSupabase(user);
   }
 
   @override
@@ -23,17 +27,33 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String email,
     required String password,
   }) async {
-    await Future.delayed(const Duration(seconds: 1));
-    return UserModel(id: '2', name: name, email: email);
+    final response = await SupabaseService.auth.signUp(
+      email: email,
+      password: password,
+      data: {'full_name': name},
+    );
+    final user = response.user;
+    if (user == null) throw Exception('Sign up failed');
+    return _fromSupabase(user, name: name);
   }
 
   @override
   Future<void> logout() async {
-    await Future.delayed(const Duration(milliseconds: 300));
+    await SupabaseService.auth.signOut();
   }
 
   @override
   Future<void> resetPassword({required String email}) async {
-    await Future.delayed(const Duration(seconds: 1));
+    await SupabaseService.auth.resetPasswordForEmail(
+      email,
+      redirectTo: 'campusconnect://login-callback/',
+    );
   }
+
+  UserModel _fromSupabase(User user, {String? name}) => UserModel(
+        id: user.id,
+        name: name ?? user.userMetadata?['full_name'] as String? ?? user.email ?? '',
+        email: user.email ?? '',
+        avatarUrl: user.userMetadata?['avatar_url'] as String?,
+      );
 }

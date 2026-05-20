@@ -26,7 +26,7 @@ class ThreadPost extends StatelessWidget {
                 width: 44.w,
                 height: 44.w,
                 decoration: const BoxDecoration(
-                  color: Color(0xFF2C3E35),
+                  color: AppColors.postAvatarBg,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.person, color: Colors.white54, size: 24),

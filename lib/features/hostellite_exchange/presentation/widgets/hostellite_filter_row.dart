@@ -9,9 +9,9 @@ class HostelliteFilterRow extends StatelessWidget {
   const HostelliteFilterRow({super.key});
 
   static const _options = [
-    (null, 'All Items'),
-    (ItemType.borrow, 'BORROW'),
-    (ItemType.rent, 'RENT'),
+    (null, 'All items'),
+    (ItemType.borrow, 'Borrow'),
+    (ItemType.rent, 'Rent'),
     (ItemType.free, 'Free'),
   ];
 

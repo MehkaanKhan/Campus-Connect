@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
 import '../../../../core/widgets/campus_bottom_navbar.dart';
 import '../../domain/entities/other_uni_entity.dart';
@@ -12,7 +13,7 @@ class UniProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           CampusTopNavBar(
@@ -72,7 +73,7 @@ class _HeroHeader extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF1A1C19), Color(0xFF2E3D2E)],
+          colors: [AppColors.textDark, AppColors.darkCardBg],
         ),
       ),
       padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
@@ -82,7 +83,7 @@ class _HeroHeader extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              color: const Color(0xFFEBEBE8),
+              color: AppColors.avatarWarmGray,
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
             ),
@@ -93,7 +94,7 @@ class _HeroHeader extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF98A895),
+                  color: AppColors.filterActiveBg,
                 ),
               ),
             ),
@@ -128,7 +129,7 @@ class _HeroHeader extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.location_on_outlined, size: 14, color: Color(0xFF98A895)),
+                const Icon(Icons.location_on_outlined, size: 14, color: AppColors.filterActiveBg),
                 const SizedBox(width: 4),
                 Text(
                   uni.region,
@@ -136,7 +137,7 @@ class _HeroHeader extends StatelessWidget {
                     fontFamily: 'Inter',
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF98A895),
+                    color: AppColors.filterActiveBg,
                   ),
                 ),
               ],
@@ -191,11 +192,11 @@ class _StatTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFFEEEEE8)),
+          border: Border.all(color: AppColors.border),
         ),
         child: Column(
           children: [
-            Icon(icon, size: 18, color: const Color(0xFF98A895)),
+            Icon(icon, size: 18, color: AppColors.filterActiveBg),
             const SizedBox(height: 6),
             Text(
               value,
@@ -203,7 +204,7 @@ class _StatTile extends StatelessWidget {
                 fontFamily: 'Inter',
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF1A1C19),
+                color: AppColors.textDark,
               ),
             ),
             const SizedBox(height: 2),
@@ -214,7 +215,7 @@ class _StatTile extends StatelessWidget {
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
-                color: Color(0xFF94A3B8),
+                color: AppColors.textMuted,
               ),
             ),
           ],
@@ -239,7 +240,7 @@ class _AboutSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEEEEE8)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,7 +251,7 @@ class _AboutSection extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1A1C19),
+              color: AppColors.textDark,
             ),
           ),
           const SizedBox(height: 10),
@@ -260,7 +261,7 @@ class _AboutSection extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 14,
               height: 1.6,
-              color: Color(0xFF434940),
+              color: AppColors.filterInactiveText,
             ),
           ),
           const SizedBox(height: 12),
@@ -289,13 +290,13 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFFF2F2EF),
+        color: AppColors.disabledBg,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: const Color(0xFF98A895)),
+          Icon(icon, size: 14, color: AppColors.filterActiveBg),
           const SizedBox(width: 4),
           Text(
             text,
@@ -303,7 +304,7 @@ class _InfoChip extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF434940),
+              color: AppColors.filterInactiveText,
             ),
           ),
         ],
@@ -339,7 +340,7 @@ class _TopClubsSection extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1A1C19),
+              color: AppColors.textDark,
             ),
           ),
         ),
@@ -359,12 +360,12 @@ class _TopClubsSection extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: const Color(0xFFEEEEE8)),
+                  border: Border.all(color: AppColors.border),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(club['icon'] as IconData, size: 22, color: const Color(0xFF98A895)),
+                    Icon(club['icon'] as IconData, size: 22, color: AppColors.filterActiveBg),
                     const SizedBox(height: 8),
                     Text(
                       club['name'] as String,
@@ -375,7 +376,7 @@ class _TopClubsSection extends StatelessWidget {
                         fontFamily: 'Inter',
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF1A1C19),
+                        color: AppColors.textDark,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -384,7 +385,7 @@ class _TopClubsSection extends StatelessWidget {
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 10,
-                        color: Color(0xFF94A3B8),
+                        color: AppColors.textMuted,
                       ),
                     ),
                   ],
@@ -414,7 +415,7 @@ class _RecentPostsSection extends StatelessWidget {
         title: 'Spring semester registrations now open',
         body: 'All students are advised to complete their course registrations before the deadline. Check the portal for available electives.',
         flair: 'Academic',
-        flairColor: const Color(0xFFFED9B8),
+        flairColor: AppColors.flairAcademic,
       ),
       _MockPost(
         author: 'Student Council',
@@ -422,7 +423,7 @@ class _RecentPostsSection extends StatelessWidget {
         title: 'Annual sports gala next week',
         body: 'Sign up for cricket, football, and badminton tournaments. Prizes worth PKR 50,000 to be won!',
         flair: 'Events',
-        flairColor: const Color(0xFFD6D6EA),
+        flairColor: AppColors.flairEvents,
       ),
       _MockPost(
         author: 'CS Department',
@@ -430,7 +431,7 @@ class _RecentPostsSection extends StatelessWidget {
         title: 'Guest lecture on AI & Machine Learning',
         body: 'Join us this Friday for an insightful session with Dr. Ahmed on the latest trends in artificial intelligence.',
         flair: 'Academic',
-        flairColor: const Color(0xFFFED9B8),
+        flairColor: AppColors.flairAcademic,
       ),
     ];
 
@@ -445,7 +446,7 @@ class _RecentPostsSection extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1A1C19),
+              color: AppColors.textDark,
             ),
           ),
         ),
@@ -486,7 +487,7 @@ class _ViewOnlyPostCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEEEEE8)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -496,14 +497,14 @@ class _ViewOnlyPostCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 14,
-                backgroundColor: const Color(0xFFEBEBE8),
+                backgroundColor: AppColors.avatarWarmGray,
                 child: Text(
                   post.author[0],
                   style: const TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF98A895),
+                    color: AppColors.filterActiveBg,
                   ),
                 ),
               ),
@@ -515,7 +516,7 @@ class _ViewOnlyPostCard extends StatelessWidget {
                     fontFamily: 'Inter',
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF1A1C19),
+                    color: AppColors.textDark,
                   ),
                 ),
               ),
@@ -524,7 +525,7 @@ class _ViewOnlyPostCard extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 10,
-                  color: Color(0xFF94A3B8),
+                  color: AppColors.textMuted,
                 ),
               ),
             ],
@@ -543,7 +544,7 @@ class _ViewOnlyPostCard extends StatelessWidget {
                 fontFamily: 'Inter',
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF434940),
+                color: AppColors.filterInactiveText,
               ),
             ),
           ),
@@ -556,7 +557,7 @@ class _ViewOnlyPostCard extends StatelessWidget {
               fontSize: 15,
               fontWeight: FontWeight.w700,
               height: 1.3,
-              color: Color(0xFF1A1C19),
+              color: AppColors.textDark,
             ),
           ),
           const SizedBox(height: 4),
@@ -569,7 +570,7 @@ class _ViewOnlyPostCard extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 13,
               height: 1.5,
-              color: Color(0xFF64748B),
+              color: AppColors.textSecondary,
             ),
           ),
           const SizedBox(height: 10),
@@ -603,13 +604,13 @@ class _ViewOnlyBanner extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: const Color(0xFFF2F2EF),
+        color: AppColors.disabledBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEEEEE8)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
-          const Icon(Icons.visibility_outlined, size: 18, color: Color(0xFF98A895)),
+          const Icon(Icons.visibility_outlined, size: 18, color: AppColors.filterActiveBg),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -621,7 +622,7 @@ class _ViewOnlyBanner extends StatelessWidget {
                     fontFamily: 'Inter',
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF1A1C19),
+                    color: AppColors.textDark,
                   ),
                 ),
                 SizedBox(height: 2),
@@ -630,7 +631,7 @@ class _ViewOnlyBanner extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 11,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.textMuted,
                   ),
                 ),
               ],

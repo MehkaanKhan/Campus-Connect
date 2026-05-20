@@ -9,17 +9,17 @@ class ProjectCard extends StatelessWidget {
 
   Color _badgeTextColor() {
     switch (project.badge) {
-      case 'STARTUP IDEA': return const Color(0xFFC8913A);
-      case 'HACKATHON':    return const Color(0xFF5A7FA8);
+      case 'STARTUP IDEA': return AppColors.badgeStartupText;
+      case 'HACKATHON':    return AppColors.badgeHackathonText;
       default:             return AppColors.sage;
     }
   }
 
   Color _badgeBgColor() {
     switch (project.badge) {
-      case 'STARTUP IDEA': return const Color(0xFFFDF3E6);
-      case 'HACKATHON':    return const Color(0xFFEAF1F8);
-      default:             return const Color(0xFFEDF4ED);
+      case 'STARTUP IDEA': return AppColors.badgeStartupBg;
+      case 'HACKATHON':    return AppColors.badgeHackathonBg;
+      default:             return AppColors.badgeDefaultBg;
     }
   }
 

@@ -57,7 +57,7 @@ class _ComplaintFormPageState extends State<ComplaintFormPage> {
     final isSubmitting = context.watch<ExchangeBoardProvider>().isSubmitting;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.pageBg,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CampusTopNavBar(
@@ -77,7 +77,7 @@ class _ComplaintFormPageState extends State<ComplaintFormPage> {
                   fontFamily: 'Inter',
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1A1A1A),
+                  color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 8),
@@ -86,7 +86,7 @@ class _ComplaintFormPageState extends State<ComplaintFormPage> {
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 14,
-                  color: Color(0xFF64748B),
+                  color: AppColors.textSecondary,
                 ),
               ),
               const SizedBox(height: 30),
@@ -96,7 +96,7 @@ class _ComplaintFormPageState extends State<ComplaintFormPage> {
                   fontFamily: 'Inter',
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF1A1A1A),
+                  color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 8),
@@ -106,11 +106,11 @@ class _ComplaintFormPageState extends State<ComplaintFormPage> {
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                    borderSide: const BorderSide(color: AppColors.borderSlate),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                    borderSide: const BorderSide(color: AppColors.borderSlate),
                   ),
                 ),
                 hint: const Text('Select a reason'),
@@ -132,7 +132,7 @@ class _ComplaintFormPageState extends State<ComplaintFormPage> {
                   fontFamily: 'Inter',
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF1A1A1A),
+                  color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 8),
@@ -145,11 +145,11 @@ class _ComplaintFormPageState extends State<ComplaintFormPage> {
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                    borderSide: const BorderSide(color: AppColors.borderSlate),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                    borderSide: const BorderSide(color: AppColors.borderSlate),
                   ),
                 ),
                 validator: (val) {

@@ -44,7 +44,7 @@ class ExploreHubPage extends StatelessWidget {
                   ExploreCard(
                     icon: Icons.group_outlined,
                     iconColor: AppColors.primary,
-                    iconBg: const Color(0xFFE8EDF8),
+                    iconBg: AppColors.avatarBlueBg,
                     title: 'Find Project Partners',
                     subtitle: 'Collaborate on projects, startups & research',
                     isEnabled: true,
@@ -73,7 +73,7 @@ class ExploreHubPage extends StatelessWidget {
                   SizedBox(height: 12.h),
                   ExploreCard(
                     icon: Icons.leaderboard_outlined,
-                    iconColor: const Color(0xFFB0A890),
+                    iconColor: AppColors.iconTaupe,
                     iconBg: AppColors.disabledBg,
                     title: 'Weekly Leaderboard',
                     subtitle: 'See who\'s most active this week',
@@ -83,8 +83,8 @@ class ExploreHubPage extends StatelessWidget {
                   SizedBox(height: 12.h),
                   ExploreCard(
                     icon: Icons.map_outlined,
-                    iconColor: const Color(0xFFD6B26A),
-                    iconBg: const Color(0xFFF9F5EC),
+                    iconColor: AppColors.iconGold,
+                    iconBg: AppColors.iconCreamBg,
                     title: 'Uni Graph',
                     subtitle: 'Interactive map of university networks',
                     isEnabled: true,
@@ -93,8 +93,8 @@ class ExploreHubPage extends StatelessWidget {
                   SizedBox(height: 12.h),
                   ExploreCard(
                     icon: Icons.account_balance_outlined,
-                    iconColor: const Color(0xFF6A98D6),
-                    iconBg: const Color(0xFFECF3F9),
+                    iconColor: AppColors.iconBlue,
+                    iconBg: AppColors.iconBlueBg,
                     title: 'Other Universities',
                     subtitle: 'Discover other campus communities',
                     isEnabled: true,

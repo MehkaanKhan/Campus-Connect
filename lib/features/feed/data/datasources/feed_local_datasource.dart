@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../domain/entities/post_entity.dart';
 
 abstract class FeedLocalDataSource {
@@ -15,7 +15,7 @@ class FeedLocalDataSourceImpl implements FeedLocalDataSource {
         authorName: 'Sarah J.',
         timeAgo: '2 HOURS AGO',
         flair: 'Events',
-        flairColor: const Color(0xFFD6D6EA),
+        flairColor: AppColors.flairEvents,
         title: "Who's coming to the hackathon tonight?",
         excerpt: "Need a team for the AI track! We have a solid backend already.",
         upvotes: 42,
@@ -27,7 +27,7 @@ class FeedLocalDataSourceImpl implements FeedLocalDataSource {
         authorName: 'Prof. Miller',
         timeAgo: '5 HOURS AGO',
         flair: 'Academic',
-        flairColor: const Color(0xFFFED9B8),
+        flairColor: AppColors.flairAcademic,
         title: 'New research lab opening soon!',
         excerpt:
             'We are looking for undergraduate research assistants for the upcoming semester. Check the department board for details.',
@@ -41,7 +41,7 @@ class FeedLocalDataSourceImpl implements FeedLocalDataSource {
         authorName: 'Campus Events',
         timeAgo: '1 DAY AGO',
         flair: 'Hostel',
-        flairColor: const Color(0xFFE2E3E0),
+        flairColor: AppColors.flairHostel,
         title: 'Inter-hostel cricket tournament this weekend',
         excerpt:
             'Sign your hostel team up before Thursday. Trophies and prizes for top 3 teams.',
@@ -54,7 +54,7 @@ class FeedLocalDataSourceImpl implements FeedLocalDataSource {
         authorName: 'Ali K.',
         timeAgo: '2 DAYS AGO',
         flair: 'Carpool',
-        flairColor: const Color(0xFFE2E9E0),
+        flairColor: AppColors.flairCarpool,
         title: 'Carpool to City Center — Friday 5 PM',
         excerpt:
             '3 seats available. Sharing fuel costs. DM me if interested.',
@@ -67,7 +67,7 @@ class FeedLocalDataSourceImpl implements FeedLocalDataSource {
         authorName: 'Zara M.',
         timeAgo: '3 DAYS AGO',
         flair: 'Marketplace',
-        flairColor: const Color(0xFFD6D6EA),
+        flairColor: AppColors.flairMarketplace,
         title: 'Selling Calculus textbook — great condition',
         excerpt:
             'Thomas\' Calculus 14th edition. Used for one semester. Asking Rs. 800.',

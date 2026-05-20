@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/services/supabase_service.dart';
 import '../../../../core/widgets/campus_bottom_navbar.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
 import '../provider/user_profile_provider.dart';
@@ -22,7 +24,7 @@ class _UserProfilePageState extends State<UserProfilePage>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<UserProfileProvider>().load('me');
+      context.read<UserProfileProvider>().load(SupabaseService.uid);
     });
   }
 
@@ -39,7 +41,12 @@ class _UserProfilePageState extends State<UserProfilePage>
       bottomNavigationBar: const CampusBottomNavBar(activeTab: BottomNavTab.profile),
       body: Column(
         children: [
-          const CampusTopNavBar(),
+          CampusTopNavBar(
+            trailing: GestureDetector(
+              onTap: () => context.push('/settings'),
+              child: Icon(Icons.settings_outlined, size: 24, color: AppColors.textPrimary),
+            ),
+          ),
           Expanded(child: ProfileBody(tabController: _tabController)),
         ],
       ),

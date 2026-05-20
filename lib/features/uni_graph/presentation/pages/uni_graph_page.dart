@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
 import '../../../../core/widgets/app_loader.dart';
 import '../provider/uni_graph_provider.dart';
@@ -25,7 +26,7 @@ class _UniGraphPageState extends State<UniGraphPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.pageBg,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CampusTopNavBar(
@@ -46,7 +47,7 @@ class _UniGraphPageState extends State<UniGraphPage> {
                     fontFamily: 'Inter',
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1A1A1A),
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 SizedBox(height: 4),
@@ -55,7 +56,7 @@ class _UniGraphPageState extends State<UniGraphPage> {
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 14,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.textMuted,
                   ),
                 ),
               ],
@@ -114,14 +115,14 @@ class _UniGraphPageState extends State<UniGraphPage> {
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.pinch, color: Color(0xFF94A3B8)),
+                              Icon(Icons.pinch, color: AppColors.textMuted),
                               SizedBox(width: 8),
                               Text(
                                 'Pinch to zoom, drag to pan',
                                 style: TextStyle(
                                   fontFamily: 'Inter',
                                   fontSize: 12,
-                                  color: Color(0xFF64748B),
+                                  color: AppColors.textSecondary,
                                 ),
                               ),
                             ],

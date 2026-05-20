@@ -32,7 +32,7 @@ class UniOverlayModal extends StatelessWidget {
               constraints: const BoxConstraints(maxWidth: 448),
               decoration: BoxDecoration(
                 color: AppColors.cardBg,
-                border: Border.all(color: const Color(0xFFC3C8BC)),
+                border: Border.all(color: AppColors.borderGrayGreen),
                 borderRadius: BorderRadius.circular(24.r),
                 boxShadow: [
                   BoxShadow(

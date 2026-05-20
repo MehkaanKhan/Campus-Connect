@@ -11,7 +11,7 @@ class ItemDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.pageBg,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -34,8 +34,8 @@ class ItemDetailPage extends StatelessWidget {
                       ? Image.network(item.imageUrl!, fit: BoxFit.cover)
                       : Image.asset(item.imageUrl!, fit: BoxFit.cover))
                   : Container(
-                      color: const Color(0xFFE2E8F0),
-                      child: const Icon(Icons.image, size: 80, color: Color(0xFF94A3B8)),
+                      color: AppColors.borderSlate,
+                      child: const Icon(Icons.image, size: 80, color: AppColors.textMuted),
                     ),
             ),
           ),
@@ -68,7 +68,7 @@ class ItemDetailPage extends StatelessWidget {
                         item.timeAgo,
                         style: const TextStyle(
                           fontFamily: 'Inter',
-                          color: Color(0xFF94A3B8),
+                          color: AppColors.textMuted,
                           fontSize: 12,
                         ),
                       ),
@@ -81,7 +81,7 @@ class ItemDetailPage extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1A1A1A),
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -101,7 +101,7 @@ class ItemDetailPage extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1A1A1A),
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -110,7 +110,7 @@ class ItemDetailPage extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 15,
-                      color: Color(0xFF64748B),
+                      color: AppColors.textSecondary,
                       height: 1.5,
                     ),
                   ),
@@ -121,7 +121,7 @@ class ItemDetailPage extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1A1A1A),
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -130,7 +130,7 @@ class ItemDetailPage extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 15,
-                      color: Color(0xFF64748B),
+                      color: AppColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -154,7 +154,7 @@ class ItemDetailPage extends StatelessWidget {
                               style: TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 12,
-                                color: Color(0xFF94A3B8),
+                                color: AppColors.textMuted,
                               ),
                             ),
                             Text(
@@ -163,7 +163,7 @@ class ItemDetailPage extends StatelessWidget {
                                 fontFamily: 'Inter',
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF1A1A1A),
+                                color: AppColors.textPrimary,
                               ),
                             ),
                           ],

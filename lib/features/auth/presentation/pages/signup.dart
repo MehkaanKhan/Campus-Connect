@@ -42,7 +42,12 @@ class _SignupPageState extends State<SignupPage> {
     );
     if (!mounted) return;
     if (provider.isAuthenticated) {
+      AppSnackbar.show(context, 'Account created! Welcome to Campus Connect.');
       context.go('/profile-setup');
+    } else if (provider.needsEmailVerification) {
+      final email = Uri.encodeComponent(_emailCtrl.text.trim());
+      AppSnackbar.show(context, 'Account created! Check your email to verify, then sign in.');
+      context.go('/email-verification?email=$email');
     } else if (provider.errorMessage != null) {
       AppSnackbar.show(context, provider.errorMessage!, isError: true);
       provider.clearError();

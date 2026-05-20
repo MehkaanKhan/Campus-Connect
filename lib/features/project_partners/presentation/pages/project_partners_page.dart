@@ -72,7 +72,7 @@ class ProjectPartnersPage extends StatelessWidget {
                           height: 42.w,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Color(0xFFE8F3E8), // Beautiful light sage green bg
+                            color: AppColors.sageLight,
                           ),
                           child: const Icon(
                             Icons.group_add_outlined,

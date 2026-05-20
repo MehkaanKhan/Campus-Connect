@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../domain/entities/leaderboard_entity.dart';
 
 class PodiumWidget extends StatelessWidget {
@@ -16,11 +17,11 @@ class PodiumWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _PodiumItem(user: topThree[1], rank: 2, height: 120, color: const Color(0xFFC0C0C0)), // Silver
+          _PodiumItem(user: topThree[1], rank: 2, height: 120, color: AppColors.silverMedal),
           const SizedBox(width: 10),
-          _PodiumItem(user: topThree[0], rank: 1, height: 160, color: const Color(0xFFFFD700), isFirst: true), // Gold
+          _PodiumItem(user: topThree[0], rank: 1, height: 160, color: AppColors.goldMedal, isFirst: true),
           const SizedBox(width: 10),
-          _PodiumItem(user: topThree[2], rank: 3, height: 100, color: const Color(0xFFCD7F32)), // Bronze
+          _PodiumItem(user: topThree[2], rank: 3, height: 100, color: AppColors.bronzeMedal),
         ],
       ),
     );
@@ -56,7 +57,7 @@ class _PodiumItem extends StatelessWidget {
               backgroundColor: color,
               child: CircleAvatar(
                 radius: isFirst ? 32 : 25,
-                backgroundColor: const Color(0xFF1E3A8A),
+                backgroundColor: AppColors.navyBlue,
                 child: Text(
                   user.avatarUrl,
                   style: TextStyle(
@@ -103,7 +104,7 @@ class _PodiumItem extends StatelessWidget {
             fontFamily: 'Inter',
             fontWeight: isFirst ? FontWeight.w800 : FontWeight.w600,
             fontSize: isFirst ? 14 : 12,
-            color: const Color(0xFF1A1A1A),
+            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 4),

@@ -4,8 +4,9 @@ import '../constants/app_colors.dart';
 
 class CampusTopNavBar extends StatelessWidget {
   final VoidCallback? onBack;
+  final Widget? trailing;
 
-  const CampusTopNavBar({super.key, this.onBack});
+  const CampusTopNavBar({super.key, this.onBack, this.trailing});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,8 @@ class CampusTopNavBar extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            Image.asset(AppAssets.searchIcon, width: 24, height: 24),
+            if (trailing != null) trailing!
+            else Image.asset(AppAssets.searchIcon, width: 24, height: 24),
           ],
         ),
       ),

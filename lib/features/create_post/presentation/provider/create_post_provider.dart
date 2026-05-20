@@ -20,6 +20,15 @@ class CreatePostProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ── Title ──
+  String _title = '';
+  String get title => _title;
+
+  void setTitle(String val) {
+    _title = val;
+    notifyListeners();
+  }
+
   // ── Content ──
   String _content = '';
   String get content => _content;
@@ -45,10 +54,11 @@ class CreatePostProvider extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  bool get isFormValid => _content.trim().isNotEmpty;
+  bool get isFormValid => _title.trim().isNotEmpty;
 
   void reset() {
     _activeTab = PostTab.text;
+    _title = '';
     _content = '';
     _selectedFlair = null;
     _status = CreatePostStatus.idle;
@@ -59,7 +69,7 @@ class CreatePostProvider extends ChangeNotifier {
   // ── Actions ──
   Future<String?> submitPost() async {
     if (!isFormValid) {
-      _errorMessage = 'Post content cannot be empty';
+      _errorMessage = 'Please add a title to your post';
       notifyListeners();
       return null;
     }
@@ -69,7 +79,7 @@ class CreatePostProvider extends ChangeNotifier {
     try {
       final postId = await submitPostUsecase(
         CreatePostEntity(
-          title: '',
+          title: _title.trim(),
           content: _content.trim(),
           tags: _selectedFlair != null ? [_selectedFlair!] : [],
         ),

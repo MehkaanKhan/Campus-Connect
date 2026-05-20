@@ -15,31 +15,37 @@ class CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
-  late final TextEditingController _controller;
+  late final TextEditingController _titleController;
+  late final TextEditingController _contentController;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _titleController = TextEditingController();
+    _contentController = TextEditingController();
 
-    // Reset the provider when screen is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        context.read<CreatePostProvider>().reset();
-      }
+      if (mounted) context.read<CreatePostProvider>().reset();
     });
 
-    _controller.addListener(_onContentChanged);
+    _titleController.addListener(_onTitleChanged);
+    _contentController.addListener(_onContentChanged);
+  }
+
+  void _onTitleChanged() {
+    context.read<CreatePostProvider>().setTitle(_titleController.text);
   }
 
   void _onContentChanged() {
-    context.read<CreatePostProvider>().setContent(_controller.text);
+    context.read<CreatePostProvider>().setContent(_contentController.text);
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_onContentChanged);
-    _controller.dispose();
+    _titleController.removeListener(_onTitleChanged);
+    _contentController.removeListener(_onContentChanged);
+    _titleController.dispose();
+    _contentController.dispose();
     super.dispose();
   }
 
@@ -60,7 +66,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     SizedBox(height: 20.h),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: CreatePostInputCard(controller: _controller),
+                      child: CreatePostInputCard(
+                        titleController: _titleController,
+                        contentController: _contentController,
+                      ),
                     ),
                     SizedBox(height: 100.h),
                   ],

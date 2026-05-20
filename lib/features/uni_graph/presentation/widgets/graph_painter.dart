@@ -13,7 +13,7 @@ class GraphPainter extends CustomPainter {
     if (nodes.isEmpty) return;
 
     final edgePaint = Paint()
-      ..color = const Color(0xFFCBD5E1)
+      ..color = AppColors.graphEdge
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 

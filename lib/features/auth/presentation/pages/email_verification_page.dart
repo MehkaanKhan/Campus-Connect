@@ -1,25 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/services/supabase_service.dart';
 
 class EmailVerificationPage extends StatefulWidget {
-  const EmailVerificationPage({super.key});
+  final String email;
+  const EmailVerificationPage({super.key, required this.email});
 
   @override
   State<EmailVerificationPage> createState() => _EmailVerificationPageState();
 }
 
 class _EmailVerificationPageState extends State<EmailVerificationPage> {
-  final _emailCtrl = TextEditingController();
+  bool _sending = false;
+  bool _sent = false;
+  String? _error;
 
-  @override
-  void dispose() {
-    _emailCtrl.dispose();
-    super.dispose();
+  Future<void> _resend() async {
+    setState(() { _sending = true; _error = null; _sent = false; });
+    try {
+      await SupabaseService.auth.resend(
+        type: OtpType.signup,
+        email: widget.email,
+      );
+      setState(() { _sent = true; });
+    } catch (e) {
+      setState(() { _error = 'Could not resend — please try again.'; });
+    } finally {
+      setState(() { _sending = false; });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0EDE6),
+      backgroundColor: AppColors.onboardingBg,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -27,21 +43,21 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   'Campus Connect',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 30,
                     fontWeight: FontWeight.w700,
                     fontStyle: FontStyle.italic,
-                    color: Color(0xFF6B8F6B),
+                    color: AppColors.sage,
                     letterSpacing: -0.5,
                   ),
                 ),
                 const SizedBox(height: 44),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(22, 26, 22, 26),
+                  padding: const EdgeInsets.fromLTRB(22, 28, 22, 28),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
@@ -56,101 +72,113 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      const Icon(Icons.mark_email_unread_outlined, size: 48, color: AppColors.sage),
+                      const SizedBox(height: 16),
                       const Text(
-                        'Enter your university email',
+                        'Check your inbox',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Inter',
-                          fontSize: 18,
+                          fontSize: 20,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF1A1A1A),
-                          height: 1.2,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'We sent a verification link to\n${widget.email}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 13,
+                          color: AppColors.textMuted,
+                          height: 1.5,
                         ),
                       ),
                       const SizedBox(height: 6),
                       const Text(
-                        'We only support verified .edu addresses.',
+                        'Click the link in the email to activate your account, then come back and sign in.',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 13,
-                          color: Color(0xFF94A3B8),
+                          color: AppColors.textMuted,
+                          height: 1.5,
                         ),
                       ),
-                      const SizedBox(height: 22),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF8FAFC),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: const Color(0xFFE2E8F0)),
-                        ),
-                        child: Row(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 14),
-                              child: Icon(
-                                Icons.mail_outline_rounded,
-                                size: 18,
-                                color: Color(0xFF94A3B8),
-                              ),
+                      const SizedBox(height: 24),
+
+                      if (_sent)
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 12),
+                          child: Text(
+                            'Verification email resent!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 13,
+                              color: AppColors.sage,
+                              fontWeight: FontWeight.w600,
                             ),
-                            Expanded(
-                              child: TextField(
-                                controller: _emailCtrl,
-                                keyboardType: TextInputType.emailAddress,
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  color: Color(0xFF1A1A1A),
-                                ),
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 14,
-                                  ),
-                                  hintText: 'student@university.edu',
-                                  hintStyle: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 14,
-                                    color: Color(0xFFCBD5E1),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
+
+                      if (_error != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Text(
+                            _error!,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 13,
+                              color: AppColors.error,
+                            ),
+                          ),
+                        ),
+
                       GestureDetector(
-                        onTap: () {},
+                        onTap: _sending ? null : _resend,
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF6B8F6B),
+                            color: AppColors.sage,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Center(
-                            child: Text(
-                              'Send Verification Link',
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
+                          child: Center(
+                            child: _sending
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Resend Verification Link',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 18),
-                      const Center(
-                        child: Text(
-                          'Why do I need a university email?',
+
+                      const SizedBox(height: 16),
+                      GestureDetector(
+                        onTap: () => context.go('/login'),
+                        child: const Text(
+                          'Back to Login',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: 'Inter',
-                            fontSize: 12,
-                            color: Color(0xFF94A3B8),
-                            decoration: TextDecoration.underline,
-                            decorationColor: Color(0xFF94A3B8),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
                           ),
                         ),
                       ),

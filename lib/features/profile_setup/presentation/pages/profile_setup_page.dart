@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../widgets/profile_setup_card.dart';
 
@@ -8,7 +9,7 @@ class ProfileSetupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1C1C1C),
+      backgroundColor: AppColors.setupPageBg,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {

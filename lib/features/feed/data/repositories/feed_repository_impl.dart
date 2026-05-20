@@ -8,4 +8,15 @@ class FeedRepositoryImpl implements FeedRepository {
 
   @override
   Future<List<PostEntity>> getFeed() => _source.getPosts();
+
+  @override
+  Future<void> insertVote(String postId, String voteType) =>
+      _source.insertVote(postId, voteType);
+
+  @override
+  Future<void> deleteVote(String postId) => _source.deleteVote(postId);
+
+  @override
+  Future<void> updateVote(String postId, String voteType) =>
+      _source.updateVote(postId, voteType);
 }

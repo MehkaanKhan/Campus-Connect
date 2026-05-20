@@ -32,9 +32,9 @@ class ExchangeItemEntity {
 
   String get typeLabel {
     switch (type) {
-      case ItemType.borrow:  return 'BORROW';
-      case ItemType.rent:    return 'RENT';
-      case ItemType.free:    return 'GIVEAWAY';
+      case ItemType.borrow:  return 'Borrow';
+      case ItemType.rent:    return 'Rent';
+      case ItemType.free:    return 'Giveaway';
     }
   }
 

@@ -94,4 +94,43 @@ class AppColors {
   static const disabled         = Color(0xFFBBBBB8);
   static const disabledBg       = Color(0xFFF2F1EE);
   static const imagePlaceholder = Color(0xFFCCCCC8);
+
+  // ── Explore hub icons ─────────────────────────────────────────────────
+  static const avatarBlueBg        = Color(0xFFE8EDF8); // light indigo bg — project partners, leaderboard avatars
+  static const iconTaupe           = Color(0xFFB0A890); // muted taupe — leaderboard icon
+  static const iconGold            = Color(0xFFD6B26A); // warm gold — uni graph icon
+  static const iconCreamBg         = Color(0xFFF9F5EC); // warm cream bg — uni graph icon
+  static const iconBlue            = Color(0xFF6A98D6); // medium blue — other unis icon
+  static const iconBlueBg          = Color(0xFFECF3F9); // light blue bg — other unis icon
+
+  // ── Project partner badges ────────────────────────────────────────────
+  static const badgeStartupText    = Color(0xFFC8913A); // warm amber text — startup idea
+  static const badgeStartupBg      = Color(0xFFFDF3E6); // pale amber bg — startup idea
+  static const badgeHackathonText  = Color(0xFF5A7FA8); // steel blue text — hackathon
+  static const badgeHackathonBg    = Color(0xFFEAF1F8); // pale blue bg — hackathon
+  static const badgeDefaultBg      = Color(0xFFEDF4ED); // pale green bg — default project badge
+
+  // ── Thread / comment avatars ──────────────────────────────────────────
+  static const commentAvatarBg       = Color(0xFF6B5A8A); // purple — top-level comment avatar
+  static const commentNestedAvatarBg = Color(0xFF3C5A8A); // navy — nested comment avatar
+  static const postAvatarBg          = Color(0xFF2C3E35); // dark forest green — thread post avatar
+  static const avatarFallbackBg      = Color(0xFF1A2C3D); // dark navy — create-post placeholder avatar
+
+  // ── Leaderboard extras ────────────────────────────────────────────────
+  static const sageGradientEnd   = Color(0xFFB0CFAE); // light sage — leaderboard header gradient end
+  static const listItemBorder    = Color(0xFFF2F2F0); // list item separator border
+  static const navyBlue          = Color(0xFF1E3A8A); // dark navy — rank avatar inner circle
+  static const scoreBlue         = Color(0xFF3B82F6); // bright blue — leaderboard score points
+
+  // ── Graph / network ───────────────────────────────────────────────────
+  static const graphEdge = Color(0xFFCBD5E1); // slate-300 — graph edge lines, theme input border
+
+  // ── Uni profile page ─────────────────────────────────────────────────
+  static const textDark       = Color(0xFF1A1C19); // dark greenish-black — uni profile headings
+  static const avatarWarmGray = Color(0xFFEBEBE8); // warm light gray — uni profile avatar placeholder
+
+  // ── Misc ──────────────────────────────────────────────────────────────
+  static const borderSlate    = Color(0xFFE2E8F0); // slate border — form inputs, item detail
+  static const setupPageBg    = Color(0xFF1C1C1C); // near-black — profile setup page background
+  static const borderGrayGreen = Color(0xFFC3C8BC); // gray-green — uni overlay modal border
 }

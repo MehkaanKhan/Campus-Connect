@@ -1,10 +1,14 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/services/supabase_service.dart';
 import '../../domain/entities/post_entity.dart';
 
 abstract class FeedRemoteDataSource {
   Future<List<PostEntity>> getPosts();
+  Future<void> insertVote(String postId, String voteType);
+  Future<void> deleteVote(String postId);
+  Future<void> updateVote(String postId, String voteType);
 }
 
 class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
@@ -31,12 +35,30 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
       )
     ''').order('created_at', ascending: false);
 
-    return (response as List).map((data) {
+    final posts = response as List;
+
+    // Fetch the current user's votes for all these posts in one query
+    final userId = SupabaseService.currentUser?.id;
+    final Map<String, String> userVotes = {};
+    if (userId != null && posts.isNotEmpty) {
+      final postIds = posts.map((p) => p['id'] as String).toList();
+      final votesResponse = await _client
+          .from('votes')
+          .select('post_id, vote_type')
+          .eq('user_id', userId)
+          .inFilter('post_id', postIds);
+      for (final v in votesResponse as List) {
+        userVotes[v['post_id'] as String] = v['vote_type'] as String;
+      }
+    }
+
+    return posts.map((data) {
       final authorProfile = data['profiles'] as Map?;
       final createdAt = DateTime.parse(data['created_at']);
-      
+      final postId = data['id'] as String;
+
       return PostEntity(
-        id: data['id'] as String,
+        id: postId,
         authorName: authorProfile?['full_name'] ?? 'Unknown',
         authorAvatarUrl: authorProfile?['avatar_url'] as String?,
         timeAgo: _formatTimeAgo(createdAt),
@@ -48,18 +70,47 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
         upvotes: data['upvote_count'] ?? 0,
         downvotes: data['downvote_count'] ?? 0,
         commentCount: data['comment_count'] ?? 0,
+        isUpvoted: userVotes[postId] == 'up',
+        isDownvoted: userVotes[postId] == 'down',
       );
     }).toList();
   }
 
+  @override
+  Future<void> insertVote(String postId, String voteType) async {
+    await _client.from('votes').insert({
+      'user_id': SupabaseService.uid,
+      'post_id': postId,
+      'vote_type': voteType,
+    });
+  }
+
+  @override
+  Future<void> deleteVote(String postId) async {
+    await _client
+        .from('votes')
+        .delete()
+        .eq('user_id', SupabaseService.uid)
+        .eq('post_id', postId);
+  }
+
+  @override
+  Future<void> updateVote(String postId, String voteType) async {
+    await _client
+        .from('votes')
+        .update({'vote_type': voteType})
+        .eq('user_id', SupabaseService.uid)
+        .eq('post_id', postId);
+  }
+
   Color _resolveFlairColor(String? flair) {
     switch (flair?.toLowerCase()) {
-      case 'events':      return const Color(0xFFD6D6EA);
-      case 'academic':    return const Color(0xFFFED9B8);
-      case 'hostel':      return const Color(0xFFE2E3E0);
-      case 'carpool':     return const Color(0xFFE2E9E0);
-      case 'marketplace': return const Color(0xFFD6D6EA);
-      default:            return const Color(0xFFE2E3E0);
+      case 'events':      return AppColors.flairEvents;
+      case 'academic':    return AppColors.flairAcademic;
+      case 'hostel':      return AppColors.flairHostel;
+      case 'carpool':     return AppColors.flairCarpool;
+      case 'marketplace': return AppColors.flairMarketplace;
+      default:            return AppColors.flairHostel;
     }
   }
 
