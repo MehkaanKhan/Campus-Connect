@@ -1,12 +1,14 @@
 import '../../domain/entities/profile_setup_entity.dart';
 
 abstract class ProfileSetupLocalDataSource {
+
   List<String> getDepartments();
   List<String> getSemesters();
   Future<void> saveProfile(ProfileSetupEntity profile);
 }
 
 class ProfileSetupLocalDataSourceImpl implements ProfileSetupLocalDataSource {
+
   @override
   List<String> getDepartments() => const [
         'Computer Science',

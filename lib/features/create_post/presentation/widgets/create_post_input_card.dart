@@ -127,6 +127,37 @@ class _AvatarRow extends StatelessWidget {
                   fontSize: 14.sp,
                 ),
               ),
+              if (context.watch<CreatePostProvider>().imageBytes != null) ...[
+                SizedBox(height: 12.h),
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12.r),
+                      child: Image.memory(
+                        context.watch<CreatePostProvider>().imageBytes!,
+                        width: double.infinity,
+                        height: 200.h,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Positioned(
+                      top: 8.h,
+                      right: 8.w,
+                      child: GestureDetector(
+                        onTap: context.read<CreatePostProvider>().removeImage,
+                        child: Container(
+                          padding: EdgeInsets.all(6.w),
+                          decoration: const BoxDecoration(
+                            color: Colors.black54,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.close, color: Colors.white, size: 16.w),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),

@@ -37,11 +37,21 @@ class CreatePostBottomToolbar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _ToolbarIcon(icon: Icons.image_outlined, onTap: () {}),
+          _ToolbarIcon(icon: Icons.image_outlined, onTap: () {
+            provider.pickImage();
+          }),
           SizedBox(width: 26.w),
-          _ToolbarIcon(icon: Icons.bar_chart_rounded, onTap: () {}),
+          _ToolbarIcon(icon: Icons.bar_chart_rounded, onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Polls are coming soon!'), duration: Duration(seconds: 2)),
+            );
+          }),
           SizedBox(width: 26.w),
-          _ToolbarIcon(icon: Icons.location_on_outlined, onTap: () {}),
+          _ToolbarIcon(icon: Icons.location_on_outlined, onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Location tagging is coming soon!'), duration: Duration(seconds: 2)),
+            );
+          }),
           const Spacer(),
           Text(
             '$charCount/$maxChars',
@@ -85,9 +95,12 @@ class _ToolbarIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Icon(icon, size: 22.w, color: AppColors.textLabel),
+    return IconButton(
+      onPressed: onTap,
+      icon: Icon(icon, size: 22.w, color: AppColors.textLabel),
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(),
+      splashRadius: 24,
     );
   }
 }

@@ -1,4 +1,6 @@
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../domain/usecases/submit_post_usecase.dart';
 import '../../domain/entities/create_post_entity.dart';
 
@@ -47,6 +49,24 @@ class CreatePostProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ── Image ──
+  Uint8List? _imageBytes;
+  Uint8List? get imageBytes => _imageBytes;
+
+  Future<void> pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      _imageBytes = await pickedFile.readAsBytes();
+      notifyListeners();
+    }
+  }
+
+  void removeImage() {
+    _imageBytes = null;
+    notifyListeners();
+  }
+
   // ── Status ──
   CreatePostStatus _status = CreatePostStatus.idle;
   CreatePostStatus get status => _status;
@@ -60,6 +80,7 @@ class CreatePostProvider extends ChangeNotifier {
     _activeTab = PostTab.text;
     _title = '';
     _content = '';
+    _imageBytes = null;
     _selectedFlair = null;
     _status = CreatePostStatus.idle;
     _errorMessage = null;
@@ -81,6 +102,7 @@ class CreatePostProvider extends ChangeNotifier {
         CreatePostEntity(
           title: _title.trim(),
           content: _content.trim(),
+          imageBytes: _imageBytes,
           tags: _selectedFlair != null ? [_selectedFlair!] : [],
         ),
       );

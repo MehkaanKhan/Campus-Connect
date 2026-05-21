@@ -1,11 +1,12 @@
-import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/services/supabase_service.dart';
 import '../../domain/entities/profile_setup_entity.dart';
+import '../models/university_model.dart';
 
 /// Remote operations for profile setup — backed by `profiles` table
 /// and `avatars` storage bucket.
 abstract class ProfileSetupRemoteDataSource {
+  Future<List<UniversityModel>> getUniversities();
   Future<void> saveProfile(ProfileSetupEntity profile);
 }
 
@@ -16,19 +17,27 @@ class ProfileSetupRemoteDataSourceImpl implements ProfileSetupRemoteDataSource {
       : _client = client ?? SupabaseService.client;
 
   @override
+  Future<List<UniversityModel>> getUniversities() async {
+    final response = await _client
+        .from('universities')
+        .select()
+        .order('name', ascending: true);
+    
+    return (response as List).map((json) => UniversityModel.fromJson(json)).toList();
+  }
+
+  @override
   Future<void> saveProfile(ProfileSetupEntity profile) async {
     final userId = SupabaseService.uid;
 
-    // Upload avatar if a local photo path was provided
+    // Upload avatar if photoBytes are provided
     String? avatarUrl;
-    if (profile.photoPath != null && profile.photoPath!.isNotEmpty) {
+    if (profile.photoBytes != null && profile.photoBytes!.isNotEmpty) {
       final filePath = '$userId/avatar.jpg';
-      // In production, read actual bytes from the file path.
-      // The presentation layer should convert the picked file to bytes
-      // before calling this method, or pass bytes directly.
+      
       await SupabaseService.avatarsBucket.uploadBinary(
         filePath,
-        Uint8List(0), // placeholder — real bytes injected by UI layer
+        profile.photoBytes!,
         fileOptions: const FileOptions(
           contentType: 'image/jpeg',
           upsert: true,
@@ -40,6 +49,7 @@ class ProfileSetupRemoteDataSourceImpl implements ProfileSetupRemoteDataSource {
     // Update the user's profile row
     final updates = <String, dynamic>{
       'full_name': profile.fullName,
+      'university_id': profile.universityId,
       'department': profile.department,
       'semester': profile.semester,
     };

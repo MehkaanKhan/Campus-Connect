@@ -32,6 +32,7 @@ import 'features/onboarding/presentation/provider/onboarding_provider.dart';
 import 'features/profile_setup/data/datasources/profile_setup_local_datasource.dart';
 import 'features/profile_setup/data/datasources/profile_setup_remote_datasource.dart';
 import 'features/profile_setup/data/repositories/profile_setup_repository_impl.dart';
+import 'features/profile_setup/domain/usecases/get_universities_usecase.dart';
 import 'features/profile_setup/domain/usecases/get_departments_usecase.dart';
 import 'features/profile_setup/domain/usecases/get_semesters_usecase.dart';
 import 'features/profile_setup/domain/usecases/save_profile_usecase.dart';
@@ -174,6 +175,7 @@ class CampusConnectApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => ProfileSetupProvider(
+            getUniversitiesUsecase: GetUniversitiesUsecase(psRepo),
             getDepartmentsUsecase: GetDepartmentsUsecase(psRepo),
             getSemestersUsecase:   GetSemestersUsecase(psRepo),
             saveProfileUsecase:    SaveProfileUsecase(psRepo),

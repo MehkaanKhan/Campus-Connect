@@ -1,6 +1,8 @@
 import '../entities/profile_setup_entity.dart';
+import '../entities/university_entity.dart';
 
 abstract class ProfileSetupRepository {
+  Future<List<UniversityEntity>> getUniversities();
   List<String> getDepartments();
   List<String> getSemesters();
   Future<void> saveProfile(ProfileSetupEntity profile);

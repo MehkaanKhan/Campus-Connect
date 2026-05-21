@@ -1,4 +1,6 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import '../../domain/entities/university_entity.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -51,11 +53,23 @@ class ProfileSetupCard extends StatelessWidget {
           SizedBox(height: 16.h),
           _SectionLabel('PROFILE PHOTO'),
           SizedBox(height: 10.h),
-          _PhotoUploadButton(photoPath: provider.photoPath),
+          _PhotoUploadButton(
+            photoBytes: provider.photoBytes,
+            onTap: provider.pickImage,
+          ),
           SizedBox(height: 14.h),
           _SectionLabel('FULL NAME'),
           SizedBox(height: 8.h),
           _NameField(onChanged: provider.setFullName),
+          SizedBox(height: 18.h),
+          _SectionLabel('UNIVERSITY'),
+          SizedBox(height: 8.h),
+          _UniversityDropdownField(
+            hint: 'Select University',
+            value: provider.selectedUniversity,
+            items: provider.universities,
+            onChanged: provider.setUniversity,
+          ),
           SizedBox(height: 18.h),
           _SectionLabel('DEPARTMENT'),
           SizedBox(height: 8.h),
@@ -174,15 +188,17 @@ class _SectionLabel extends StatelessWidget {
 }
 
 class _PhotoUploadButton extends StatelessWidget {
-  final String? photoPath;
-  const _PhotoUploadButton({this.photoPath});
+  final Uint8List? photoBytes;
+  final VoidCallback onTap;
+  const _PhotoUploadButton({this.photoBytes, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         GestureDetector(
-          onTap: () {},
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
           child: Container(
             width: 72.w,
             height: 72.w,
@@ -190,8 +206,16 @@ class _PhotoUploadButton extends StatelessWidget {
               shape: BoxShape.circle,
               color: AppColors.borderLight,
               border: Border.all(color: AppColors.inputBorder, width: 1.5),
+              image: photoBytes != null
+                  ? DecorationImage(
+                      image: MemoryImage(photoBytes!),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
             ),
-            child: Icon(Icons.photo_camera_outlined, size: 28.w, color: AppColors.navInactive),
+            child: photoBytes == null
+                ? Icon(Icons.photo_camera_outlined, size: 28.w, color: AppColors.navInactive)
+                : null,
           ),
         ),
         SizedBox(height: 8.h),
@@ -274,6 +298,47 @@ class _DropdownField extends StatelessWidget {
           borderRadius: BorderRadius.circular(8.r),
           items: items
               .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+              .toList(),
+          onChanged: onChanged,
+        ),
+      ),
+    );
+  }
+}
+
+class _UniversityDropdownField extends StatelessWidget {
+  final String hint;
+  final UniversityEntity? value;
+  final List<UniversityEntity> items;
+  final ValueChanged<UniversityEntity?> onChanged;
+
+  const _UniversityDropdownField({
+    required this.hint,
+    required this.value,
+    required this.items,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.cardBg,
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: AppColors.inputBorder, width: 1),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 14.w),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<UniversityEntity>(
+          value: value,
+          hint: Text(items.isEmpty ? 'Loading...' : hint, style: TextStyle(fontSize: 14.sp, color: AppColors.textHint)),
+          icon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textLabel, size: 20.w),
+          isExpanded: true,
+          style: TextStyle(fontSize: 14.sp, color: AppColors.textPrimary),
+          dropdownColor: AppColors.cardBg,
+          borderRadius: BorderRadius.circular(8.r),
+          items: items
+              .map((item) => DropdownMenuItem(value: item, child: Text(item.name)))
               .toList(),
           onChanged: onChanged,
         ),

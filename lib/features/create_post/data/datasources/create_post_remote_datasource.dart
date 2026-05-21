@@ -29,11 +29,11 @@ class CreatePostRemoteDataSourceImpl implements CreatePostRemoteDataSource {
 
     // Upload image if provided
     String? imageUrl;
-    if (post.imagePath != null && post.imagePath!.isNotEmpty) {
+    if (post.imageBytes != null && post.imageBytes!.isNotEmpty) {
       final filePath = '$userId/${DateTime.now().millisecondsSinceEpoch}.jpg';
       await SupabaseService.postImagesBucket.uploadBinary(
         filePath,
-        Uint8List(0), // placeholder — real bytes come from the UI layer
+        post.imageBytes!,
         fileOptions: const FileOptions(contentType: 'image/jpeg'),
       );
       imageUrl = SupabaseService.postImagesBucket.getPublicUrl(filePath);
