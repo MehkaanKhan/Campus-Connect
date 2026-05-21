@@ -2,33 +2,45 @@ import 'package:flutter/material.dart';
 import '../../domain/entities/post_entity.dart';
 import '../../domain/usecases/get_feed_usecase.dart';
 import '../../domain/usecases/vote_on_post_usecase.dart';
+import '../../domain/usecases/get_university_name_usecase.dart';
 
 enum FeedStatus { initial, loading, loaded, error }
 
 class FeedProvider extends ChangeNotifier {
   final GetFeedUsecase _getFeedUsecase;
   final VoteOnPostUsecase _voteUsecase;
+  final GetUniversityNameUsecase _getUniversityNameUsecase;
 
   FeedProvider({
     required GetFeedUsecase getFeedUsecase,
     required VoteOnPostUsecase voteUsecase,
+    required GetUniversityNameUsecase getUniversityNameUsecase,
   })  : _getFeedUsecase = getFeedUsecase,
-        _voteUsecase = voteUsecase;
+        _voteUsecase = voteUsecase,
+        _getUniversityNameUsecase = getUniversityNameUsecase;
 
   FeedStatus _status = FeedStatus.initial;
   List<PostEntity> _posts = [];
   String? _error;
+  String _universityName = 'Your Campus';
 
   FeedStatus get status => _status;
   List<PostEntity> get posts => _posts;
   String? get error => _error;
   bool get isLoading => _status == FeedStatus.loading;
+  String get universityName => _universityName;
 
   Future<void> loadFeed() async {
     _status = FeedStatus.loading;
     notifyListeners();
     try {
-      _posts = await _getFeedUsecase();
+      final futures = await Future.wait([
+        _getUniversityNameUsecase(),
+        _getFeedUsecase(),
+      ]);
+      _universityName = futures[0] as String;
+      _posts = futures[1] as List<PostEntity>;
+      
       _status = FeedStatus.loaded;
     } catch (e) {
       _error = e.toString();
@@ -87,5 +99,13 @@ class FeedProvider extends ChangeNotifier {
       notifyListeners();
       _voteUsecase.insert(postId, 'down').ignore();
     }
+  }
+
+  void incrementCommentCount(String postId) {
+    final idx = _posts.indexWhere((p) => p.id == postId);
+    if (idx < 0) return;
+    final post = _posts[idx];
+    _posts[idx] = post.copyWith(commentCount: post.commentCount + 1);
+    notifyListeners();
   }
 }

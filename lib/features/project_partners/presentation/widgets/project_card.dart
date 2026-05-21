@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
+import '../../../../core/services/supabase_service.dart';
 import '../../domain/entities/project_partner_entity.dart';
+import 'apply_bottom_sheet.dart';
+import 'applications_list_sheet.dart';
 
 class ProjectCard extends StatelessWidget {
   final ProjectPartnerEntity project;
@@ -25,6 +28,8 @@ class ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isOwner = project.creatorId == SupabaseService.uid;
+
     return Container(
       padding: EdgeInsets.all(18.w),
       decoration: BoxDecoration(
@@ -118,6 +123,99 @@ class ProjectCard extends StatelessWidget {
               );
             }).toList(),
           ),
+          SizedBox(height: 20.h),
+          if (isOwner)
+            SizedBox(
+              width: double.infinity,
+              height: 44.h,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  side: const BorderSide(color: AppColors.primary),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                ),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => ApplicationsListSheet(
+                      listingId: project.id,
+                      projectTitle: project.title,
+                    ),
+                  );
+                },
+                child: Text('View Applications (${project.applicationCount})', style: const TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            )
+          else if (project.currentUserApplicationStatus == null)
+            SizedBox(
+              width: double.infinity,
+              height: 44.h,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                ),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => ApplyBottomSheet(
+                      listingId: project.id,
+                      projectTitle: project.title,
+                    ),
+                  );
+                },
+                child: const Text('Apply', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            )
+          else
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              decoration: BoxDecoration(
+                color: AppColors.pageBg,
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      project.currentUserApplicationStatus == 'accepted'
+                          ? Icons.check_circle_rounded
+                          : project.currentUserApplicationStatus == 'rejected'
+                              ? Icons.cancel_rounded
+                              : Icons.access_time_filled_rounded,
+                      size: 18.w,
+                      color: project.currentUserApplicationStatus == 'accepted'
+                          ? AppColors.sage
+                          : project.currentUserApplicationStatus == 'rejected'
+                              ? AppColors.error
+                              : AppColors.textSecondary,
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'Application ${project.currentUserApplicationStatus!.toUpperCase()}',
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.bold,
+                        color: project.currentUserApplicationStatus == 'accepted'
+                            ? AppColors.sage
+                            : project.currentUserApplicationStatus == 'rejected'
+                                ? AppColors.error
+                                : AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );

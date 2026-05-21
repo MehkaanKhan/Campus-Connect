@@ -2,7 +2,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/services/supabase_service.dart';
 import '../../domain/entities/thread_entity.dart';
 
-
 /// Remote operations for threads (posts) and comments.
 abstract class ThreadRemoteDataSource {
   Future<ThreadEntity> getThread(String postId);
@@ -18,27 +17,25 @@ class ThreadRemoteDataSourceImpl implements ThreadRemoteDataSource {
 
   @override
   Future<ThreadEntity> getThread(String postId) async {
-    // We use a mock ID if the app currently doesn't pass one properly yet
-    // because the UI might be hardcoded to just show a "thread".
-    // For now, let's fetch a specific post if the ID is real, or just the latest post.
-    
-    // Attempt to fetch the post, author profile, and its comments (and comment authors)
-    // Supabase can query nested relations like: comments(id, content, upvote_count, is_op, created_at, profiles(full_name))
     final postResponse = await _client.from('posts').select('''
       id,
       title,
       content,
+      image_url,
       comment_count,
       allow_replies,
       created_at,
-      profiles!author_id (full_name)
+      profiles!author_id (
+        full_name,
+        avatar_url
+      )
     ''').eq('id', postId).maybeSingle();
 
     if (postResponse == null) {
       throw Exception('Post not found');
     }
 
-    // Now fetch comments explicitly to sort them and get author names
+    // Fetch comments with author profile data
     final commentsResponse = await _client.from('comments').select('''
       id,
       content,
@@ -46,26 +43,35 @@ class ThreadRemoteDataSourceImpl implements ThreadRemoteDataSource {
       is_op,
       created_at,
       parent_id,
-      profiles!author_id (full_name)
+      profiles!author_id (
+        full_name,
+        avatar_url
+      )
     ''').eq('post_id', postId).order('created_at', ascending: true);
 
-    final authorName = postResponse['profiles']?['full_name'] ?? 'Unknown';
+    final authorProfile = postResponse['profiles'] as Map?;
+    final authorName = authorProfile?['full_name'] ?? 'Unknown';
+    final authorAvatarUrl = authorProfile?['avatar_url'] as String?;
     final createdAt = DateTime.parse(postResponse['created_at']);
     final timeAgo = _formatTimeAgo(createdAt);
 
-    // Build the nested comment structure
-    // Since the current entity supports replies, we build a tree.
-    final List<Map<String, dynamic>> allComments = List<Map<String, dynamic>>.from(commentsResponse);
-    final topLevelComments = allComments.where((c) => c['parent_id'] == null).toList();
+    // Build the nested comment tree
+    final List<Map<String, dynamic>> allComments =
+        List<Map<String, dynamic>>.from(commentsResponse);
+    final topLevelComments =
+        allComments.where((c) => c['parent_id'] == null).toList();
 
-    List<CommentEntity> mapComments(List<Map<String, dynamic>> commentNodes) {
-      return commentNodes.map((c) {
-        final replies = allComments.where((reply) => reply['parent_id'] == c['id']).toList();
+    List<CommentEntity> mapComments(List<Map<String, dynamic>> nodes) {
+      return nodes.map((c) {
+        final replies =
+            allComments.where((r) => r['parent_id'] == c['id']).toList();
         final cCreatedAt = DateTime.parse(c['created_at']);
-        
+        final cProfile = c['profiles'] as Map?;
+
         return CommentEntity(
           id: c['id'],
-          authorName: c['profiles']?['full_name'] ?? 'Unknown',
+          authorName: cProfile?['full_name'] ?? 'Unknown',
+          authorAvatarUrl: cProfile?['avatar_url'] as String?,
           timeAgo: _formatTimeAgo(cCreatedAt),
           content: c['content'],
           upvotes: c['upvote_count'],
@@ -81,8 +87,10 @@ class ThreadRemoteDataSourceImpl implements ThreadRemoteDataSource {
       id: postResponse['id'],
       title: postResponse['title'],
       authorName: authorName,
+      authorAvatarUrl: authorAvatarUrl,
       postedAgo: timeAgo,
-      body: postResponse['content'],
+      body: postResponse['content'] ?? '',
+      imageUrl: postResponse['image_url'] as String?,
       commentCount: postResponse['comment_count'],
       allowReplies: postResponse['allow_replies'],
       comments: mappedComments,

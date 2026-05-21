@@ -4,6 +4,7 @@ class ProjectPartnersLocalDataSource {
   List<ProjectPartnerEntity> getProjects() => const [
         ProjectPartnerEntity(
           id: '1',
+          creatorId: 'mock_user',
           badge: 'ACADEMIC PROJECT',
           badgeColor: '#6B8F6B',
           title: 'Campus Sustainable Transit App',
@@ -13,6 +14,7 @@ class ProjectPartnersLocalDataSource {
         ),
         ProjectPartnerEntity(
           id: '2',
+          creatorId: 'mock_user',
           badge: 'STARTUP IDEA',
           badgeColor: '#C8913A',
           title: 'Dorm Room Chef Platform',
@@ -22,6 +24,7 @@ class ProjectPartnersLocalDataSource {
         ),
         ProjectPartnerEntity(
           id: '3',
+          creatorId: 'mock_user',
           badge: 'HACKATHON',
           badgeColor: '#5A7FA8',
           title: 'AI Study Assistant Bot',

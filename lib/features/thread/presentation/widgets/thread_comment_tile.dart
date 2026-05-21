@@ -43,16 +43,17 @@ class ThreadCommentTile extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    width: 30.w,
-                    height: 30.w,
-                    decoration: BoxDecoration(
-                      color: isNested
-                          ? AppColors.commentNestedAvatarBg
-                          : AppColors.commentAvatarBg,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.person, color: Colors.white60, size: 16),
+                  CircleAvatar(
+                    radius: 15.w,
+                    backgroundColor: isNested
+                        ? AppColors.commentNestedAvatarBg
+                        : AppColors.commentAvatarBg,
+                    backgroundImage: comment.authorAvatarUrl != null
+                        ? NetworkImage(comment.authorAvatarUrl!)
+                        : null,
+                    child: comment.authorAvatarUrl == null
+                        ? const Icon(Icons.person, color: Colors.white60, size: 16)
+                        : null,
                   ),
                   SizedBox(width: 8.w),
                   Text(

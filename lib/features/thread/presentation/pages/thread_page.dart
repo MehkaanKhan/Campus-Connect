@@ -48,7 +48,7 @@ class _ThreadPageState extends State<ThreadPage> {
       bottomSheet: ThreadCommentInputBar(controller: _commentController),
       body: Column(
         children: [
-          CampusTopNavBar(onBack: () => context.pop()),
+          CampusTopNavBar(onBack: () => context.go('/feed')),
           Expanded(
             child: thread == null
                 ? const Center(

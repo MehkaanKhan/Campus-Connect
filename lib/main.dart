@@ -47,6 +47,9 @@ import 'features/project_partners/data/datasources/project_partners_remote_datas
 import 'features/project_partners/data/repositories/project_partners_repository_impl.dart';
 import 'features/project_partners/domain/usecases/get_project_partners_usecase.dart';
 import 'features/project_partners/domain/usecases/add_project_partner_usecase.dart';
+import 'features/project_partners/domain/usecases/apply_to_project_usecase.dart';
+import 'features/project_partners/domain/usecases/get_applications_usecase.dart';
+import 'features/project_partners/domain/usecases/update_application_status_usecase.dart';
 import 'features/project_partners/presentation/provider/project_partners_provider.dart';
 
 import 'features/thread/data/datasources/thread_remote_datasource.dart';
@@ -58,6 +61,7 @@ import 'features/feed/data/datasources/feed_remote_datasource.dart';
 import 'features/feed/data/repositories/feed_repository_impl.dart';
 import 'features/feed/domain/usecases/get_feed_usecase.dart';
 import 'features/feed/domain/usecases/vote_on_post_usecase.dart';
+import 'features/feed/domain/usecases/get_university_name_usecase.dart';
 import 'features/feed/presentation/provider/feed_provider.dart';
 
 import 'features/notifications/data/datasources/notifications_remote_datasource.dart';
@@ -188,9 +192,12 @@ class CampusConnectApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => ProjectPartnersProvider(
-            getProjectsUsecase:    GetProjectPartnersUsecase(ppRepo),
-            getFilterChipsUsecase: GetFilterChipsUsecase(ppRepo),
-            addProjectUseCase:     AddProjectPartnerUseCase(ppRepo),
+            getProjectsUsecase:             GetProjectPartnersUsecase(ppRepo),
+            getFilterChipsUsecase:          GetFilterChipsUsecase(ppRepo),
+            addProjectUseCase:              AddProjectPartnerUseCase(ppRepo),
+            applyToProjectUsecase:          ApplyToProjectUsecase(ppRepo),
+            getApplicationsUsecase:         GetApplicationsUsecase(ppRepo),
+            updateApplicationStatusUsecase: UpdateApplicationStatusUsecase(ppRepo),
           ),
         ),
         ChangeNotifierProvider(
@@ -215,6 +222,7 @@ class CampusConnectApp extends StatelessWidget {
           create: (_) => FeedProvider(
             getFeedUsecase: GetFeedUsecase(feedRepo),
             voteUsecase:    VoteOnPostUsecase(feedRepo),
+            getUniversityNameUsecase: GetUniversityNameUsecase(feedRepo),
           ),
         ),
         ChangeNotifierProvider(

@@ -33,7 +33,7 @@ class PostEntity {
     this.isDownvoted = false,
   });
 
-  PostEntity copyWith({bool? isUpvoted, bool? isDownvoted, int? upvotes, int? downvotes}) =>
+  PostEntity copyWith({bool? isUpvoted, bool? isDownvoted, int? upvotes, int? downvotes, int? commentCount}) =>
       PostEntity(
         id: id,
         authorName: authorName,
@@ -46,7 +46,7 @@ class PostEntity {
         imageUrl: imageUrl,
         upvotes: upvotes ?? this.upvotes,
         downvotes: downvotes ?? this.downvotes,
-        commentCount: commentCount,
+        commentCount: commentCount ?? this.commentCount,
         isUpvoted: isUpvoted ?? this.isUpvoted,
         isDownvoted: isDownvoted ?? this.isDownvoted,
       );

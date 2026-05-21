@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../provider/thread_provider.dart';
+import '../../../feed/presentation/provider/feed_provider.dart';
 
 class ThreadCommentInputBar extends StatelessWidget {
   final TextEditingController controller;
@@ -46,8 +47,14 @@ class ThreadCommentInputBar extends StatelessWidget {
           SizedBox(width: 10.w),
           GestureDetector(
             onTap: () async {
-              await provider.submitComment();
-              controller.clear();
+              if (controller.text.trim().isNotEmpty) {
+                final postId = provider.activePostId;
+                if (postId != null) {
+                  context.read<FeedProvider>().incrementCommentCount(postId);
+                }
+                await provider.submitComment();
+                controller.clear();
+              }
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 11.h),

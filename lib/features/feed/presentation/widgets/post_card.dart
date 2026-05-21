@@ -5,6 +5,7 @@ import '../../domain/entities/post_entity.dart';
 import '../provider/feed_provider.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
+import '../../../../core/widgets/post_image_container.dart';
 
 class PostCard extends StatelessWidget {
   final PostEntity post;
@@ -60,24 +61,7 @@ class PostCard extends StatelessWidget {
           ),
           if (post.imageUrl != null) ...[
             SizedBox(height: 10.h),
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(0)),
-              child: post.imageUrl!.startsWith('http')
-                  ? Image.network(
-                      post.imageUrl!,
-                      width: double.infinity,
-                      height: 180.h,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => _imagePlaceholder(),
-                    )
-                  : Image.asset(
-                      post.imageUrl!,
-                      width: double.infinity,
-                      height: 180.h,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => _imagePlaceholder(),
-                    ),
-            ),
+            PostImageContainer(imageUrl: post.imageUrl!),
           ],
           Padding(
             padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 12.h),
@@ -89,12 +73,6 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  Widget _imagePlaceholder() => Container(
-        width: double.infinity,
-        height: 180.h,
-        color: AppColors.borderLight,
-        child: Icon(Icons.image_outlined, size: 36.w, color: AppColors.imagePlaceholder),
-      );
 }
 
 class _PostHeader extends StatelessWidget {

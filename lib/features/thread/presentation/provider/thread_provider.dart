@@ -32,6 +32,7 @@ class ThreadProvider extends ChangeNotifier {
 
   Future<void> loadThread(String postId) async {
     _activePostId = postId;
+    _thread = null;
     _status = ThreadStatus.loading;
     notifyListeners();
     try {
@@ -50,20 +51,40 @@ class ThreadProvider extends ChangeNotifier {
   }
 
   Future<void> submitComment() async {
-    if (_commentDraft.trim().isEmpty || _activePostId == null) return;
-    _status = ThreadStatus.loading;
+    if (_commentDraft.trim().isEmpty || _activePostId == null || _thread == null) return;
+    
+    final draft = _commentDraft.trim();
+    _commentDraft = ''; // clear input immediately
+    
+    // Optimistic UI Update for Thread
+    final tempComment = CommentEntity(
+      id: 'temp_${DateTime.now().millisecondsSinceEpoch}',
+      authorName: 'You',
+      authorAvatarUrl: null,
+      timeAgo: 'Just now',
+      content: draft,
+      upvotes: 0,
+      isOp: false,
+      replies: const [],
+    );
+
+    _thread = _thread!.copyWith(
+      commentCount: _thread!.commentCount + 1,
+      comments: [..._thread!.comments, tempComment],
+    );
     notifyListeners();
+
     try {
-      await postCommentUsecase(_activePostId!, _commentDraft.trim());
-      _commentDraft = '';
-      _status = ThreadStatus.success;
+      await postCommentUsecase(_activePostId!, draft);
       
-      // Reload thread to show new comment
-      await loadThread(_activePostId!);
+      // Reload silently in background to get real ID and avatar
+      final updatedThread = await getThreadUsecase(_activePostId!);
+      _thread = updatedThread;
+      notifyListeners();
     } catch (_) {
-      _status = ThreadStatus.error;
+      // Ignore error for now to keep optimistic state if offline, 
+      // or we could revert if we wanted to be strict.
     }
-    notifyListeners();
   }
 
   Future<void> toggleReplies(bool val) async {

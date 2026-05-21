@@ -9,6 +9,7 @@ abstract class FeedRemoteDataSource {
   Future<void> insertVote(String postId, String voteType);
   Future<void> deleteVote(String postId);
   Future<void> updateVote(String postId, String voteType);
+  Future<String> getUniversityName();
 }
 
 class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
@@ -18,7 +19,46 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
       : _client = client ?? SupabaseService.client;
 
   @override
+  Future<String> getUniversityName() async {
+    final userId = SupabaseService.currentUser?.id;
+    if (userId == null) return 'Your Campus';
+
+    final res = await _client
+        .from('profiles')
+        .select('universities(name, logo_text)')
+        .eq('id', userId)
+        .maybeSingle();
+
+    if (res != null && res['universities'] != null) {
+      final uniData = res['universities'] as Map<String, dynamic>;
+      final logoText = uniData['logo_text'] as String?;
+      if (logoText != null && logoText.trim().isNotEmpty) {
+        return logoText;
+      }
+      return uniData['name'] as String;
+    }
+    return 'Your Campus';
+  }
+
+  @override
   Future<List<PostEntity>> getPosts() async {
+    final userId = SupabaseService.currentUser?.id;
+    if (userId == null) throw Exception('Not authenticated');
+
+    // Resolve the current user's university so we can scope the feed
+    final profileRow = await _client
+        .from('profiles')
+        .select('university_id')
+        .eq('id', userId)
+        .maybeSingle();
+
+    final universityId = profileRow?['university_id'] as String?;
+    if (universityId == null || universityId.isEmpty) {
+      throw Exception(
+        'Please complete your profile setup and select your university to see your campus feed.',
+      );
+    }
+
     final response = await _client.from('posts').select('''
       id,
       title,
@@ -33,14 +73,15 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
         full_name,
         avatar_url
       )
-    ''').order('created_at', ascending: false);
+    ''')
+        .eq('university_id', universityId)
+        .order('created_at', ascending: false);
 
     final posts = response as List;
 
-    // Fetch the current user's votes for all these posts in one query
-    final userId = SupabaseService.currentUser?.id;
+    // Batch-fetch the current user's votes for all these posts in one query
     final Map<String, String> userVotes = {};
-    if (userId != null && posts.isNotEmpty) {
+    if (posts.isNotEmpty) {
       final postIds = posts.map((p) => p['id'] as String).toList();
       final votesResponse = await _client
           .from('votes')

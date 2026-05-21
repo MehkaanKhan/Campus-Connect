@@ -19,4 +19,7 @@ class FeedRepositoryImpl implements FeedRepository {
   @override
   Future<void> updateVote(String postId, String voteType) =>
       _source.updateVote(postId, voteType);
+
+  @override
+  Future<String> getUniversityName() => _source.getUniversityName();
 }
