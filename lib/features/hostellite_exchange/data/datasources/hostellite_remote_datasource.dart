@@ -17,7 +17,7 @@ class HostelliteRemoteDataSourceImpl implements HostelliteRemoteDataSource {
     var query = _client
         .from('exchange_items')
         .select(
-          'id, title, description, item_type, price, price_unit, condition, image_url, is_available, created_at, profiles(full_name, avatar_url)',
+          'id, seller_id, title, description, item_type, price, price_unit, condition, image_url, is_available, created_at, profiles(full_name, avatar_url, email)',
         )
         .eq('is_available', true);
 
@@ -33,6 +33,7 @@ class HostelliteRemoteDataSourceImpl implements HostelliteRemoteDataSource {
     final p = row['profiles'] as Map?;
     return ExchangeItemEntity(
       id: row['id'] as String,
+      sellerId: row['seller_id'] as String?,
       title: row['title'] as String,
       description: row['description'] as String? ?? '',
       type: _parseType(row['item_type'] as String?),
@@ -44,6 +45,7 @@ class HostelliteRemoteDataSourceImpl implements HostelliteRemoteDataSource {
       imageUrl: row['image_url'] as String?,
       timeAgo: _timeAgo(DateTime.parse(row['created_at'] as String)),
       isAvailable: row['is_available'] as bool? ?? true,
+      sellerEmail: p?['email'] as String?,
     );
   }
 

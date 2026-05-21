@@ -7,6 +7,9 @@ class OtherUnisProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  String? _error;
+  String? get error => _error;
+
   List<OtherUniEntity> _allUnis = [];
   List<OtherUniEntity> _filteredUnis = [];
   List<OtherUniEntity> get unis => _filteredUnis;
@@ -15,6 +18,7 @@ class OtherUnisProvider extends ChangeNotifier {
 
   Future<void> loadUnis() async {
     _isLoading = true;
+    _error = null;
     notifyListeners();
 
     try {
@@ -32,15 +36,20 @@ class OtherUnisProvider extends ChangeNotifier {
         logoText: u['logo_text'] as String? ?? '',
         description: u['description'] as String? ?? '',
       )).toList();
+
+      _filteredUnis = _allUnis;
     } on PostgrestException catch (e) {
-      debugPrint('OtherUnis error: ${e.message}');
+      debugPrint('OtherUnis Postgrest error: ${e.message}');
+      _error = e.message;
       _allUnis = [];
+      _filteredUnis = [];
     } catch (e) {
       debugPrint('OtherUnis error: $e');
+      _error = e.toString();
       _allUnis = [];
+      _filteredUnis = [];
     }
 
-    _filteredUnis = _allUnis;
     _isLoading = false;
     notifyListeners();
   }

@@ -27,6 +27,7 @@ import 'placeholder_screens.dart';
 import '../../features/leaderboard/presentation/pages/leaderboard_page.dart';
 import '../../features/hostellite_exchange_board/presentation/pages/item_detail_page.dart';
 import '../../features/hostellite_exchange_board/presentation/pages/complaint_form_page.dart';
+import '../../features/hostellite_exchange_board/presentation/pages/my_listings_page.dart';
 import '../../features/uni_graph/presentation/pages/uni_graph_page.dart';
 import '../../features/other_unis/presentation/pages/other_unis_page.dart';
 import '../../features/other_unis/presentation/pages/uni_profile_page.dart';
@@ -117,6 +118,7 @@ GoRouter createRouter(AuthProvider authProvider) {
       GoRoute(path: '/leaderboard', builder: (ctx, _) => const LeaderboardPage()),
       GoRoute(path: '/hostellite-exchange/detail',     builder: (ctx, state) => ItemDetailPage(item: state.extra as ExchangeItemEntity)),
       GoRoute(path: '/hostellite-exchange/complaint',  builder: (ctx, state) => ComplaintFormPage(item: state.extra as ExchangeItemEntity)),
+      GoRoute(path: '/hostellite-exchange/my-listings', builder: (ctx, _) => const MyListingsPage()),
       GoRoute(path: '/uni-graph',    builder: (ctx, _) => const UniGraphPage()),
       GoRoute(path: '/other-unis',   builder: (ctx, _) => const OtherUnisPage()),
       GoRoute(path: '/other-unis/profile', builder: (ctx, state) => UniProfilePage(uni: state.extra as OtherUniEntity)),

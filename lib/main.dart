@@ -81,6 +81,13 @@ import 'features/hostellite_exchange/domain/usecases/get_items_usecase.dart';
 import 'features/hostellite_exchange/presentation/provider/hostellite_provider.dart';
 
 import 'features/leaderboard/presentation/provider/leaderboard_provider.dart';
+import 'features/hostellite_exchange_board/data/datasources/exchange_board_remote_datasource.dart';
+import 'features/hostellite_exchange_board/data/repositories/exchange_board_repository_impl.dart';
+import 'features/hostellite_exchange_board/domain/usecases/submit_complaint_usecase.dart';
+import 'features/hostellite_exchange_board/domain/usecases/create_exchange_item_usecase.dart';
+import 'features/hostellite_exchange_board/domain/usecases/update_item_availability_usecase.dart';
+import 'features/hostellite_exchange_board/domain/usecases/delete_exchange_item_usecase.dart';
+import 'features/hostellite_exchange_board/domain/usecases/get_my_items_usecase.dart';
 import 'features/hostellite_exchange_board/presentation/provider/exchange_board_provider.dart';
 import 'features/uni_graph/presentation/provider/uni_graph_provider.dart';
 import 'features/other_unis/presentation/provider/other_unis_provider.dart';
@@ -165,6 +172,10 @@ class CampusConnectApp extends StatelessWidget {
     final heSource     = HostelliteRemoteDataSourceImpl();
     final heRepo       = HostelliteRepositoryImpl(heSource);
 
+    // ── Hostellite Exchange Board ──
+    final hebSource    = ExchangeBoardRemoteDataSourceImpl();
+    final hebRepo      = ExchangeBoardRepositoryImpl(hebSource);
+
     // ── Carpool ──
     final carpoolSource = CarpoolRemoteDataSourceImpl();
     final carpoolRepo   = CarpoolRepositoryImpl(carpoolSource);
@@ -248,7 +259,15 @@ class CampusConnectApp extends StatelessWidget {
           ),
         ),
         ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
-        ChangeNotifierProvider(create: (_) => ExchangeBoardProvider()),
+        ChangeNotifierProvider(
+          create: (_) => ExchangeBoardProvider(
+            submitComplaintUsecase: SubmitComplaintUsecase(hebRepo),
+            createItemUsecase: CreateExchangeItemUsecase(hebRepo),
+            updateItemAvailabilityUsecase: UpdateItemAvailabilityUsecase(hebRepo),
+            deleteItemUsecase: DeleteExchangeItemUsecase(hebRepo),
+            getMyItemsUsecase: GetMyItemsUsecase(hebRepo),
+          ),
+        ),
         ChangeNotifierProvider(create: (_) => UniGraphProvider()),
         ChangeNotifierProvider(create: (_) => OtherUnisProvider()),
       ],

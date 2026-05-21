@@ -46,3 +46,12 @@ app.*.map.json
 
 
 .env
+
+# Node (not part of Flutter project)
+node_modules/
+package-lock.json
+package.json
+
+# Root-level generated docs
+crud_operations.md
+database_schema_design.md

@@ -14,6 +14,8 @@ class ExchangeItemEntity {
   final String? imageUrl;
   final String timeAgo;
   final bool isAvailable;
+  final String? sellerEmail;
+  final String? sellerId;
 
   const ExchangeItemEntity({
     required this.id,
@@ -28,6 +30,8 @@ class ExchangeItemEntity {
     this.imageUrl,
     required this.timeAgo,
     this.isAvailable = true,
+    this.sellerEmail,
+    this.sellerId,
   });
 
   String get typeLabel {
