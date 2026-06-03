@@ -4,5 +4,5 @@ class GetSemestersUsecase {
   final ProfileSetupRepository repository;
   const GetSemestersUsecase(this.repository);
 
-  List<String> call() => repository.getSemesters();
+  Future<List<String>> call() => repository.getSemesters();
 }

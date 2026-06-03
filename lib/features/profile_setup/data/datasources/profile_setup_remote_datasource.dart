@@ -7,6 +7,8 @@ import '../models/university_model.dart';
 /// and `avatars` storage bucket.
 abstract class ProfileSetupRemoteDataSource {
   Future<List<UniversityModel>> getUniversities();
+  Future<List<String>> getDepartments();
+  Future<List<String>> getSemesters();
   Future<void> saveProfile(ProfileSetupEntity profile);
 }
 
@@ -24,6 +26,24 @@ class ProfileSetupRemoteDataSourceImpl implements ProfileSetupRemoteDataSource {
         .order('name', ascending: true);
     
     return (response as List).map((json) => UniversityModel.fromJson(json)).toList();
+  }
+
+  @override
+  Future<List<String>> getDepartments() async {
+    final response = await _client
+        .from('departments')
+        .select('name')
+        .order('name', ascending: true);
+    return (response as List).map((row) => row['name'] as String).toList();
+  }
+
+  @override
+  Future<List<String>> getSemesters() async {
+    final response = await _client
+        .from('semesters')
+        .select('name')
+        .order('sort_order', ascending: true);
+    return (response as List).map((row) => row['name'] as String).toList();
   }
 
   @override

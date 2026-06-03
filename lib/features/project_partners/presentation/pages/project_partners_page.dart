@@ -1,15 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
 import '../../../../core/widgets/campus_bottom_navbar.dart';
+import '../provider/project_partners_provider.dart';
 import '../widgets/project_filter_chips.dart';
 import '../widgets/project_list.dart';
 import '../widgets/create_project_bottom_sheet.dart';
 
-class ProjectPartnersPage extends StatelessWidget {
+class ProjectPartnersPage extends StatefulWidget {
   const ProjectPartnersPage({super.key});
+
+  @override
+  State<ProjectPartnersPage> createState() => _ProjectPartnersPageState();
+}
+
+class _ProjectPartnersPageState extends State<ProjectPartnersPage> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      context.read<ProjectPartnersProvider>().loadMoreProjects();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +52,7 @@ class ProjectPartnersPage extends StatelessWidget {
           ),
           Expanded(
             child: SingleChildScrollView(
+              controller: _scrollController,
               padding: EdgeInsets.fromLTRB(18.w, 0, 18.w, 100.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,6 +67,11 @@ class ProjectPartnersPage extends StatelessWidget {
                       height: 1.15,
                       color: AppColors.textPrimary,
                     ),
+                  ),
+                  SizedBox(height: 5.h),
+                  Text(
+                    'lISting: ${context.watch<ProjectPartnersProvider>().allProjects.length}',
+                    
                   ),
                   SizedBox(height: 10.h),
                   Text(
@@ -59,7 +94,7 @@ class ProjectPartnersPage extends StatelessWidget {
                       border: Border.all(color: AppColors.border, width: 1),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.03),
+                          color: AppColors.black.withValues(alpha: 0.03),
                           blurRadius: 10,
                           offset: const Offset(0, 2),
                         ),
@@ -87,7 +122,7 @@ class ProjectPartnersPage extends StatelessWidget {
                               showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
+                                backgroundColor: AppColors.transparent,
                                 builder: (context) => const CreateProjectBottomSheet(),
                               );
                             },
@@ -117,6 +152,19 @@ class ProjectPartnersPage extends StatelessWidget {
                   const ProjectFilterChips(),
                   SizedBox(height: 22.h),
                   const ProjectList(),
+                  Consumer<ProjectPartnersProvider>(
+                    builder: (context, provider, child) {
+                      if (provider.isFetchingMore) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20.h),
+                          child: const Center(
+                            child: CircularProgressIndicator(color: AppColors.primary),
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
                 ],
               ),
             ),

@@ -23,7 +23,7 @@ class CreatePostBottomToolbar extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: AppColors.black.withValues(alpha: 0.08),
             blurRadius: 12,
             offset: const Offset(0, -3),
           ),
@@ -76,7 +76,7 @@ class CreatePostBottomToolbar extends StatelessWidget {
                 CircularProgressIndicator(
                   value: progress.clamp(0.0, 1.0),
                   strokeWidth: 2.5,
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: AppColors.transparent,
                   color: charCount > 260 ? AppColors.negativeVote : AppColors.sage,
                 ),
               ],

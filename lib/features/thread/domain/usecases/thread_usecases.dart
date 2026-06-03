@@ -12,7 +12,8 @@ class PostCommentUsecase {
   final ThreadRepository repository;
   const PostCommentUsecase(this.repository);
 
-  Future<void> call(String postId, String content) => repository.postComment(postId, content);
+  Future<void> call(String postId, String content, {String? parentId}) => 
+      repository.postComment(postId, content, parentId: parentId);
 }
 
 class ToggleAllowRepliesUsecase {

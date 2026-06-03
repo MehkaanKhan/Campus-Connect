@@ -44,11 +44,20 @@ class ProfileSetupProvider extends ChangeNotifier {
   Uint8List? get photoBytes => _photoBytes;
 
   List<UniversityEntity> universities = [];
-  late final List<String> departments = getDepartmentsUsecase();
-  late final List<String> semesters   = getSemestersUsecase();
+  List<String> departments = [];
+  List<String> semesters   = [];
 
   Future<void> _init() async {
-    universities = await getUniversitiesUsecase();
+    _status = ProfileSetupStatus.loading;
+    notifyListeners();
+    try {
+      universities = await getUniversitiesUsecase();
+      departments = await getDepartmentsUsecase();
+      semesters = await getSemestersUsecase();
+      _status = ProfileSetupStatus.success;
+    } catch (_) {
+      _status = ProfileSetupStatus.error;
+    }
     notifyListeners();
   }
 

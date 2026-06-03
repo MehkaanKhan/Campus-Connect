@@ -192,7 +192,7 @@ class ItemDetailPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        item.timeAgo,
+                        "item.timeAgo",
                         style: const TextStyle(
                           fontFamily: 'Inter',
                           color: AppColors.textMuted,

@@ -10,8 +10,8 @@ class ThreadRepositoryImpl implements ThreadRepository {
   Future<ThreadEntity> getThread(String postId) => remoteSource.getThread(postId);
 
   @override
-  Future<void> postComment(String postId, String content) =>
-      remoteSource.postComment(postId, content);
+  Future<void> postComment(String postId, String content, {String? parentId}) =>
+      remoteSource.postComment(postId, content, parentId: parentId);
 
   @override
   Future<void> toggleAllowReplies(String postId, bool value) =>

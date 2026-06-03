@@ -4,7 +4,7 @@ import '../../domain/entities/project_application_entity.dart';
 import '../../domain/entities/project_partner_entity.dart';
 
 abstract class ProjectPartnersRemoteDataSource {
-  Future<List<ProjectPartnerEntity>> getProjects();
+  Future<List<ProjectPartnerEntity>> getProjects({int limit = 10, int offset = 0});
   Future<List<String>> getFilterChips();
   Future<void> addProject(ProjectPartnerEntity project);
   Future<void> applyToProject(String listingId, String coverMessage, {String? phoneNumber});
@@ -20,7 +20,7 @@ class ProjectPartnersRemoteDataSourceImpl
       : _client = client ?? SupabaseService.client;
 
   @override
-  Future<List<ProjectPartnerEntity>> getProjects() async {
+  Future<List<ProjectPartnerEntity>> getProjects({int limit = 10, int offset = 0}) async {
     final userId = SupabaseService.currentUser?.id;
 
     // Fetch listings along with their associated skills and applications
@@ -33,7 +33,7 @@ class ProjectPartnersRemoteDataSourceImpl
       description,
       project_skills ( skill_name ),
       project_applications ( id, applicant_id, status )
-    ''').order('created_at', ascending: false);
+    ''').order('created_at', ascending: false).range(offset, offset + limit - 1);
 
     return (response as List).map((data) {
       final skillsList = (data['project_skills'] as List?)

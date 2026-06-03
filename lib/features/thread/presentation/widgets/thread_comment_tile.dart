@@ -32,8 +32,8 @@ class ThreadCommentTile extends StatelessWidget {
                 ? null
                 : [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.03),
-                      blurRadius: 6,
+                      color: AppColors.black.withValues(alpha: 0.03),
+                      blurRadius: 6.r,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -52,7 +52,7 @@ class ThreadCommentTile extends StatelessWidget {
                         ? NetworkImage(comment.authorAvatarUrl!)
                         : null,
                     child: comment.authorAvatarUrl == null
-                        ? const Icon(Icons.person, color: Colors.white60, size: 16)
+                        ? const Icon(Icons.person, color: AppColors.white60, size: 16)
                         : null,
                   ),
                   SizedBox(width: 8.w),
@@ -77,7 +77,7 @@ class ThreadCommentTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 9.sp,
                           fontWeight: FontWeight.w800,
-                          color: Colors.white,
+                          color: AppColors.white,
                           letterSpacing: 0.4,
                         ),
                       ),
@@ -86,8 +86,24 @@ class ThreadCommentTile extends StatelessWidget {
                   SizedBox(width: 6.w),
                   Text(
                     comment.timeAgo,
-                    style: TextStyle(fontSize: 11.sp, color: AppColors.navInactive),
+                    style: TextStyle(fontSize: 11.sp, color: AppColors.textCaption),
                   ),
+                  if (!isNested) ...[
+                    SizedBox(width: 12.w),
+                    GestureDetector(
+                      onTap: () {
+                        context.read<ThreadProvider>().setReplyingTo(comment.id, comment.authorName);
+                      },
+                      child: Text(
+                        'Reply',
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.sage,
+                        ),
+                      ),
+                    ),
+                  ],
                   const Spacer(),
                   Row(
                     children: [

@@ -19,7 +19,7 @@ class CreatePostInputCard extends StatelessWidget {
     final provider = context.watch<CreatePostProvider>();
 
     return Container(
-      decoration: const BoxDecoration(color: Colors.transparent),
+      decoration: const BoxDecoration(color: AppColors.transparent),
       padding: EdgeInsets.all(24.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +60,7 @@ class _AvatarRow extends StatelessWidget {
           height: 1.35,
         ),
         filled: true,
-        fillColor: Colors.transparent,
+        fillColor: AppColors.transparent,
         border: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.zero),
         enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.zero),
         focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.zero),
@@ -83,7 +83,7 @@ class _AvatarRow extends StatelessWidget {
             color: AppColors.avatarFallbackBg,
           ),
           child: const ClipOval(
-            child: Icon(Icons.person, color: Colors.white54, size: 26),
+            child: Icon(Icons.person, color: AppColors.white54, size: 26),
           ),
         ),
         SizedBox(width: 14.w),
@@ -148,10 +148,10 @@ class _AvatarRow extends StatelessWidget {
                         child: Container(
                           padding: EdgeInsets.all(6.w),
                           decoration: const BoxDecoration(
-                            color: Colors.black54,
+                            color: AppColors.black54,
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(Icons.close, color: Colors.white, size: 16.w),
+                          child: Icon(Icons.close, color: AppColors.white, size: 16.w),
                         ),
                       ),
                     ),
@@ -188,7 +188,7 @@ class _FlairRow extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.sage : Colors.white.withValues(alpha: 0.7),
+              color: isSelected ? AppColors.sage : AppColors.white.withValues(alpha: 0.7),
               borderRadius: BorderRadius.circular(100.r),
               border: Border.all(
                 color: isSelected ? AppColors.sage : AppColors.inputBorder,
@@ -204,7 +204,7 @@ class _FlairRow extends StatelessWidget {
                     child: Icon(
                       Icons.local_offer_outlined,
                       size: 12.w,
-                      color: isSelected ? Colors.white : AppColors.textLabel,
+                      color: isSelected ? AppColors.white : AppColors.textLabel,
                     ),
                   ),
                 Text(
@@ -213,7 +213,7 @@ class _FlairRow extends StatelessWidget {
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.6,
-                    color: isSelected ? Colors.white : AppColors.textLabel,
+                    color: isSelected ? AppColors.white : AppColors.textLabel,
                   ),
                 ),
               ],

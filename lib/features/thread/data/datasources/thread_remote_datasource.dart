@@ -5,7 +5,7 @@ import '../../domain/entities/thread_entity.dart';
 /// Remote operations for threads (posts) and comments.
 abstract class ThreadRemoteDataSource {
   Future<ThreadEntity> getThread(String postId);
-  Future<void> postComment(String postId, String content);
+  Future<void> postComment(String postId, String content, {String? parentId});
   Future<void> toggleAllowReplies(String postId, bool value);
 }
 
@@ -98,12 +98,13 @@ class ThreadRemoteDataSourceImpl implements ThreadRemoteDataSource {
   }
 
   @override
-  Future<void> postComment(String postId, String content) async {
+  Future<void> postComment(String postId, String content, {String? parentId}) async {
     final userId = SupabaseService.uid;
     await _client.from('comments').insert({
       'post_id': postId,
       'author_id': userId,
       'content': content,
+      if (parentId != null) 'parent_id': parentId,
     });
   }
 

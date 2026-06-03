@@ -69,14 +69,14 @@ class CreatePostHeader extends StatelessWidget {
                       width: 14.w,
                       height: 14.w,
                       child: const CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white),
+                          strokeWidth: 2, color: AppColors.white),
                     )
                   : Text(
                       'POST',
                       style: TextStyle(
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: AppColors.white,
                         letterSpacing: 0.8,
                       ),
                     ),

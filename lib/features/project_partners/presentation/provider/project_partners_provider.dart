@@ -41,16 +41,27 @@ class ProjectPartnersProvider extends ChangeNotifier {
   List<ProjectApplicationEntity> currentApplications = [];
   bool isLoadingApplications = false;
 
+  int _currentOffset = 0;
+  final int _limit = 10;
+  
+  bool _hasMore = true;
+  bool get hasMore => _hasMore;
+
+  bool _isFetchingMore = false;
+  bool get isFetchingMore => _isFetchingMore;
+
   Future<void> _loadData() async {
     _status = ProjectPartnersStatus.loading;
     notifyListeners();
 
     try {
       final chipsResult = await getFilterChipsUsecase();
-      final projectsResult = await getProjectsUsecase();
+      _currentOffset = 0;
+      final projectsResult = await getProjectsUsecase(limit: _limit, offset: _currentOffset);
       
       filterChips = chipsResult;
       allProjects = projectsResult;
+      _hasMore = projectsResult.length == _limit;
       _status = ProjectPartnersStatus.success;
     } catch (e) {
       _status = ProjectPartnersStatus.error;
@@ -68,6 +79,28 @@ class ProjectPartnersProvider extends ChangeNotifier {
     return allProjects
         .where((p) => p.skills.any((s) => s.toLowerCase().contains(_selectedFilter.toLowerCase())))
         .toList();
+  }
+
+  Future<void> loadMoreProjects() async {
+    if (_isFetchingMore || !_hasMore) return;
+    _isFetchingMore = true;
+    notifyListeners();
+
+    try {
+      final nextOffset = _currentOffset + _limit;
+      final newProjects = await getProjectsUsecase(limit: _limit, offset: nextOffset);
+      
+      if (newProjects.isNotEmpty) {
+        allProjects.addAll(newProjects);
+        _currentOffset = nextOffset;
+      }
+      _hasMore = newProjects.length == _limit;
+    } catch (e) {
+      // Handle error gracefully
+    } finally {
+      _isFetchingMore = false;
+      notifyListeners();
+    }
   }
 
   Future<void> addProject(String title, String description, List<String> skills) async {

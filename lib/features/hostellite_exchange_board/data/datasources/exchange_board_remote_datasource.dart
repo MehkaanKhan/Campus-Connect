@@ -155,7 +155,7 @@ class ExchangeBoardRemoteDataSourceImpl implements ExchangeBoardRemoteDataSource
   }
 
   String _timeAgo(DateTime dt) {
-    final diff = DateTime.now().difference(dt);
+    final diff = DateTime.now().difference(dt) + const Duration(hours: 1);
     if (diff.inDays > 0) return '${diff.inDays}d ago';
     if (diff.inHours > 0) return '${diff.inHours}h ago';
     if (diff.inMinutes > 0) return '${diff.inMinutes}m ago';

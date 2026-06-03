@@ -29,7 +29,6 @@ import 'features/onboarding/domain/usecases/get_onboarding_pages_usecase.dart';
 import 'features/onboarding/domain/usecases/mark_onboarding_seen_usecase.dart';
 import 'features/onboarding/presentation/provider/onboarding_provider.dart';
 
-import 'features/profile_setup/data/datasources/profile_setup_local_datasource.dart';
 import 'features/profile_setup/data/datasources/profile_setup_remote_datasource.dart';
 import 'features/profile_setup/data/repositories/profile_setup_repository_impl.dart';
 import 'features/profile_setup/domain/usecases/get_universities_usecase.dart';
@@ -140,9 +139,8 @@ class CampusConnectApp extends StatelessWidget {
     final obRepo      = OnboardingRepositoryImpl(obLocal, obRemote);
 
     // ── Profile Setup ──
-    final psLocal     = ProfileSetupLocalDataSourceImpl();
     final psRemote    = ProfileSetupRemoteDataSourceImpl();
-    final psRepo      = ProfileSetupRepositoryImpl(psLocal, psRemote);
+    final psRepo      = ProfileSetupRepositoryImpl(psRemote);
 
     // ── Create Post ──
     final cpRemote    = CreatePostRemoteDataSourceImpl();

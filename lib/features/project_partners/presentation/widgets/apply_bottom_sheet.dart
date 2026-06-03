@@ -71,8 +71,8 @@ class _ApplyBottomSheetState extends State<ApplyBottomSheet> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 15,
+            color: AppColors.black.withValues(alpha: 0.15),
+            blurRadius: 20,
             offset: const Offset(0, -2),
           ),
         ],
@@ -116,8 +116,8 @@ class _ApplyBottomSheetState extends State<ApplyBottomSheet> {
           ),
           SizedBox(height: 16.h),
           if (_error != null) ...[
-            Text(_error!, style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10.h),
+            Text(_error!, style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
+            SizedBox(height: 16.h),
           ],
           TextField(
             controller: _phoneController,
@@ -181,13 +181,13 @@ class _ApplyBottomSheetState extends State<ApplyBottomSheet> {
               ),
               onPressed: _isLoading ? null : _submit,
               child: _isLoading
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: AppColors.white, strokeWidth: 2))
                   : Text(
                       'Submit Application',
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: AppColors.white,
                       ),
                     ),
             ),

@@ -4,5 +4,5 @@ class GetDepartmentsUsecase {
   final ProfileSetupRepository repository;
   const GetDepartmentsUsecase(this.repository);
 
-  List<String> call() => repository.getDepartments();
+  Future<List<String>> call() => repository.getDepartments();
 }

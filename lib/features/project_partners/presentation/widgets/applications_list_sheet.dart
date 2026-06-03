@@ -36,7 +36,7 @@ class _ApplicationsListSheetState extends State<ApplicationsListSheet> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.pageBg,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
       padding: EdgeInsets.only(
         top: 20.h,
@@ -89,12 +89,12 @@ class _ApplicationsListSheetState extends State<ApplicationsListSheet> {
           const Divider(height: 1, color: AppColors.border),
           if (provider.isLoadingApplications)
             const Padding(
-              padding: EdgeInsets.all(40.0),
+              padding: EdgeInsets.all(40.w),
               child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
             )
           else if (provider.currentApplications.isEmpty)
             Padding(
-              padding: EdgeInsets.all(40.0),
+              padding: EdgeInsets.all(40.w),
               child: Center(
                 child: Text(
                   'No applications yet.',
@@ -140,7 +140,7 @@ class _ApplicationItem extends StatelessWidget {
                 radius: 20.r,
                 backgroundColor: AppColors.postAvatarBg,
                 backgroundImage: app.applicantAvatarUrl != null ? NetworkImage(app.applicantAvatarUrl!) : null,
-                child: app.applicantAvatarUrl == null ? Icon(Icons.person, color: Colors.white54, size: 20.w) : null,
+                child: app.applicantAvatarUrl == null ? Icon(Icons.person, color: AppColors.white54, size: 20.w) : null,
               ),
               SizedBox(width: 12.w),
               Expanded(
@@ -199,7 +199,7 @@ class _ApplicationItem extends StatelessWidget {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
+                      foregroundColor: AppColors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
                     ),

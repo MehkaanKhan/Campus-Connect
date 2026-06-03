@@ -35,7 +35,7 @@ class ThreadPost extends StatelessWidget {
                           ? NetworkImage(thread.authorAvatarUrl!)
                           : null,
                       child: thread.authorAvatarUrl == null
-                          ? Icon(Icons.person, color: Colors.white54, size: 22.w)
+                          ? Icon(Icons.person, color: AppColors.white54, size: 22.w)
                           : null,
                     ),
                     SizedBox(width: 12.w),

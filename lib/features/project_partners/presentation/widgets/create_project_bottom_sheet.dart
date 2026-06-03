@@ -67,8 +67,8 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 15,
+            color: AppColors.black.withValues(alpha: 0.15),
+            blurRadius: 20,
             offset: const Offset(0, -2),
           ),
         ],
@@ -103,8 +103,8 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
           ),
           SizedBox(height: 16.h),
           if (_error != null) ...[
-            Text(_error!, style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10.h),
+            Text(_error!, style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
+            SizedBox(height: 16.h),
           ],
           _buildTextField(_titleController, 'Project Title', maxLines: 1),
           SizedBox(height: 12.h),
@@ -123,13 +123,13 @@ class _CreateProjectBottomSheetState extends State<CreateProjectBottomSheet> {
               ),
               onPressed: _isLoading ? null : _submit,
               child: _isLoading
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: AppColors.white, strokeWidth: 2))
                   : Text(
                       'Publish Listing',
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: AppColors.white,
                       ),
                     ),
             ),

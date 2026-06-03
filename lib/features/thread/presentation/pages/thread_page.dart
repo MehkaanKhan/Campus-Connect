@@ -66,7 +66,7 @@ class _ThreadPageState extends State<ThreadPage> {
                       ...thread.comments.map(
                         (c) => ThreadCommentTile(comment: c, isNested: false),
                       ),
-                      const SizedBox(height: 80),
+                      SizedBox(height: 80.h),
                     ],
                   ),
           ),

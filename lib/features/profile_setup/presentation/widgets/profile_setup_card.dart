@@ -368,12 +368,12 @@ class _NextStepButton extends StatelessWidget {
               ? SizedBox(
                   width: 20.w,
                   height: 20.w,
-                  child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                  child: const CircularProgressIndicator(strokeWidth: 2, color: AppColors.white),
                 )
               : Text(
                   'Next Step →',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.2,

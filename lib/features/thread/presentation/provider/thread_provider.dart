@@ -24,6 +24,12 @@ class ThreadProvider extends ChangeNotifier {
   bool _allowReplies = true;
   bool get allowReplies => _allowReplies;
 
+  String? _replyingToCommentId;
+  String? get replyingToCommentId => _replyingToCommentId;
+
+  String? _replyingToAuthorName;
+  String? get replyingToAuthorName => _replyingToAuthorName;
+
   String _commentDraft = '';
   String get commentDraft => _commentDraft;
 
@@ -50,11 +56,20 @@ class ThreadProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setReplyingTo(String? commentId, String? authorName) {
+    _replyingToCommentId = commentId;
+    _replyingToAuthorName = authorName;
+    notifyListeners();
+  }
+
   Future<void> submitComment() async {
     if (_commentDraft.trim().isEmpty || _activePostId == null || _thread == null) return;
     
     final draft = _commentDraft.trim();
+    final parentId = _replyingToCommentId;
     _commentDraft = ''; // clear input immediately
+    _replyingToCommentId = null;
+    _replyingToAuthorName = null;
     
     // Optimistic UI Update for Thread
     final tempComment = CommentEntity(
@@ -75,7 +90,7 @@ class ThreadProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await postCommentUsecase(_activePostId!, draft);
+      await postCommentUsecase(_activePostId!, draft, parentId: parentId);
       
       // Reload silently in background to get real ID and avatar
       final updatedThread = await getThreadUsecase(_activePostId!);

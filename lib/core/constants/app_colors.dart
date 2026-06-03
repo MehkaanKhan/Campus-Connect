@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+  // ── Generic / Overlays ───────────────────────────────────
+  static const transparent  = Colors.transparent;
+  static const white        = Colors.white;
+  static const white54      = Colors.white54;
+  static const white60      = Colors.white60;
+  static const black        = Colors.black;
+  static const black54      = Colors.black54;
+  static const overlayDark  = Color(0x8A000000); // black54 equivalent
+
   // ── Brand ────────────────────────────────────────────────
   static const primary    = Color(0xFF3D5C3D); // brand sage green — ThemeData seed, buttons
   static const secondary  = Color(0xFF6B8F6B); // medium sage green

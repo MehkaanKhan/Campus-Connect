@@ -5,19 +5,18 @@ import '../datasources/profile_setup_local_datasource.dart';
 import '../datasources/profile_setup_remote_datasource.dart';
 
 class ProfileSetupRepositoryImpl implements ProfileSetupRepository {
-  final ProfileSetupLocalDataSource localSource;
   final ProfileSetupRemoteDataSource remoteSource;
 
-  const ProfileSetupRepositoryImpl(this.localSource, this.remoteSource);
+  const ProfileSetupRepositoryImpl(this.remoteSource);
 
   @override
   Future<List<UniversityEntity>> getUniversities() => remoteSource.getUniversities();
 
   @override
-  List<String> getDepartments() => localSource.getDepartments();
+  Future<List<String>> getDepartments() => remoteSource.getDepartments();
 
   @override
-  List<String> getSemesters() => localSource.getSemesters();
+  Future<List<String>> getSemesters() => remoteSource.getSemesters();
 
   @override
   Future<void> saveProfile(ProfileSetupEntity profile) =>

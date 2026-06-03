@@ -2,7 +2,7 @@ import '../entities/project_application_entity.dart';
 import '../entities/project_partner_entity.dart';
 
 abstract class ProjectPartnersRepository {
-  Future<List<ProjectPartnerEntity>> getProjects();
+  Future<List<ProjectPartnerEntity>> getProjects({int limit = 10, int offset = 0});
   Future<List<String>> getFilterChips();
   Future<void> addProject(ProjectPartnerEntity project);
 

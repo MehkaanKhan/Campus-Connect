@@ -65,9 +65,9 @@ class ThreadDiscussionBar extends StatelessWidget {
                 child: Switch(
                   value: allowReplies,
                   onChanged: onToggle,
-                  activeThumbColor: Colors.white,
+                  activeThumbColor: AppColors.white,
                   activeTrackColor: AppColors.sage,
-                  inactiveThumbColor: Colors.white,
+                  inactiveThumbColor: AppColors.white,
                   inactiveTrackColor: AppColors.imagePlaceholder,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),

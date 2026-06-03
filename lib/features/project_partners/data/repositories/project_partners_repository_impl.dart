@@ -8,7 +8,8 @@ class ProjectPartnersRepositoryImpl implements ProjectPartnersRepository {
   const ProjectPartnersRepositoryImpl(this.remoteSource);
 
   @override
-  Future<List<ProjectPartnerEntity>> getProjects() => remoteSource.getProjects();
+  Future<List<ProjectPartnerEntity>> getProjects({int limit = 10, int offset = 0}) =>
+      remoteSource.getProjects(limit: limit, offset: offset);
 
   @override
   Future<List<String>> getFilterChips() => remoteSource.getFilterChips();
