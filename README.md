@@ -1,10 +1,12 @@
-# CampusConnect
+# Campus Connect
 
-A university-scoped social platform built with Flutter, designed to connect students through feeds, carpooling, project partnerships, hostelite exchange, and more — all within verified university communities.
+A university social platform for students to connect, collaborate, and commute — all within verified campus communities.
+
+> Built with Flutter + Supabase. Clean Architecture. Provider state management.
 
 ---
 
-## Team Members
+## Team
 
 | Name | Student ID |
 |---|---|
@@ -14,33 +16,65 @@ A university-scoped social platform built with Flutter, designed to connect stud
 
 ---
 
-## Task 1: UI Submission — Work Division
+## Screenshots
 
-### Abdullah Sajjad — F2024-0917
-- Onboarding
-- Project Partners
-- Create Post
-- Thread & Moderation
-- Profile Setup
+| Feed | Carpool | Project Partners |
+|---|---|---|
+| University-scoped posts with upvote/downvote | Post and join rides with seat tracking | Find collaborators by skill |
 
-### Mehkaan Khan — F2024-0130
-- Auth
-- Main Feed
-- Notifications
-- User Profile
-- Hostellite Exchange
-
-### Abdur-Rahman Rana — F2024-0912
-- Leaderboard
-- Hostellite Exchange
-- Uni Graph
-- Other Unis
+| Leaderboard | Other Unis | Settings |
+|---|---|---|
+| Karma-based rankings with time filters | Interactive university grid with images | Edit profile, change password, preferences |
 
 ---
 
-## Design
+## Features
 
-Figma: [View Prototype](https://www.figma.com/design/CriMpInvYTRkZw5b8hDuOn/Untitled?node-id=0-1&t=kU3nOpp5xcJM2UsT-1)
+### Core Social
+- **University Feed** — Posts scoped to your university with upvote/downvote karma scoring
+- **Post Flairs** — Categorise posts as General, Events, Academic, Hostel, Marketplace, Carpool
+- **Nested Comments** — Two-level threaded replies with reply-to targeting
+- **Post Creation** — Compose with image attachments and flair tags
+- **Search** — Global post search across the feed
+
+### Carpool & Rides
+- **Browse Rides** — Filter by Morning / Evening / Weekend time slots
+- **Post a Ride** — Origin, destination, date, time, seat count
+- **Join a Ride** — Real-time seat availability tracking
+- **Notifications** — Driver is notified when someone joins their ride
+
+### Hostellite Exchange
+- **Item Listings** — Borrow, rent, or give away hostel goods
+- **Item Detail** — Full item page with availability status
+- **Complaint Board** — Submit complaints about listings
+
+### Project Partners
+- **Project Listings** — Post for collaborators with skill tags and descriptions
+- **Applications** — Apply with a cover message and contact number
+- **Application Management** — Accept or reject applicants on your own listings
+
+### Campus Discovery
+- **Explore Hub** — Entry point for all sub-features
+- **Other Universities** — Browse other campus communities with member counts and building images
+- **University Graph** — Interactive network visualisation of university connections — drag nodes, zoom in/out
+- **Leaderboard** — Karma rankings filtered by All Time / This Week / This Month
+
+### Notifications
+- Real-time in-app notification feed
+- Types: comment, reply, carpool join, karma events
+- Unread badge on the Alerts tab
+
+### Profile & Settings
+- **User Profile** — Avatar, bio, karma score, post count, joined carpools
+- **Edit Profile** — Update name, bio, and avatar (Supabase Storage upload)
+- **Change Password** — Secure in-app password update
+- **Settings** — Notifications, language, privacy, about
+
+### Auth
+- Email/password signup restricted to university email domains
+- Email verification gate before profile setup
+- Password reset via deep link (`campusconnect://login-callback/`)
+- Persistent auth session via Supabase auth stream
 
 ---
 
@@ -48,13 +82,13 @@ Figma: [View Prototype](https://www.figma.com/design/CriMpInvYTRkZw5b8hDuOn/Unti
 
 | Layer | Technology |
 |---|---|
-| Framework | Flutter 3.x (Dart) |
-| Architecture | Clean Architecture (Data / Domain / Presentation) |
-| State Management | Provider |
-| Navigation | GoRouter |
-| Backend | Firebase (Auth, Firestore, Storage, FCM) |
-| Local Storage | SharedPreferences |
-| HTTP | http package |
+| Framework | Flutter 3.x (Dart 3.x) — iOS & Android |
+| Architecture | Clean Architecture (Domain / Data / Presentation) |
+| State Management | Provider (`ChangeNotifier`) |
+| Navigation | GoRouter v14 with auth guards |
+| Backend | Supabase (PostgreSQL + Auth + Storage + RLS) |
+| Icons | Custom SVG system (`assets/icons/icons/`) via `flutter_svg` |
+| Responsive sizing | `SizeConfig` extensions (`.w`, `.h`, `.sp`, `.r`) |
 
 ---
 
@@ -62,60 +96,88 @@ Figma: [View Prototype](https://www.figma.com/design/CriMpInvYTRkZw5b8hDuOn/Unti
 
 ```
 lib/
+├── main.dart                    # MultiProvider wiring + app entry
 ├── core/
-│   ├── constants/       # Colors, assets, keys
-│   ├── theme/           # App theme (light/dark)
-│   ├── router/          # GoRouter configuration
-│   └── widgets/         # Shared widgets
+│   ├── constants/               # AppColors tokens, AppAssets paths
+│   ├── router/                  # GoRouter config + auth redirect
+│   ├── utils/size_config.dart   # Responsive scaling (390×887 design canvas)
+│   └── widgets/                 # CampusTopNavBar, CampusBottomNavBar, shimmer_box
 └── features/
-    ├── auth/            # Authentication (login, signup, reset, logout)
-    ├── settings/        # Language, notifications, profile settings
-    └── cart/            # Cart with counter and timer
+    ├── auth/
+    ├── carpool/
+    ├── create_post/
+    ├── feed/
+    ├── hostellite_exchange/
+    ├── hostellite_exchange_board/
+    ├── leaderboard/
+    ├── notifications/
+    ├── other_unis/
+    ├── profile_setup/
+    ├── project_partners/
+    ├── settings/
+    ├── thread/
+    ├── uni_graph/
+    └── user_profile/
 ```
 
-Each feature follows the three-layer Clean Architecture pattern:
+Each feature follows the Clean Architecture three-layer structure:
 
 ```
 feature/
 ├── data/
-│   ├── datasources/     # Remote / local data sources
-│   ├── models/          # JSON-serializable models
-│   └── repositories/    # Repository implementations
+│   ├── datasources/    # All Supabase calls live here only
+│   └── repositories/   # Repository implementations
 ├── domain/
-│   ├── entities/        # Pure Dart entities
-│   ├── repositories/    # Abstract repository contracts
-│   └── usecases/        # Single-responsibility use cases
+│   ├── entities/       # Pure Dart — zero Flutter/Supabase imports
+│   ├── repositories/   # Abstract contracts
+│   └── usecases/       # One responsibility per usecase
 └── presentation/
-    ├── provider/        # ChangeNotifier providers
-    ├── pages/           # Screen widgets
-    └── widgets/         # Feature-specific widgets
+    ├── provider/       # ChangeNotifier + status enums
+    ├── pages/          # Screen widgets
+    └── widgets/        # Feature-specific widgets + shimmer skeletons
 ```
 
 ---
 
-## Features
+## Database Schema (Supabase)
 
-1. **University Email Verification** — Restrict registration to `.edu` or university-specific domains
-2. **Profile Setup Flow** — Name, department, semester, photo, and bio after signup
-3. **Role-Based Access Control** — Student, Hostelite, and Moderator roles
-4. **Session Management** — Auto-logout on inactivity with token refresh
-5. **University-Scoped Feed** — Feed limited to each university; read-only for external users
-6. **Post Creation** — Text, image, video, and poll posts
-7. **Reactions & Voting** — Five reactions plus upvote/downvote scoring
-8. **Nested Commenting** — Threaded comments with two levels of replies
-9. **Post Categories & Flairs** — Academic, Events, Hostel, Marketplace, Carpool tags
-10. **Content Moderation** — Report posts/comments; moderators can remove content or ban users
-11. **Carpool System** — Create posts, handle requests, display routes, manage capacity
-12. **Project Partner Posting** — Post for collaborators with domain and skill specifications
-13. **Skill Tagging & Filtering** — Tag and filter posts by skill sets
-14. **Hostellite Goods Exchange** — Board for renting or exchanging items among hostelites
-15. **Complaint Submission** — Submit complaints related to hostel or exchange activities
-16. **Push Notifications** — Real-time notifications via Firebase Cloud Messaging
-17. **Dark Mode** — Full dark theme support
-18. **Onboarding Screens** — Introduce app features to new users
-19. **University Leaderboard** — Rankings based on activity metrics
-20. **Moderator Interface** — Dedicated view for managing content and users
-21. **User Profile Management** — View/edit profile, post history, reactions, and carpools
+```
+profiles            id, full_name, email, avatar_url, university_id,
+                    department, semester, bio, karma_score, created_at
+
+universities        id, name, logo_text, description, building_image_url
+
+posts               id, author_id, university_id, title, content,
+                    image_url, flair, upvote_count, downvote_count,
+                    comment_count, allow_replies, created_at
+
+votes               user_id, post_id, vote_type (up|down)
+
+comments            id, post_id, author_id, content, upvote_count,
+                    parent_id (nullable — nested replies), created_at
+
+carpool_rides       id, driver_id, origin, destination, departure_time,
+                    departure_date, total_seats, taken_seats,
+                    estimated_minutes, filter_slot, created_at
+
+carpool_passengers  user_id, ride_id
+
+exchange_items      id, seller_id, title, description, item_type,
+                    price, condition, image_url, is_available, created_at
+
+exchange_complaints id, item_id, reporter_id, reason, details, status
+
+project_listings    id, creator_id, badge, title, description, created_at
+
+project_skills      listing_id, skill_name
+
+project_applications  id, listing_id, applicant_id, cover_message,
+                      phone_number, status, created_at
+
+notifications       id, user_id, type, message, is_read, avatar_url, created_at
+```
+
+**Storage buckets:** `avatars` · `post-images` · `university-images`
 
 ---
 
@@ -124,27 +186,55 @@ feature/
 ### Prerequisites
 
 - Flutter SDK 3.x
-- Dart 3.x
-- Android Studio / VS Code
-- Firebase project configured
+- Dart 3.4+
+- Android Studio or VS Code
+- A [Supabase](https://supabase.com) project
 
 ### Installation
 
 ```bash
-# Clone the repository
+# Clone
 git clone https://github.com/MehkaanKhan/Campus-Connect.git
 cd Campus-Connect
 
 # Install dependencies
 flutter pub get
+```
 
-# Run the app
+### Environment Setup
+
+Create a `.env` file in the project root:
+
+```env
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+```
+
+### Run
+
+```bash
 flutter run
 ```
 
-### Firebase Setup
+---
 
-1. Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
-2. Add Android/iOS apps and download `google-services.json` / `GoogleService-Info.plist`
-3. Place them in `android/app/` and `ios/Runner/` respectively
-4. Enable Authentication, Firestore, Storage, and Cloud Messaging in Firebase console
+## Design System
+
+| Token | Value | Usage |
+|---|---|---|
+| `primary` | `#3D5C3D` | Buttons, active states, brand colour |
+| `secondary` / `sage` | `#6B8F6B` | Active nav tabs, filter chips |
+| `pageBg` | `#F8FAFC` | Main screen backgrounds |
+| `cardBg` | `#FFFFFF` | Card and surface backgrounds |
+| `textPrimary` | `#1A1A1A` | Headings and body text |
+| `textMuted` | `#94A3B8` | Placeholders, secondary labels |
+
+Fonts: **Inter** (body) · **Plus Jakarta Sans** (display headings)
+
+All icons are custom SVGs under `assets/icons/icons/` — never Material Icons.
+
+---
+
+## Figma Design
+
+[View Prototype](https://www.figma.com/design/CriMpInvYTRkZw5b8hDuOn/Untitled?node-id=0-1&t=kU3nOpp5xcJM2UsT-1)

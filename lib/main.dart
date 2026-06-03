@@ -96,9 +96,6 @@ import 'features/uni_graph/data/datasources/uni_graph_remote_datasource.dart';
 import 'features/uni_graph/data/repositories/uni_graph_repository_impl.dart';
 import 'features/uni_graph/domain/usecases/get_graph_data_usecase.dart';
 import 'features/uni_graph/presentation/provider/uni_graph_provider.dart';
-import 'features/other_unis/data/datasources/other_unis_remote_datasource.dart';
-import 'features/other_unis/data/repositories/other_unis_repository_impl.dart';
-import 'features/other_unis/domain/usecases/get_other_unis_usecase.dart';
 import 'features/other_unis/presentation/provider/other_unis_provider.dart';
 
 import 'features/carpool/data/datasources/carpool_remote_datasource.dart';
@@ -293,11 +290,7 @@ class CampusConnectApp extends StatelessWidget {
           ),
         ),
         ChangeNotifierProvider(
-          create: (_) => OtherUnisProvider(
-            usecase: GetOtherUnisUsecase(
-              OtherUnisRepositoryImpl(OtherUnisRemoteDataSourceImpl()),
-            ),
-          ),
+          create: (_) => OtherUnisProvider(),
         ),
       ],
       child: MaterialApp.router(

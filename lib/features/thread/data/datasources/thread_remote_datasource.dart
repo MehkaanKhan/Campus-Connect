@@ -104,7 +104,7 @@ class ThreadRemoteDataSourceImpl implements ThreadRemoteDataSource {
       'post_id': postId,
       'author_id': userId,
       'content': content,
-      if (parentId != null) 'parent_id': parentId,
+      'parent_id': ?parentId,
     });
     _notifyPostAuthor(postId, userId).ignore();
     if (parentId != null) _notifyCommentAuthor(parentId, userId).ignore();

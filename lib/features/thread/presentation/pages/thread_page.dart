@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/size_config.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
 import '../../../../core/widgets/campus_bottom_navbar.dart';
 import '../provider/thread_provider.dart';
