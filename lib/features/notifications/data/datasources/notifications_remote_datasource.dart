@@ -14,6 +14,7 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
       : _client = client ?? SupabaseService.client;
 
   @override
+  // Fetches all notifications for the logged-in user, newest first
   Future<List<NotificationEntity>> getNotifications() async {
     final data = await _client
         .from('notifications')
@@ -33,6 +34,7 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
   }
 
   @override
+  // Bulk-marks every notification as read	
   Future<void> markAllRead() async {
     await _client
         .from('notifications')
@@ -40,6 +42,8 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
         .eq('user_id', SupabaseService.uid);
   }
 
+  // The _parseType helper maps string values from the DB 
+  //('comment', 'carpool', etc.) to the NotificationType enum.
   NotificationType _parseType(String? s) {
     switch (s) {
       case 'comment':     return NotificationType.comment;

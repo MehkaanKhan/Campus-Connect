@@ -27,4 +27,26 @@ class ProjectPartnerEntity {
   });
 
   bool get isOwner => false; // Resolved at presentation layer using SupabaseService.uid
+
+  ProjectPartnerEntity copyWith({
+    String? id,
+    String? creatorId,
+    String? badge,
+    String? badgeColor,
+    String? title,
+    String? description,
+    List<String>? skills,
+    int? applicationCount,
+    String? currentUserApplicationStatus,
+  }) => ProjectPartnerEntity(
+    id: id ?? this.id,
+    creatorId: creatorId ?? this.creatorId,
+    badge: badge ?? this.badge,
+    badgeColor: badgeColor ?? this.badgeColor,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    skills: skills ?? this.skills,
+    applicationCount: applicationCount ?? this.applicationCount,
+    currentUserApplicationStatus: currentUserApplicationStatus ?? this.currentUserApplicationStatus,
+  );
 }

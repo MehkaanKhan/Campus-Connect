@@ -32,14 +32,14 @@ class CarpoolRideEntity {
 
   int get seatsAvailable => totalSeats - takenSeats;
 
-  CarpoolRideEntity copyWith({bool? hasJoined}) => CarpoolRideEntity(
+  CarpoolRideEntity copyWith({bool? hasJoined, int? takenSeats}) => CarpoolRideEntity(
         id: id,
         from: from,
         to: to,
         time: time,
         date: date,
         totalSeats: totalSeats,
-        takenSeats: takenSeats,
+        takenSeats: takenSeats ?? this.takenSeats,
         driverName: driverName,
         driverAvatarUrl: driverAvatarUrl,
         mapImageUrl: mapImageUrl,

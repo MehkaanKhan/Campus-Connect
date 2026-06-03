@@ -33,6 +33,11 @@ class ThreadProvider extends ChangeNotifier {
   String _commentDraft = '';
   String get commentDraft => _commentDraft;
 
+  String? _replyToId;
+  String? _replyToName;
+  String? get replyToId => _replyToId;
+  String? get replyToName => _replyToName;
+
   ThreadStatus _status = ThreadStatus.idle;
   ThreadStatus get status => _status;
 
@@ -56,50 +61,52 @@ class ThreadProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setReplyingTo(String? commentId, String? authorName) {
-    _replyingToCommentId = commentId;
-    _replyingToAuthorName = authorName;
+  void setReplyTarget(String commentId, String authorName) {
+    _replyToId = commentId;
+    _replyToName = authorName;
+    notifyListeners();
+  }
+
+  void clearReplyTarget() {
+    _replyToId = null;
+    _replyToName = null;
     notifyListeners();
   }
 
   Future<void> submitComment() async {
     if (_commentDraft.trim().isEmpty || _activePostId == null || _thread == null) return;
-    
-    final draft = _commentDraft.trim();
-    final parentId = _replyingToCommentId;
-    _commentDraft = ''; // clear input immediately
-    _replyingToCommentId = null;
-    _replyingToAuthorName = null;
-    
-    // Optimistic UI Update for Thread
-    final tempComment = CommentEntity(
-      id: 'temp_${DateTime.now().millisecondsSinceEpoch}',
-      authorName: 'You',
-      authorAvatarUrl: null,
-      timeAgo: 'Just now',
-      content: draft,
-      upvotes: 0,
-      isOp: false,
-      replies: const [],
-    );
 
-    _thread = _thread!.copyWith(
-      commentCount: _thread!.commentCount + 1,
-      comments: [..._thread!.comments, tempComment],
-    );
+    final draft = _commentDraft.trim();
+    final parentId = _replyToId;
+    _commentDraft = '';
+    _replyToId = null;
+    _replyToName = null;
+
+    // Optimistic update only for top-level comments
+    if (parentId == null) {
+      final tempComment = CommentEntity(
+        id: 'temp_${DateTime.now().millisecondsSinceEpoch}',
+        authorName: 'You',
+        authorAvatarUrl: null,
+        timeAgo: 'Just now',
+        content: draft,
+        upvotes: 0,
+        isOp: false,
+        replies: const [],
+      );
+      _thread = _thread!.copyWith(
+        commentCount: _thread!.commentCount + 1,
+        comments: [..._thread!.comments, tempComment],
+      );
+    }
     notifyListeners();
 
     try {
       await postCommentUsecase(_activePostId!, draft, parentId: parentId);
-      
-      // Reload silently in background to get real ID and avatar
       final updatedThread = await getThreadUsecase(_activePostId!);
       _thread = updatedThread;
       notifyListeners();
-    } catch (_) {
-      // Ignore error for now to keep optimistic state if offline, 
-      // or we could revert if we wanted to be strict.
-    }
+    } catch (_) {}
   }
 
   Future<void> toggleReplies(bool val) async {

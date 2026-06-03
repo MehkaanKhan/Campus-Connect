@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../constants/app_colors.dart';
 
@@ -22,11 +23,11 @@ class CampusBottomNavBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _NavItem(icon: Icons.home_outlined,               label: 'HOME',    isActive: activeTab == BottomNavTab.home,    onTap: () => context.go('/feed')),
-            _NavItem(icon: Icons.explore_outlined,            label: 'EXPLORE', isActive: activeTab == BottomNavTab.explore, onTap: () => context.go('/explore')),
-            _NavItem(icon: Icons.add_circle_outline,          label: 'CREATE',  isActive: activeTab == BottomNavTab.create,  onTap: () => context.go('/create-post')),
-            _NavItem(icon: Icons.notifications_none_rounded,  label: 'ALERTS',  isActive: activeTab == BottomNavTab.alerts,  onTap: () => context.go('/notifications')),
-            _NavItem(icon: Icons.person_outline_rounded,      label: 'PROFILE', isActive: activeTab == BottomNavTab.profile, onTap: () => context.go('/user-profile')),
+            _NavItem(svgAsset: 'assets/icons/icons/home.svg',          label: 'HOME',    isActive: activeTab == BottomNavTab.home,    onTap: () => context.go('/feed')),
+            _NavItem(svgAsset: 'assets/icons/icons/explore.svg',       label: 'EXPLORE', isActive: activeTab == BottomNavTab.explore, onTap: () => context.go('/explore')),
+            _NavItem(svgAsset: 'assets/icons/icons/create.svg',        label: 'CREATE',  isActive: activeTab == BottomNavTab.create,  onTap: () => context.go('/create-post')),
+            _NavItem(svgAsset: 'assets/icons/icons/notifications.svg', label: 'ALERTS',  isActive: activeTab == BottomNavTab.alerts,  onTap: () => context.go('/notifications')),
+            _NavItem(svgAsset: 'assets/icons/icons/profile.svg',       label: 'PROFILE', isActive: activeTab == BottomNavTab.profile, onTap: () => context.go('/user-profile')),
           ],
         ),
       ),
@@ -35,13 +36,13 @@ class CampusBottomNavBar extends StatelessWidget {
 }
 
 class _NavItem extends StatelessWidget {
-  final IconData icon;
+  final String svgAsset;
   final String label;
   final bool isActive;
   final VoidCallback onTap;
 
   const _NavItem({
-    required this.icon,
+    required this.svgAsset,
     required this.label,
     required this.isActive,
     required this.onTap,
@@ -55,7 +56,12 @@ class _NavItem extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 24, color: color),
+          SvgPicture.asset(
+            svgAsset,
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+          ),
           const SizedBox(height: 2),
           Text(
             label,

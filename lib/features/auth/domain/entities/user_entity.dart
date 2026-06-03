@@ -12,4 +12,18 @@ class UserEntity {
     this.avatarUrl,
     this.universityId,
   });
+
+  UserEntity copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? avatarUrl,
+    String? universityId,
+  }) => UserEntity(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    email: email ?? this.email,
+    avatarUrl: avatarUrl ?? this.avatarUrl,
+    universityId: universityId ?? this.universityId,
+  );
 }

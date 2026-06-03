@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../constants/app_assets.dart';
 import '../constants/app_colors.dart';
 import '../utils/size_config.dart';
 
@@ -42,7 +44,7 @@ class PostImageContainer extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.broken_image_outlined, size: 32.w, color: AppColors.imagePlaceholder),
+                SvgPicture.asset(AppAssets.iconImageOff, width: 32.w, height: 32.w, colorFilter: const ColorFilter.mode(AppColors.imagePlaceholder, BlendMode.srcIn)),
                 SizedBox(height: 8.h),
                 Text(
                   'Image unavailable',

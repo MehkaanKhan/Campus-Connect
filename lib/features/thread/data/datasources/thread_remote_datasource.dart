@@ -106,6 +106,64 @@ class ThreadRemoteDataSourceImpl implements ThreadRemoteDataSource {
       'content': content,
       if (parentId != null) 'parent_id': parentId,
     });
+    _notifyPostAuthor(postId, userId).ignore();
+    if (parentId != null) _notifyCommentAuthor(parentId, userId).ignore();
+  }
+
+  Future<void> _notifyPostAuthor(String postId, String commenterId) async {
+    final post = await _client
+        .from('posts')
+        .select('author_id, title')
+        .eq('id', postId)
+        .maybeSingle();
+    if (post == null) return;
+    final authorId = post['author_id'] as String?;
+    if (authorId == null || authorId == commenterId) return;
+
+    final commenter = await _client
+        .from('profiles')
+        .select('full_name, avatar_url')
+        .eq('id', commenterId)
+        .maybeSingle();
+    final commenterName = commenter?['full_name'] as String? ?? 'Someone';
+    final commenterAvatar = commenter?['avatar_url'] as String?;
+
+    await _client.from('notifications').insert({
+      'user_id': authorId,
+      'type': 'comment',
+      'message': '$commenterName commented on your post',
+      'is_read': false,
+      'has_action': true,
+      'avatar_url': commenterAvatar,
+    });
+  }
+
+  Future<void> _notifyCommentAuthor(String parentCommentId, String replierId) async {
+    final comment = await _client
+        .from('comments')
+        .select('author_id')
+        .eq('id', parentCommentId)
+        .maybeSingle();
+    if (comment == null) return;
+    final authorId = comment['author_id'] as String?;
+    if (authorId == null || authorId == replierId) return;
+
+    final replier = await _client
+        .from('profiles')
+        .select('full_name, avatar_url')
+        .eq('id', replierId)
+        .maybeSingle();
+    final replierName = replier?['full_name'] as String? ?? 'Someone';
+    final replierAvatar = replier?['avatar_url'] as String?;
+
+    await _client.from('notifications').insert({
+      'user_id': authorId,
+      'type': 'comment',
+      'message': '$replierName replied to your comment',
+      'is_read': false,
+      'has_action': true,
+      'avatar_url': replierAvatar,
+    });
   }
 
   @override

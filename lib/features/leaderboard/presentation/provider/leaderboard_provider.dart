@@ -1,49 +1,55 @@
-import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../../core/services/supabase_service.dart';
+import 'package:flutter/foundation.dart';
 import '../../domain/entities/leaderboard_entity.dart';
+import '../../domain/usecases/get_leaderboard_usecase.dart';
+
+enum LeaderboardStatus { initial, loading, loaded, error }
 
 class LeaderboardProvider extends ChangeNotifier {
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  final GetLeaderboardUsecase _usecase;
+
+  LeaderboardProvider({required GetLeaderboardUsecase usecase}) : _usecase = usecase;
+
+  LeaderboardStatus _status = LeaderboardStatus.initial;
+  LeaderboardStatus get status => _status;
+  bool get isLoading => _status == LeaderboardStatus.loading;
 
   List<LeaderboardEntity> _users = [];
-  List<LeaderboardEntity> get users => _users;
+  String _searchQuery = '';
+  String get searchQuery => _searchQuery;
+
+  void search(String query) {
+    _searchQuery = query;
+    notifyListeners();
+  }
+
+  List<LeaderboardEntity> get users {
+    if (_searchQuery.isEmpty) return _users;
+    final q = _searchQuery.toLowerCase();
+    return _users.where((u) =>
+      u.name.toLowerCase().contains(q) ||
+      u.department.toLowerCase().contains(q),
+    ).toList();
+  }
 
   String _currentFilter = 'This Week';
   String get currentFilter => _currentFilter;
 
+  String? _error;
+  String? get error => _error;
+
   Future<void> loadLeaderboard(String filter) async {
     _currentFilter = filter;
-    _isLoading = true;
+    _status = LeaderboardStatus.loading;
+    _error = null;
     notifyListeners();
-
     try {
-      final data = await SupabaseService.client
-          .from('profiles')
-          .select('id, full_name, department, karma_score')
-          .order('karma_score', ascending: false)
-          .limit(20);
-
-      _users = (data as List).map((p) {
-        final name = p['full_name'] as String? ?? 'Unknown';
-        return LeaderboardEntity(
-          id: p['id'] as String,
-          name: name,
-          department: p['department'] as String? ?? '',
-          score: p['karma_score'] as int? ?? 0,
-          avatarUrl: name.isNotEmpty ? name[0].toUpperCase() : 'U',
-        );
-      }).toList();
-    } on PostgrestException catch (e) {
-      debugPrint('Leaderboard error: ${e.message}');
-      _users = [];
+      _users = await _usecase(filter);
+      _status = LeaderboardStatus.loaded;
     } catch (e) {
-      debugPrint('Leaderboard error: $e');
+      _error = e.toString();
+      _status = LeaderboardStatus.error;
       _users = [];
     }
-
-    _isLoading = false;
     notifyListeners();
   }
 }

@@ -57,4 +57,32 @@ class ExchangeItemEntity {
       case ItemCondition.fair:     return 'Fair';
     }
   }
+
+  ExchangeItemEntity copyWith({
+    String? id,
+    String? title,
+    String? description,
+    ItemType? type,
+    double? price,
+    String? priceUnit,
+    ItemCondition? condition,
+    String? sellerName,
+    String? sellerAvatarUrl,
+    String? imageUrl,
+    String? timeAgo,
+    bool? isAvailable,
+  }) => ExchangeItemEntity(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    type: type ?? this.type,
+    price: price ?? this.price,
+    priceUnit: priceUnit ?? this.priceUnit,
+    condition: condition ?? this.condition,
+    sellerName: sellerName ?? this.sellerName,
+    sellerAvatarUrl: sellerAvatarUrl ?? this.sellerAvatarUrl,
+    imageUrl: imageUrl ?? this.imageUrl,
+    timeAgo: timeAgo ?? this.timeAgo,
+    isAvailable: isAvailable ?? this.isAvailable,
+  );
 }

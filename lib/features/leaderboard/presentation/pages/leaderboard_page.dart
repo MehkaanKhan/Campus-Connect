@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../../../core/widgets/campus_bottom_navbar.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
-import '../../../../core/widgets/app_loader.dart';
+import '../../../../core/widgets/shimmer_box.dart';
 import '../provider/leaderboard_provider.dart';
+import '../widgets/leaderboard_shimmer.dart';
 import '../widgets/leaderboard_top_card.dart';
 import '../widgets/leaderboard_flat_row.dart';
 
@@ -17,6 +20,8 @@ class LeaderboardPage extends StatefulWidget {
 }
 
 class _LeaderboardPageState extends State<LeaderboardPage> {
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -26,20 +31,65 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
           CampusTopNavBar(onBack: () => Navigator.of(context).pop()),
+          Container(
+            color: AppColors.cardBg,
+            padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 12.h),
+            child: TextField(
+              controller: _searchController,
+              onChanged: (val) => context.read<LeaderboardProvider>().search(val),
+              decoration: InputDecoration(
+                hintText: 'Search by name or department...',
+                prefixIcon: Padding(padding: const EdgeInsets.all(10), child: SvgPicture.asset(AppAssets.iconSearch, width: 20, height: 20, colorFilter: const ColorFilter.mode(AppColors.textMuted, BlendMode.srcIn))),
+                filled: true,
+                fillColor: AppColors.filterInactiveBg,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 0),
+              ),
+            ),
+          ),
           Expanded(
             child: Consumer<LeaderboardProvider>(
               builder: (context, provider, _) {
-                if (provider.isLoading) return const AppLoader();
+                if (provider.isLoading) return const LeaderboardShimmer();
+                if (provider.status == LeaderboardStatus.error) {
+                  return ErrorState(
+                    message: provider.error,
+                    onRetry: () => context.read<LeaderboardProvider>().loadLeaderboard(provider.currentFilter),
+                  );
+                }
                 if (provider.users.isEmpty) {
                   return Center(
-                    child: Text('No rankings yet.',
-                        style: TextStyle(fontFamily: 'Inter', color: AppColors.textMuted, fontSize: 13.sp)),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.emoji_events_outlined, size: 48.w, color: AppColors.imagePlaceholder),
+                        SizedBox(height: 12.h),
+                        Text(
+                          provider.searchQuery.isEmpty ? 'No rankings yet' : 'No users found',
+                          style: TextStyle(fontFamily: 'Inter', fontSize: 15.sp, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                        ),
+                        SizedBox(height: 6.h),
+                        Text(
+                          provider.searchQuery.isEmpty ? 'Start posting to earn karma points!' : 'Try a different name or department',
+                          style: TextStyle(fontFamily: 'Inter', fontSize: 13.sp, color: AppColors.textMuted),
+                        ),
+                      ],
+                    ),
                   );
                 }
 

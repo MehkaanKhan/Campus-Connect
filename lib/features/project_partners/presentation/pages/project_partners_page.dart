@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
@@ -18,26 +20,23 @@ class ProjectPartnersPage extends StatefulWidget {
 }
 
 class _ProjectPartnersPageState extends State<ProjectPartnersPage> {
-  late ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
-  }
+  final TextEditingController _searchController = TextEditingController();
+  bool _searchActive = false;
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
-  void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
-      context.read<ProjectPartnersProvider>().loadMoreProjects();
-    }
+  void _toggleSearch() {
+    setState(() {
+      _searchActive = !_searchActive;
+      if (!_searchActive) {
+        _searchController.clear();
+        context.read<ProjectPartnersProvider>().search('');
+      }
+    });
   }
 
   @override
@@ -49,10 +48,39 @@ class _ProjectPartnersPageState extends State<ProjectPartnersPage> {
         children: [
           CampusTopNavBar(
             onBack: context.canPop() ? () => context.pop() : null,
+            trailing: GestureDetector(
+              onTap: _toggleSearch,
+              child: SvgPicture.asset(
+                _searchActive ? AppAssets.iconClose : AppAssets.iconSearch,
+                width: 24,
+                height: 24,
+                colorFilter: const ColorFilter.mode(AppColors.textPrimary, BlendMode.srcIn),
+              ),
+            ),
           ),
+          if (_searchActive)
+            Container(
+              color: AppColors.cardBg,
+              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 10.h),
+              child: TextField(
+                controller: _searchController,
+                autofocus: true,
+                onChanged: (val) => context.read<ProjectPartnersProvider>().search(val),
+                decoration: InputDecoration(
+                  hintText: 'Search projects, skills...',
+                  prefixIcon: Padding(padding: const EdgeInsets.all(10), child: SvgPicture.asset(AppAssets.iconSearch, width: 20, height: 20, colorFilter: const ColorFilter.mode(AppColors.textMuted, BlendMode.srcIn))),
+                  filled: true,
+                  fillColor: AppColors.filterInactiveBg,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                ),
+              ),
+            ),
           Expanded(
             child: SingleChildScrollView(
-              controller: _scrollController,
               padding: EdgeInsets.fromLTRB(18.w, 0, 18.w, 100.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,11 +96,6 @@ class _ProjectPartnersPageState extends State<ProjectPartnersPage> {
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  SizedBox(height: 5.h),
-                  Text(
-                    'lISting: ${context.watch<ProjectPartnersProvider>().allProjects.length}',
-                    
-                  ),
                   SizedBox(height: 10.h),
                   Text(
                     'Connect with peers across campus to collaborate on innovative projects, startups, and academic research.',
@@ -84,8 +107,6 @@ class _ProjectPartnersPageState extends State<ProjectPartnersPage> {
                     ),
                   ),
                   SizedBox(height: 24.h),
-                  
-                  // Twitter-style project detail sharing bar
                   Container(
                     padding: EdgeInsets.all(16.w),
                     decoration: BoxDecoration(
@@ -94,7 +115,7 @@ class _ProjectPartnersPageState extends State<ProjectPartnersPage> {
                       border: Border.all(color: AppColors.border, width: 1),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.black.withValues(alpha: 0.03),
+                          color: Colors.black.withValues(alpha: 0.03),
                           blurRadius: 10,
                           offset: const Offset(0, 2),
                         ),
@@ -109,11 +130,7 @@ class _ProjectPartnersPageState extends State<ProjectPartnersPage> {
                             shape: BoxShape.circle,
                             color: AppColors.sageLight,
                           ),
-                          child: const Icon(
-                            Icons.group_add_outlined,
-                            color: AppColors.primary,
-                            size: 20,
-                          ),
+                          child: Center(child: SvgPicture.asset(AppAssets.iconGroupAdd, width: 20, height: 20, colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn))),
                         ),
                         SizedBox(width: 14.w),
                         Expanded(
@@ -122,7 +139,7 @@ class _ProjectPartnersPageState extends State<ProjectPartnersPage> {
                               showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
-                                backgroundColor: AppColors.transparent,
+                                backgroundColor: Colors.transparent,
                                 builder: (context) => const CreateProjectBottomSheet(),
                               );
                             },
@@ -147,24 +164,10 @@ class _ProjectPartnersPageState extends State<ProjectPartnersPage> {
                       ],
                     ),
                   ),
-                  
                   SizedBox(height: 24.h),
                   const ProjectFilterChips(),
                   SizedBox(height: 22.h),
                   const ProjectList(),
-                  Consumer<ProjectPartnersProvider>(
-                    builder: (context, provider, child) {
-                      if (provider.isFetchingMore) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 20.h),
-                          child: const Center(
-                            child: CircularProgressIndicator(color: AppColors.primary),
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
                 ],
               ),
             ),

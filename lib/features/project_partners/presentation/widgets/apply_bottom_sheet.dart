@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../provider/project_partners_provider.dart';
@@ -100,7 +102,7 @@ class _ApplyBottomSheetState extends State<ApplyBottomSheet> {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.close, color: AppColors.textSecondary),
+                icon: SvgPicture.asset(AppAssets.iconClose, width: 22, height: 22, colorFilter: const ColorFilter.mode(AppColors.textSecondary, BlendMode.srcIn)),
                 onPressed: () => context.pop(),
               )
             ],

@@ -1,3 +1,5 @@
+import '../entities/other_uni_entity.dart';
+
 abstract class OtherUnisRepository {
-  // Boilerplate repository interface
+  Future<List<OtherUniEntity>> getUniversities();
 }

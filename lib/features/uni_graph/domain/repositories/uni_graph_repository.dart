@@ -1,3 +1,5 @@
+import '../entities/uni_graph_entity.dart';
+
 abstract class UniGraphRepository {
-  // Boilerplate repository interface
+  Future<({List<UniNodeEntity> nodes, List<UniEdgeEntity> edges})> getGraphData();
 }

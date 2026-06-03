@@ -18,36 +18,22 @@ class ProfileCard extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(24.w, 18.h, 24.w, 16.h),
       child: Column(
         children: [
-          Stack(
-            alignment: Alignment.bottomRight,
-            children: [
-              CircleAvatar(
-                radius: 44.r,
-                backgroundColor: AppColors.avatarBg,
-                backgroundImage: profile.avatarUrl != null
-                    ? NetworkImage(profile.avatarUrl!)
-                    : null,
-                child: profile.avatarUrl == null
-                    ? Text(
-                        profile.name[0].toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 32.sp,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                        ),
-                      )
-                    : null,
-              ),
-              Container(
-                width: 28.w,
-                height: 28.w,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.sage,
-                ),
-                child: Icon(Icons.edit, size: 14.w, color: Colors.white),
-              ),
-            ],
+          CircleAvatar(
+            radius: 44.r,
+            backgroundColor: AppColors.avatarBg,
+            backgroundImage: profile.avatarUrl != null
+                ? NetworkImage(profile.avatarUrl!)
+                : null,
+            child: profile.avatarUrl == null
+                ? Text(
+                    profile.name[0].toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 32.sp,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                    ),
+                  )
+                : null,
           ),
           SizedBox(height: 10.h),
           Text(

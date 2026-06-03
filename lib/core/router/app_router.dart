@@ -13,6 +13,7 @@ import '../../features/auth/presentation/pages/logout.dart';
 import '../../features/auth/presentation/pages/email_verification_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/settings/presentation/pages/change_profile_page.dart';
+import '../../features/settings/presentation/pages/change_password_page.dart';
 import '../../features/settings/presentation/pages/language_page.dart';
 import '../../features/settings/presentation/pages/notification_page.dart';
 import '../../features/cart/presentation/pages/cart_page.dart';
@@ -34,6 +35,7 @@ import '../../features/other_unis/presentation/pages/uni_profile_page.dart';
 import '../../features/hostellite_exchange/domain/entities/exchange_item_entity.dart';
 import '../../features/other_unis/domain/entities/other_uni_entity.dart';
 import '../../features/carpool/presentation/pages/carpool_feed_page.dart';
+import '../../features/feed/presentation/pages/search_page.dart';
 
 // Routes that don't require a signed-in session
 const _publicRoutes = {
@@ -101,9 +103,10 @@ GoRouter createRouter(AuthProvider authProvider) {
         path: '/settings',
         builder: (ctx, _) => const SettingsPage(),
         routes: [
-          GoRoute(path: 'profile',       builder: (ctx, _) => const ChangeProfilePage()),
-          GoRoute(path: 'language',      builder: (ctx, _) => const LanguagePage()),
-          GoRoute(path: 'notifications', builder: (ctx, _) => const NotificationPage()),
+          GoRoute(path: 'profile',          builder: (ctx, _) => const ChangeProfilePage()),
+          GoRoute(path: 'change-password', builder: (ctx, _) => const ChangePasswordPage()),
+          GoRoute(path: 'language',         builder: (ctx, _) => const LanguagePage()),
+          GoRoute(path: 'notifications',    builder: (ctx, _) => const NotificationPage()),
         ],
       ),
       ShellRoute(
@@ -122,6 +125,7 @@ GoRouter createRouter(AuthProvider authProvider) {
       GoRoute(path: '/uni-graph',    builder: (ctx, _) => const UniGraphPage()),
       GoRoute(path: '/other-unis',   builder: (ctx, _) => const OtherUnisPage()),
       GoRoute(path: '/other-unis/profile', builder: (ctx, state) => UniProfilePage(uni: state.extra as OtherUniEntity)),
+      GoRoute(path: '/search', builder: (ctx, _) => const SearchPage()),
     ],
   );
 }

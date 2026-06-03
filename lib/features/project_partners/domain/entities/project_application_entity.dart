@@ -27,4 +27,26 @@ class ProjectApplicationEntity {
   bool get isPending  => status == 'pending';
   bool get isAccepted => status == 'accepted';
   bool get isRejected => status == 'rejected';
+
+  ProjectApplicationEntity copyWith({
+    String? id,
+    String? listingId,
+    String? applicantId,
+    String? applicantName,
+    String? applicantAvatarUrl,
+    String? coverMessage,
+    String? phoneNumber,
+    String? status,
+    String? appliedAgo,
+  }) => ProjectApplicationEntity(
+    id: id ?? this.id,
+    listingId: listingId ?? this.listingId,
+    applicantId: applicantId ?? this.applicantId,
+    applicantName: applicantName ?? this.applicantName,
+    applicantAvatarUrl: applicantAvatarUrl ?? this.applicantAvatarUrl,
+    coverMessage: coverMessage ?? this.coverMessage,
+    phoneNumber: phoneNumber ?? this.phoneNumber,
+    status: status ?? this.status,
+    appliedAgo: appliedAgo ?? this.appliedAgo,
+  );
 }

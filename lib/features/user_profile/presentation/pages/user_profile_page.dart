@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/services/supabase_service.dart';
 import '../../../../core/widgets/campus_bottom_navbar.dart';
@@ -44,7 +46,7 @@ class _UserProfilePageState extends State<UserProfilePage>
           CampusTopNavBar(
             trailing: GestureDetector(
               onTap: () => context.push('/settings'),
-              child: Icon(Icons.settings_outlined, size: 24, color: AppColors.textPrimary),
+              child: SvgPicture.asset(AppAssets.iconSettings, width: 24, height: 24, colorFilter: const ColorFilter.mode(AppColors.textPrimary, BlendMode.srcIn)),
             ),
           ),
           Expanded(child: ProfileBody(tabController: _tabController)),

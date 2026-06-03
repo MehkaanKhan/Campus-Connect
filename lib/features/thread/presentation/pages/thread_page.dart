@@ -20,6 +20,7 @@ class ThreadPage extends StatefulWidget {
 
 class _ThreadPageState extends State<ThreadPage> {
   final _commentController = TextEditingController();
+  final _commentFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -34,7 +35,13 @@ class _ThreadPageState extends State<ThreadPage> {
   @override
   void dispose() {
     _commentController.dispose();
+    _commentFocusNode.dispose();
     super.dispose();
+  }
+
+  void _onReply(String commentId, String authorName) {
+    context.read<ThreadProvider>().setReplyTarget(commentId, authorName);
+    _commentFocusNode.requestFocus();
   }
 
   @override
@@ -45,10 +52,10 @@ class _ThreadPageState extends State<ThreadPage> {
     return Scaffold(
       backgroundColor: AppColors.altPageBg,
       bottomNavigationBar: const CampusBottomNavBar(activeTab: BottomNavTab.home),
-      bottomSheet: ThreadCommentInputBar(controller: _commentController),
+      bottomSheet: ThreadCommentInputBar(controller: _commentController, focusNode: _commentFocusNode),
       body: Column(
         children: [
-          CampusTopNavBar(onBack: () => context.go('/feed')),
+          CampusTopNavBar(onBack: () => context.canPop() ? context.pop() : context.go('/feed')),
           Expanded(
             child: thread == null
                 ? const Center(
@@ -64,7 +71,7 @@ class _ThreadPageState extends State<ThreadPage> {
                         onToggle: provider.toggleReplies,
                       ),
                       ...thread.comments.map(
-                        (c) => ThreadCommentTile(comment: c, isNested: false),
+                        (c) => ThreadCommentTile(comment: c, isNested: false, onReply: _onReply),
                       ),
                       SizedBox(height: 80.h),
                     ],

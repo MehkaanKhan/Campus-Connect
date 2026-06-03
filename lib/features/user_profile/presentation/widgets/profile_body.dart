@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
-import '../../../../core/widgets/app_loader.dart';
 import '../provider/user_profile_provider.dart';
+import 'profile_shimmer.dart';
 import 'profile_card.dart';
 import 'profile_posts_list.dart';
 import 'profile_carpools_list.dart';
@@ -16,14 +18,14 @@ class ProfileBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<UserProfileProvider>();
 
-    if (provider.isLoading) return const AppLoader();
+    if (provider.isLoading) return const ProfileShimmer();
 
     if (provider.profile == null) {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.person_outline, size: 48.w, color: AppColors.imagePlaceholder),
+            SvgPicture.asset(AppAssets.iconProfile, width: 48.w, height: 48.w, colorFilter: ColorFilter.mode(AppColors.imagePlaceholder, BlendMode.srcIn)),
             SizedBox(height: 12.h),
             Text(
               provider.error != null ? 'Failed to load profile' : 'Profile not found',

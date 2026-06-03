@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../domain/entities/thread_entity.dart';
@@ -6,8 +8,14 @@ import '../../domain/entities/thread_entity.dart';
 class ThreadCommentTile extends StatelessWidget {
   final CommentEntity comment;
   final bool isNested;
+  final void Function(String commentId, String authorName)? onReply;
 
-  const ThreadCommentTile({super.key, required this.comment, required this.isNested});
+  const ThreadCommentTile({
+    super.key,
+    required this.comment,
+    required this.isNested,
+    this.onReply,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +40,8 @@ class ThreadCommentTile extends StatelessWidget {
                 ? null
                 : [
                     BoxShadow(
-                      color: AppColors.black.withValues(alpha: 0.03),
-                      blurRadius: 6.r,
+                      color: Colors.black.withValues(alpha: 0.03),
+                      blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -52,7 +60,7 @@ class ThreadCommentTile extends StatelessWidget {
                         ? NetworkImage(comment.authorAvatarUrl!)
                         : null,
                     child: comment.authorAvatarUrl == null
-                        ? const Icon(Icons.person, color: AppColors.white60, size: 16)
+                        ? SvgPicture.asset(AppAssets.iconProfile, width: 16, height: 16, colorFilter: const ColorFilter.mode(Colors.white60, BlendMode.srcIn))
                         : null,
                   ),
                   SizedBox(width: 8.w),
@@ -77,7 +85,7 @@ class ThreadCommentTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 9.sp,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.white,
+                          color: Colors.white,
                           letterSpacing: 0.4,
                         ),
                       ),
@@ -86,28 +94,12 @@ class ThreadCommentTile extends StatelessWidget {
                   SizedBox(width: 6.w),
                   Text(
                     comment.timeAgo,
-                    style: TextStyle(fontSize: 11.sp, color: AppColors.textCaption),
+                    style: TextStyle(fontSize: 11.sp, color: AppColors.navInactive),
                   ),
-                  if (!isNested) ...[
-                    SizedBox(width: 12.w),
-                    GestureDetector(
-                      onTap: () {
-                        context.read<ThreadProvider>().setReplyingTo(comment.id, comment.authorName);
-                      },
-                      child: Text(
-                        'Reply',
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.sage,
-                        ),
-                      ),
-                    ),
-                  ],
                   const Spacer(),
                   Row(
                     children: [
-                      Icon(Icons.keyboard_arrow_up_rounded, size: 16.w, color: upvoteColor),
+                      SvgPicture.asset(AppAssets.iconVoteUp, width: 16.w, height: 16.w, colorFilter: ColorFilter.mode(upvoteColor, BlendMode.srcIn)),
                       Text(
                         '${comment.upvotes}',
                         style: TextStyle(
@@ -116,7 +108,7 @@ class ThreadCommentTile extends StatelessWidget {
                           color: upvoteColor,
                         ),
                       ),
-                      Icon(Icons.keyboard_arrow_down_rounded, size: 14.w, color: AppColors.textHint),
+                      SvgPicture.asset(AppAssets.iconVoteDown, width: 14.w, height: 14.w, colorFilter: ColorFilter.mode(AppColors.textHint, BlendMode.srcIn)),
                     ],
                   ),
                 ],
@@ -131,27 +123,30 @@ class ThreadCommentTile extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 8.h),
-              Row(
-                children: [
-                  Icon(Icons.subdirectory_arrow_right_rounded, size: 13.w, color: AppColors.navInactive),
-                  SizedBox(width: 3.w),
-                  Text(
-                    'REPLY',
-                    style: TextStyle(
-                      fontSize: 10.5.sp,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.5,
-                      color: AppColors.textLabel,
+              GestureDetector(
+                onTap: () => onReply?.call(comment.id, comment.authorName),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(AppAssets.iconCornerRight, width: 13.w, height: 13.w, colorFilter: ColorFilter.mode(AppColors.navInactive, BlendMode.srcIn)),
+                    SizedBox(width: 3.w),
+                    Text(
+                      'REPLY',
+                      style: TextStyle(
+                        fontSize: 10.5.sp,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.5,
+                        color: AppColors.textLabel,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
         ),
         if (comment.replies.isNotEmpty)
           ...comment.replies.map(
-            (r) => ThreadCommentTile(comment: r, isNested: true),
+            (r) => ThreadCommentTile(comment: r, isNested: true, onReply: onReply),
           ),
         SizedBox(height: 4.h),
       ],

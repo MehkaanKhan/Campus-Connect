@@ -1,9 +1,11 @@
+import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/services/supabase_service.dart';
 import '../../domain/entities/exchange_item_entity.dart';
 
 abstract class HostelliteRemoteDataSource {
   Future<List<ExchangeItemEntity>> getItems({ItemType? filter});
+  Future<void> listItem(ExchangeItemEntity item, {List<int>? imageBytes});
 }
 
 class HostelliteRemoteDataSourceImpl implements HostelliteRemoteDataSource {
@@ -29,6 +31,7 @@ class HostelliteRemoteDataSourceImpl implements HostelliteRemoteDataSource {
     return (data as List).map(_map).toList();
   }
 
+  //The _map helper converts raw Supabase rows into ExchangeItemEntity objects
   ExchangeItemEntity _map(dynamic row) {
     final p = row['profiles'] as Map?;
     return ExchangeItemEntity(
@@ -36,7 +39,7 @@ class HostelliteRemoteDataSourceImpl implements HostelliteRemoteDataSource {
       sellerId: row['seller_id'] as String?,
       title: row['title'] as String,
       description: row['description'] as String? ?? '',
-      type: _parseType(row['item_type'] as String?),
+      type: _parseType(row['item_type'] as String?), //  parses the string enums (item_type, condition) into Dart enums
       price: (row['price'] as num?)?.toDouble(),
       priceUnit: row['price_unit'] as String?,
       condition: _parseCondition(row['condition'] as String?),
@@ -47,6 +50,45 @@ class HostelliteRemoteDataSourceImpl implements HostelliteRemoteDataSource {
       isAvailable: row['is_available'] as bool? ?? true,
       sellerEmail: p?['email'] as String?,
     );
+  }
+
+  @override
+  Future<void> listItem(ExchangeItemEntity item, {List<int>? imageBytes}) async {
+    final userId = SupabaseService.uid;
+    String? imageUrl;
+
+    if (imageBytes != null && imageBytes.isNotEmpty) {
+      final filePath = '$userId/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      await SupabaseService.client.storage.from('post-images').uploadBinary(
+            filePath,
+            Uint8List.fromList(imageBytes),
+            fileOptions: const FileOptions(contentType: 'image/jpeg', upsert: true),
+          );
+      imageUrl = SupabaseService.client.storage
+          .from('post-images')
+          .getPublicUrl(filePath);
+    }
+
+    await _client.from('exchange_items').insert({
+      'seller_id': userId,
+      'title': item.title,
+      'description': item.description,
+      'item_type': _typeStr(item.type),
+      'price': item.price,
+      'price_unit': item.priceUnit,
+      'condition': _conditionStr(item.condition),
+      'image_url': imageUrl,
+      'is_available': true,
+    });
+  }
+
+  String _conditionStr(ItemCondition c) {
+    switch (c) {
+      case ItemCondition.brandNew: return 'brand_new';
+      case ItemCondition.likeNew:  return 'like_new';
+      case ItemCondition.good:     return 'good';
+      case ItemCondition.fair:     return 'fair';
+    }
   }
 
   String _typeStr(ItemType t) {

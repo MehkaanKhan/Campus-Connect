@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../domain/entities/carpool_ride_entity.dart';
@@ -49,7 +51,7 @@ class CarpoolRideCard extends StatelessWidget {
                       SizedBox(height: 4.h),
                       Row(
                         children: [
-                          Icon(Icons.access_time_rounded, size: 13.w, color: AppColors.textMuted),
+                          SvgPicture.asset(AppAssets.iconClock, width: 13.w, height: 13.w, colorFilter: ColorFilter.mode(AppColors.textMuted, BlendMode.srcIn)),
                           SizedBox(width: 4.w),
                           Text(
                             '${ride.time} ${ride.date}',

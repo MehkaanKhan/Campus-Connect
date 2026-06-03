@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../domain/entities/notification_entity.dart';
@@ -7,13 +9,13 @@ class NotificationTile extends StatelessWidget {
   final NotificationEntity item;
   const NotificationTile({super.key, required this.item});
 
-  IconData get _icon {
+  String get _svgAsset {
     switch (item.type) {
-      case NotificationType.comment:     return Icons.chat_bubble_outline;
-      case NotificationType.carpool:     return Icons.directions_car_outlined;
-      case NotificationType.club:        return Icons.group_outlined;
-      case NotificationType.marketplace: return Icons.storefront_outlined;
-      case NotificationType.general:     return Icons.notifications_outlined;
+      case NotificationType.comment:     return AppAssets.iconReply;
+      case NotificationType.carpool:     return AppAssets.iconDirectionsCar;
+      case NotificationType.club:        return AppAssets.iconGroupAdd;
+      case NotificationType.marketplace: return AppAssets.iconShoppingCart;
+      case NotificationType.general:     return AppAssets.iconNotifications;
     }
   }
 
@@ -28,7 +30,7 @@ class NotificationTile extends StatelessWidget {
           CircleAvatar(
             radius: 20.r,
             backgroundColor: AppColors.notifIconBg,
-            child: Icon(_icon, size: 18.w, color: AppColors.sage),
+            child: SvgPicture.asset(_svgAsset, width: 18.w, height: 18.w, colorFilter: const ColorFilter.mode(AppColors.sage, BlendMode.srcIn)),
           ),
           SizedBox(width: 12.w),
           Expanded(

@@ -5,9 +5,10 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
 import '../../../../core/widgets/campus_bottom_navbar.dart';
-import '../../../../core/widgets/app_loader.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../provider/other_unis_provider.dart';
 import '../widgets/uni_overlay_modal.dart';
+import '../widgets/other_unis_shimmer.dart';
 
 class OtherUnisPage extends StatefulWidget {
   const OtherUnisPage({super.key});
@@ -110,8 +111,10 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
                       fontSize: 14.sp,
                       color: AppColors.textMuted,
                     ),
-                    prefixIcon:
-                        Icon(Icons.search_rounded, color: AppColors.textMuted, size: 20.w),
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: SvgPicture.asset('assets/icons/icons/search.svg', width: 20, height: 20, colorFilter: const ColorFilter.mode(AppColors.textMuted, BlendMode.srcIn)),
+                    ),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
                             icon: Icon(Icons.close_rounded,
@@ -151,9 +154,7 @@ class _OtherUnisPageState extends State<OtherUnisPage> {
           Expanded(
             child: Consumer<OtherUnisProvider>(
               builder: (context, provider, child) {
-                if (provider.isLoading) {
-                  return const Center(child: AppLoader());
-                }
+                if (provider.isLoading) return const OtherUnisShimmer();
 
                 if (provider.error != null) {
                   return _ErrorState(

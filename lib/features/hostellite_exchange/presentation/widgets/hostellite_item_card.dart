@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../domain/entities/exchange_item_entity.dart';
@@ -147,6 +149,6 @@ class HostelliteItemCard extends StatelessWidget {
         width: double.infinity,
         height: 170.h,
         color: AppColors.borderLight,
-        child: Icon(Icons.image_outlined, size: 40.w, color: AppColors.imagePlaceholder),
+        child: SvgPicture.asset(AppAssets.iconImagePlaceholder, width: 40.w, height: 40.w, colorFilter: ColorFilter.mode(AppColors.imagePlaceholder, BlendMode.srcIn)),
       );
 }

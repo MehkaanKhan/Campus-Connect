@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../../../core/services/supabase_service.dart';
@@ -66,7 +68,7 @@ class ProjectCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              Icon(Icons.bookmark_border_rounded, size: 20.w, color: AppColors.navInactive),
+              SvgPicture.asset(AppAssets.iconBookmark, width: 20.w, height: 20.w, colorFilter: ColorFilter.mode(AppColors.navInactive, BlendMode.srcIn)),
             ],
           ),
           SizedBox(height: 10.h),
@@ -186,18 +188,22 @@ class ProjectCard extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    SvgPicture.asset(
                       project.currentUserApplicationStatus == 'accepted'
-                          ? Icons.check_circle_rounded
+                          ? AppAssets.iconCheckCircle
                           : project.currentUserApplicationStatus == 'rejected'
-                              ? Icons.cancel_rounded
-                              : Icons.access_time_filled_rounded,
-                      size: 18.w,
-                      color: project.currentUserApplicationStatus == 'accepted'
-                          ? AppColors.sage
-                          : project.currentUserApplicationStatus == 'rejected'
-                              ? AppColors.error
-                              : AppColors.textSecondary,
+                              ? AppAssets.iconCancelCircle
+                              : AppAssets.iconClock,
+                      width: 18.w,
+                      height: 18.w,
+                      colorFilter: ColorFilter.mode(
+                        project.currentUserApplicationStatus == 'accepted'
+                            ? AppColors.sage
+                            : project.currentUserApplicationStatus == 'rejected'
+                                ? AppColors.error
+                                : AppColors.textSecondary,
+                        BlendMode.srcIn,
+                      ),
                     ),
                     SizedBox(width: 8.w),
                     Text(

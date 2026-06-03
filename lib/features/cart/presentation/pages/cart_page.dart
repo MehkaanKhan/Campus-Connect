@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../domain/entities/cart_item_entity.dart';
 import '../provider/cart_provider.dart';
@@ -44,13 +46,13 @@ class _EmptyCart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.shopping_cart_outlined, size: 72, color: AppColors.textSecondary),
-          SizedBox(height: 16),
-          Text('Your cart is empty'),
+          SvgPicture.asset(AppAssets.iconShoppingCart, width: 72, height: 72, colorFilter: const ColorFilter.mode(AppColors.textSecondary, BlendMode.srcIn)),
+          const SizedBox(height: 16),
+          const Text('Your cart is empty'),
         ],
       ),
     );
@@ -82,7 +84,7 @@ class _CartItemTile extends StatelessWidget {
               onPressed: () => cart.updateQuantity(item.id, item.quantity + 1),
             ),
             IconButton(
-              icon: const Icon(Icons.delete_outline, color: AppColors.error),
+              icon: SvgPicture.asset(AppAssets.iconTrash, width: 22, height: 22, colorFilter: const ColorFilter.mode(AppColors.error, BlendMode.srcIn)),
               onPressed: () => cart.removeItem(item.id),
             ),
           ],

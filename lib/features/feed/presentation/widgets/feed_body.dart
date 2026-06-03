@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
-import '../../../../core/widgets/app_loader.dart';
 import '../provider/feed_provider.dart';
 import 'post_card.dart';
+import 'post_card_shimmer.dart';
 
 class FeedBody extends StatelessWidget {
   const FeedBody({super.key});
@@ -13,7 +15,7 @@ class FeedBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<FeedProvider>();
-    if (provider.isLoading) return const AppLoader();
+    if (provider.isLoading) return const FeedShimmerList();
     if (provider.status == FeedStatus.error) {
       final isNoUniversity = provider.error?.contains('university') ?? false;
       return Center(
@@ -22,11 +24,9 @@ class FeedBody extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                isNoUniversity ? Icons.school_outlined : Icons.wifi_off_rounded,
-                size: 52.w,
-                color: AppColors.imagePlaceholder,
-              ),
+              isNoUniversity
+                  ? Icon(Icons.school_outlined, size: 52.w, color: AppColors.imagePlaceholder)
+                  : SvgPicture.asset(AppAssets.iconWifiOff, width: 52.w, height: 52.w, colorFilter: ColorFilter.mode(AppColors.imagePlaceholder, BlendMode.srcIn)),
               SizedBox(height: 16.h),
               Text(
                 isNoUniversity ? 'Set up your university' : 'Could not load feed',
@@ -75,7 +75,7 @@ class FeedBody extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.article_outlined, size: 48.w, color: AppColors.imagePlaceholder),
+            SvgPicture.asset(AppAssets.iconArticle, width: 48.w, height: 48.w, colorFilter: ColorFilter.mode(AppColors.imagePlaceholder, BlendMode.srcIn)),
             SizedBox(height: 12.h),
             Text(
               'No posts yet',

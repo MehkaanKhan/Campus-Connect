@@ -11,4 +11,7 @@ class CarpoolRepositoryImpl implements CarpoolRepository {
 
   @override
   Future<void> joinRide(String rideId) => _source.joinRide(rideId);
+
+  @override
+  Future<void> postRide(CarpoolRideEntity ride) => _source.postRide(ride);
 }

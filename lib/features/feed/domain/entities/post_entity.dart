@@ -1,12 +1,10 @@
-import 'package:flutter/material.dart';
-
 class PostEntity {
   final String id;
   final String authorName;
   final String? authorAvatarUrl;
   final String timeAgo;
   final String flair;
-  final Color flairColor;
+  final String flairColor;
   final String title;
   final String excerpt;
   final String? imageUrl;
@@ -33,21 +31,26 @@ class PostEntity {
     this.isDownvoted = false,
   });
 
-  PostEntity copyWith({bool? isUpvoted, bool? isDownvoted, int? upvotes, int? downvotes, int? commentCount}) =>
-      PostEntity(
-        id: id,
-        authorName: authorName,
-        authorAvatarUrl: authorAvatarUrl,
-        timeAgo: timeAgo,
-        flair: flair,
-        flairColor: flairColor,
-        title: title,
-        excerpt: excerpt,
-        imageUrl: imageUrl,
-        upvotes: upvotes ?? this.upvotes,
-        downvotes: downvotes ?? this.downvotes,
-        commentCount: commentCount ?? this.commentCount,
-        isUpvoted: isUpvoted ?? this.isUpvoted,
-        isDownvoted: isDownvoted ?? this.isDownvoted,
-      );
+  PostEntity copyWith({
+    bool? isUpvoted,
+    bool? isDownvoted,
+    int? upvotes,
+    int? downvotes,
+    int? commentCount,
+  }) => PostEntity(
+    id: id,
+    authorName: authorName,
+    authorAvatarUrl: authorAvatarUrl,
+    timeAgo: timeAgo,
+    flair: flair,
+    flairColor: flairColor,
+    title: title,
+    excerpt: excerpt,
+    imageUrl: imageUrl,
+    upvotes: upvotes ?? this.upvotes,
+    downvotes: downvotes ?? this.downvotes,
+    commentCount: commentCount ?? this.commentCount,
+    isUpvoted: isUpvoted ?? this.isUpvoted,
+    isDownvoted: isDownvoted ?? this.isDownvoted,
+  );
 }

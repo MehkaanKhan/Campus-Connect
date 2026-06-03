@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/services/supabase_service.dart';
@@ -135,6 +136,20 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> changePassword({required String newPassword}) async {
+    _setLoading();
+    try {
+      await SupabaseService.auth.updateUser(UserAttributes(password: newPassword));
+      _status = AuthStatus.authenticated;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _setError(_friendly(e.toString()));
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> setNewPassword({required String password}) async {
     _setLoading();
     try {
@@ -148,6 +163,58 @@ class AuthProvider extends ChangeNotifier {
     } catch (e) {
       _setError(_friendly(e.toString()));
       return false;
+    }
+  }
+
+  /// Update display name and optional avatar; refreshes _user afterwards.
+  Future<bool> updateProfile({
+    required String name,
+    Uint8List? photoBytes,
+  }) async {
+    _setLoading();
+    try {
+      final uid = SupabaseService.uid;
+      String? avatarUrl;
+
+      if (photoBytes != null && photoBytes.isNotEmpty) {
+        final filePath = '$uid/avatar.jpg';
+        await SupabaseService.avatarsBucket.uploadBinary(
+          filePath,
+          photoBytes,
+          fileOptions: const FileOptions(contentType: 'image/jpeg', upsert: true),
+        );
+        avatarUrl = SupabaseService.avatarsBucket.getPublicUrl(filePath);
+      }
+
+      final updates = <String, dynamic>{'full_name': name};
+      if (avatarUrl != null) updates['avatar_url'] = avatarUrl;
+      await SupabaseService.client.from('profiles').update(updates).eq('id', uid);
+
+      await refreshUser();
+      _status = AuthStatus.authenticated;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _setError(_friendly(e.toString()));
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Re-fetch profile row and update in-memory UserEntity.
+  Future<void> refreshUser() async {
+    final uid = SupabaseService.uid;
+    final data = await SupabaseService.client
+        .from('profiles')
+        .select('full_name, avatar_url, university_id')
+        .eq('id', uid)
+        .single();
+    if (_user != null) {
+      _user = _user!.copyWith(
+        name: data['full_name'] as String? ?? _user!.name,
+        avatarUrl: data['avatar_url'] as String?,
+        universityId: data['university_id'] as String?,
+      );
     }
   }
 

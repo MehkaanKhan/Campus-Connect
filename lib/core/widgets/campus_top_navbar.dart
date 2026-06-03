@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import '../constants/app_assets.dart';
 import '../constants/app_colors.dart';
 
@@ -27,33 +29,47 @@ class CampusTopNavBar extends StatelessWidget {
                 onTap: onBack,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 10),
-                  child: Icon(
-                    Icons.arrow_back_ios_rounded,
-                    size: 20,
-                    color: AppColors.textPrimary,
+                  child: SvgPicture.asset(
+                    AppAssets.iconBackArrow,
+                    width: 20,
+                    height: 20,
+                    colorFilter: const ColorFilter.mode(AppColors.textPrimary, BlendMode.srcIn),
                   ),
                 ),
               ),
             ],
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(AppAssets.headerLogo, width: 24, height: 24),
-                const SizedBox(width: 10),
-                Text(
-                  'Campus Connect',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+            GestureDetector(
+              onTap: () => context.go('/home'),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(AppAssets.headerLogo, width: 24, height: 24),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Campus Connect',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const Spacer(),
-            if (trailing != null) trailing!
-            else Image.asset(AppAssets.searchIcon, width: 24, height: 24),
+            if (trailing != null)
+              trailing!
+            else
+              GestureDetector(
+                onTap: () => context.push('/search'),
+                child: SvgPicture.asset(
+                  AppAssets.iconSearch,
+                  width: 24,
+                  height: 24,
+                  colorFilter: const ColorFilter.mode(AppColors.textPrimary, BlendMode.srcIn),
+                ),
+              ),
           ],
         ),
       ),

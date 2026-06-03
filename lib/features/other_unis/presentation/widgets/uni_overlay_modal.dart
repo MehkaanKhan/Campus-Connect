@@ -47,19 +47,30 @@ class UniOverlayModal extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 64.w,
-                    height: 64.w,
-                    decoration: BoxDecoration(
-                      color: AppColors.border,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.account_balance_rounded,
-                        size: 28.w,
-                        color: AppColors.filterActiveBg,
-                      ),
+                  ClipOval(
+                    child: Container(
+                      width: 64.w,
+                      height: 64.w,
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      child: uni.imageUrl != null
+                          ? Image.network(
+                              uni.imageUrl!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) => Center(
+                                child: Icon(
+                                  Icons.account_balance_rounded,
+                                  size: 28.w,
+                                  color: AppColors.filterActiveBg,
+                                ),
+                              ),
+                            )
+                          : Center(
+                              child: Icon(
+                                Icons.account_balance_rounded,
+                                size: 28.w,
+                                color: AppColors.filterActiveBg,
+                              ),
+                            ),
                     ),
                   ),
                   SizedBox(height: 16.h),

@@ -77,8 +77,12 @@ import 'features/user_profile/presentation/provider/user_profile_provider.dart';
 import 'features/hostellite_exchange/data/datasources/hostellite_remote_datasource.dart';
 import 'features/hostellite_exchange/data/repositories/hostellite_repository_impl.dart';
 import 'features/hostellite_exchange/domain/usecases/get_items_usecase.dart';
+import 'features/hostellite_exchange/domain/usecases/list_item_usecase.dart';
 import 'features/hostellite_exchange/presentation/provider/hostellite_provider.dart';
 
+import 'features/leaderboard/data/datasources/leaderboard_remote_datasource.dart';
+import 'features/leaderboard/data/repositories/leaderboard_repository_impl.dart';
+import 'features/leaderboard/domain/usecases/get_leaderboard_usecase.dart';
 import 'features/leaderboard/presentation/provider/leaderboard_provider.dart';
 import 'features/hostellite_exchange_board/data/datasources/exchange_board_remote_datasource.dart';
 import 'features/hostellite_exchange_board/data/repositories/exchange_board_repository_impl.dart';
@@ -88,13 +92,20 @@ import 'features/hostellite_exchange_board/domain/usecases/update_item_availabil
 import 'features/hostellite_exchange_board/domain/usecases/delete_exchange_item_usecase.dart';
 import 'features/hostellite_exchange_board/domain/usecases/get_my_items_usecase.dart';
 import 'features/hostellite_exchange_board/presentation/provider/exchange_board_provider.dart';
+import 'features/uni_graph/data/datasources/uni_graph_remote_datasource.dart';
+import 'features/uni_graph/data/repositories/uni_graph_repository_impl.dart';
+import 'features/uni_graph/domain/usecases/get_graph_data_usecase.dart';
 import 'features/uni_graph/presentation/provider/uni_graph_provider.dart';
+import 'features/other_unis/data/datasources/other_unis_remote_datasource.dart';
+import 'features/other_unis/data/repositories/other_unis_repository_impl.dart';
+import 'features/other_unis/domain/usecases/get_other_unis_usecase.dart';
 import 'features/other_unis/presentation/provider/other_unis_provider.dart';
 
 import 'features/carpool/data/datasources/carpool_remote_datasource.dart';
 import 'features/carpool/data/repositories/carpool_repository_impl.dart';
 import 'features/carpool/domain/usecases/get_carpool_rides_usecase.dart';
 import 'features/carpool/domain/usecases/join_carpool_ride_usecase.dart';
+import 'features/carpool/domain/usecases/post_carpool_ride_usecase.dart';
 import 'features/carpool/presentation/provider/carpool_provider.dart';
 
 Future<void> main() async {
@@ -248,15 +259,23 @@ class CampusConnectApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => HostelliteProvider(
             usecase: GetExchangeItemsUsecase(heRepo),
+            listItemUsecase: ListItemUsecase(heRepo),
           ),
         ),
         ChangeNotifierProvider(
           create: (_) => CarpoolProvider(
             getRidesUsecase: GetCarpoolRidesUsecase(carpoolRepo),
             joinRideUsecase: JoinCarpoolRideUsecase(carpoolRepo),
+            postRideUsecase: PostCarpoolRideUsecase(carpoolRepo),
           ),
         ),
-        ChangeNotifierProvider(create: (_) => LeaderboardProvider()),
+        ChangeNotifierProvider(
+          create: (_) => LeaderboardProvider(
+            usecase: GetLeaderboardUsecase(
+              LeaderboardRepositoryImpl(LeaderboardRemoteDataSourceImpl()),
+            ),
+          ),
+        ),
         ChangeNotifierProvider(
           create: (_) => ExchangeBoardProvider(
             submitComplaintUsecase: SubmitComplaintUsecase(hebRepo),
@@ -266,8 +285,20 @@ class CampusConnectApp extends StatelessWidget {
             getMyItemsUsecase: GetMyItemsUsecase(hebRepo),
           ),
         ),
-        ChangeNotifierProvider(create: (_) => UniGraphProvider()),
-        ChangeNotifierProvider(create: (_) => OtherUnisProvider()),
+        ChangeNotifierProvider(
+          create: (_) => UniGraphProvider(
+            usecase: GetGraphDataUsecase(
+              UniGraphRepositoryImpl(UniGraphRemoteDataSourceImpl()),
+            ),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => OtherUnisProvider(
+            usecase: GetOtherUnisUsecase(
+              OtherUnisRepositoryImpl(OtherUnisRemoteDataSourceImpl()),
+            ),
+          ),
+        ),
       ],
       child: MaterialApp.router(
         title: 'Campus Connect',

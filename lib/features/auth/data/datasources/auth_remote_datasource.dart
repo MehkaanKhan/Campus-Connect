@@ -50,6 +50,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     );
   }
 
+  // helper maps Supabase's User object to your internal UserModel
   UserModel _fromSupabase(User user, {String? name}) => UserModel(
         id: user.id,
         name: name ?? user.userMetadata?['full_name'] as String? ?? user.email ?? '',

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../provider/feed_provider.dart';
@@ -36,7 +38,7 @@ class FeedHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 2.w),
-              Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textSecondary, size: 22.w),
+              SvgPicture.asset(AppAssets.iconDropdown, width: 22.w, height: 22.w, colorFilter: ColorFilter.mode(AppColors.textSecondary, BlendMode.srcIn)),
             ],
           ),
           SizedBox(height: 2.h),

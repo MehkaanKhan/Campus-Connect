@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../domain/entities/project_application_entity.dart';
@@ -36,7 +38,7 @@ class _ApplicationsListSheetState extends State<ApplicationsListSheet> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.pageBg,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: EdgeInsets.only(
         top: 20.h,
@@ -79,7 +81,7 @@ class _ApplicationsListSheetState extends State<ApplicationsListSheet> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close, color: AppColors.textSecondary),
+                  icon: SvgPicture.asset(AppAssets.iconClose, width: 22, height: 22, colorFilter: const ColorFilter.mode(AppColors.textSecondary, BlendMode.srcIn)),
                   onPressed: () => context.pop(),
                 )
               ],
@@ -89,12 +91,12 @@ class _ApplicationsListSheetState extends State<ApplicationsListSheet> {
           const Divider(height: 1, color: AppColors.border),
           if (provider.isLoadingApplications)
             const Padding(
-              padding: EdgeInsets.all(40.w),
+              padding: EdgeInsets.all(40.0),
               child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
             )
           else if (provider.currentApplications.isEmpty)
             Padding(
-              padding: EdgeInsets.all(40.w),
+              padding: EdgeInsets.all(40.0),
               child: Center(
                 child: Text(
                   'No applications yet.',
@@ -140,7 +142,7 @@ class _ApplicationItem extends StatelessWidget {
                 radius: 20.r,
                 backgroundColor: AppColors.postAvatarBg,
                 backgroundImage: app.applicantAvatarUrl != null ? NetworkImage(app.applicantAvatarUrl!) : null,
-                child: app.applicantAvatarUrl == null ? Icon(Icons.person, color: AppColors.white54, size: 20.w) : null,
+                child: app.applicantAvatarUrl == null ? SvgPicture.asset(AppAssets.iconProfile, width: 20.w, height: 20.w, colorFilter: const ColorFilter.mode(Colors.white54, BlendMode.srcIn)) : null,
               ),
               SizedBox(width: 12.w),
               Expanded(
@@ -165,7 +167,7 @@ class _ApplicationItem extends StatelessWidget {
           if (app.phoneNumber != null && app.phoneNumber!.isNotEmpty) ...[
             Row(
               children: [
-                Icon(Icons.phone, size: 14.w, color: AppColors.textSecondary),
+                SvgPicture.asset(AppAssets.iconPhone, width: 14.w, height: 14.w, colorFilter: ColorFilter.mode(AppColors.textSecondary, BlendMode.srcIn)),
                 SizedBox(width: 6.w),
                 Text(
                   app.phoneNumber!,
@@ -199,7 +201,7 @@ class _ApplicationItem extends StatelessWidget {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.white,
+                      foregroundColor: Colors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
                     ),

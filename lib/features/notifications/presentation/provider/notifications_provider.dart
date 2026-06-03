@@ -4,6 +4,7 @@ import '../../domain/usecases/get_notifications_usecase.dart';
 import '../../domain/usecases/mark_all_read_usecase.dart';
 
 enum NotificationsFilter { all, comments, carpools, posts }
+enum NotificationsStatus { initial, loading, loaded, error }
 
 class NotificationsProvider extends ChangeNotifier {
   final GetNotificationsUsecase _getUsecase;
@@ -17,9 +18,12 @@ class NotificationsProvider extends ChangeNotifier {
 
   List<NotificationEntity> _all = [];
   NotificationsFilter _filter = NotificationsFilter.all;
-  bool _isLoading = false;
+  NotificationsStatus _status = NotificationsStatus.initial;
+  String? _error;
 
-  bool get isLoading => _isLoading;
+  NotificationsStatus get status => _status;
+  bool get isLoading => _status == NotificationsStatus.loading;
+  String? get error => _error;
   NotificationsFilter get filter => _filter;
   int get unreadCount => _all.where((n) => !n.isRead).length; // live -> acounted directly from all
 
@@ -37,10 +41,16 @@ class NotificationsProvider extends ChangeNotifier {
   }
 
   Future<void> load() async {
-    _isLoading = true;
+    _status = NotificationsStatus.loading;
+    _error = null;
     notifyListeners();
-    _all = await _getUsecase();
-    _isLoading = false;
+    try {
+      _all = await _getUsecase();
+      _status = NotificationsStatus.loaded;
+    } catch (e) {
+      _error = e.toString();
+      _status = NotificationsStatus.error;
+    }
     notifyListeners();
   }
 

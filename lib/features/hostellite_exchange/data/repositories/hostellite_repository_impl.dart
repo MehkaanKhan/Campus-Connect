@@ -9,4 +9,8 @@ class HostelliteRepositoryImpl implements HostelliteRepository {
   @override
   Future<List<ExchangeItemEntity>> getItems({ItemType? filter}) =>
       _source.getItems(filter: filter);
+
+  @override
+  Future<void> listItem(ExchangeItemEntity item, {List<int>? imageBytes}) =>
+      _source.listItem(item, imageBytes: imageBytes);
 }

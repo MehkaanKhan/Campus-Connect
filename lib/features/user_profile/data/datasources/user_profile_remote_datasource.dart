@@ -14,8 +14,10 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
 
   @override
   Future<UserProfileEntity> getProfile(String userId) async {
-    final resolvedId = userId == 'me' ? SupabaseService.uid : userId;
+    final resolvedId = userId == 'me' ? SupabaseService.uid : userId; // this resolves to SupabaseService.uid so callers don't need to know the current user's UUID.
 
+    //  The 4 queries are run sequentially (not in parallel)
+    
     // 1. Profile row
     final profileData = await _client
         .from('profiles')
@@ -77,24 +79,13 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   ProfilePostEntity _mapPost(Map p) => ProfilePostEntity(
         id: p['id'] as String,
         flair: p['flair'] as String? ?? 'General',
-        flairColor: _flairHex(p['flair'] as String?),
+        flairColor: p['flair'] as String? ?? 'General',
         title: p['title'] as String? ?? '',
         excerpt: p['content'] as String? ?? '',
         upvotes: p['upvote_count'] as int? ?? 0,
         commentCount: p['comment_count'] as int? ?? 0,
         timeAgo: _formatTimeAgo(DateTime.parse(p['created_at'] as String)),
       );
-
-  String _flairHex(String? flair) {
-    switch (flair?.toLowerCase()) {
-      case 'events':      return '#D6D6EA';
-      case 'academic':    return '#FED9B8';
-      case 'hostel':      return '#E2E3E0';
-      case 'carpool':     return '#E2E9E0';
-      case 'marketplace': return '#D6D6EA';
-      default:            return '#E2E3E0';
-    }
-  }
 
   String _formatTimeAgo(DateTime dateTime) {
     final difference = DateTime.now().difference(dateTime);

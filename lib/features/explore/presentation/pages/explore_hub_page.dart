@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../../../core/widgets/campus_top_navbar.dart';
@@ -15,7 +16,7 @@ class ExploreHubPage extends StatelessWidget {
       backgroundColor: AppColors.pageBg,
       body: Column(
         children: [
-          const CampusTopNavBar(),
+          const CampusTopNavBar(trailing: SizedBox.shrink()),
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 24.h),
@@ -42,7 +43,7 @@ class ExploreHubPage extends StatelessWidget {
                   ),
                   SizedBox(height: 28.h),
                   ExploreCard(
-                    icon: Icons.group_outlined,
+                    svgAsset: AppAssets.iconGroupAdd,
                     iconColor: AppColors.primary,
                     iconBg: AppColors.avatarBlueBg,
                     title: 'Find Project Partners',
@@ -52,7 +53,7 @@ class ExploreHubPage extends StatelessWidget {
                   ),
                   SizedBox(height: 12.h),
                   ExploreCard(
-                    icon: Icons.swap_horiz_rounded,
+                    svgAsset: AppAssets.iconSwap,
                     iconColor: AppColors.sage,
                     iconBg: AppColors.sageLight,
                     title: 'Hostellite Exchange',
@@ -62,7 +63,7 @@ class ExploreHubPage extends StatelessWidget {
                   ),
                   SizedBox(height: 12.h),
                   ExploreCard(
-                    icon: Icons.directions_car_outlined,
+                    svgAsset: AppAssets.iconDirectionsCar,
                     iconColor: AppColors.sage,
                     iconBg: AppColors.sageLight,
                     title: 'Carpool & Rides',
@@ -72,7 +73,7 @@ class ExploreHubPage extends StatelessWidget {
                   ),
                   SizedBox(height: 12.h),
                   ExploreCard(
-                    icon: Icons.leaderboard_outlined,
+                    svgAsset: AppAssets.iconLeaderboard,
                     iconColor: AppColors.iconTaupe,
                     iconBg: AppColors.disabledBg,
                     title: 'Weekly Leaderboard',
@@ -82,7 +83,7 @@ class ExploreHubPage extends StatelessWidget {
                   ),
                   SizedBox(height: 12.h),
                   ExploreCard(
-                    icon: Icons.map_outlined,
+                    svgAsset: AppAssets.iconMap,
                     iconColor: AppColors.iconGold,
                     iconBg: AppColors.iconCreamBg,
                     title: 'Uni Graph',
@@ -92,7 +93,7 @@ class ExploreHubPage extends StatelessWidget {
                   ),
                   SizedBox(height: 12.h),
                   ExploreCard(
-                    icon: Icons.account_balance_outlined,
+                    svgAsset: AppAssets.iconBuilding,
                     iconColor: AppColors.iconBlue,
                     iconBg: AppColors.iconBlueBg,
                     title: 'Other Universities',

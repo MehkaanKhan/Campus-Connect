@@ -1,3 +1,5 @@
+import '../entities/leaderboard_entity.dart';
+
 abstract class LeaderboardRepository {
-  // Boilerplate repository interface
+  Future<List<LeaderboardEntity>> getLeaderboard(String filter);
 }

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../domain/entities/university_entity.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -214,7 +215,7 @@ class _PhotoUploadButton extends StatelessWidget {
                   : null,
             ),
             child: photoBytes == null
-                ? Icon(Icons.photo_camera_outlined, size: 28.w, color: AppColors.navInactive)
+                ? SvgPicture.asset('assets/icons/icons/camera.svg', width: 28.w, height: 28.w, colorFilter: ColorFilter.mode(AppColors.navInactive, BlendMode.srcIn))
                 : null,
           ),
         ),
@@ -291,7 +292,7 @@ class _DropdownField extends StatelessWidget {
         child: DropdownButton<String>(
           value: value,
           hint: Text(hint, style: TextStyle(fontSize: 14.sp, color: AppColors.textHint)),
-          icon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textLabel, size: 20.w),
+          icon: SvgPicture.asset('assets/icons/icons/dropdown.svg', width: 20.w, height: 20.w, colorFilter: ColorFilter.mode(AppColors.textLabel, BlendMode.srcIn)),
           isExpanded: true,
           style: TextStyle(fontSize: 14.sp, color: AppColors.textPrimary),
           dropdownColor: AppColors.cardBg,
@@ -332,7 +333,7 @@ class _UniversityDropdownField extends StatelessWidget {
         child: DropdownButton<UniversityEntity>(
           value: value,
           hint: Text(items.isEmpty ? 'Loading...' : hint, style: TextStyle(fontSize: 14.sp, color: AppColors.textHint)),
-          icon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textLabel, size: 20.w),
+          icon: SvgPicture.asset('assets/icons/icons/dropdown.svg', width: 20.w, height: 20.w, colorFilter: ColorFilter.mode(AppColors.textLabel, BlendMode.srcIn)),
           isExpanded: true,
           style: TextStyle(fontSize: 14.sp, color: AppColors.textPrimary),
           dropdownColor: AppColors.cardBg,

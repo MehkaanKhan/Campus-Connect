@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../provider/create_post_provider.dart';
@@ -37,17 +39,17 @@ class CreatePostBottomToolbar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _ToolbarIcon(icon: Icons.image_outlined, onTap: () {
+          _ToolbarIcon(svgAsset: AppAssets.iconImagePlaceholder, onTap: () {
             provider.pickImage();
           }),
           SizedBox(width: 26.w),
-          _ToolbarIcon(icon: Icons.bar_chart_rounded, onTap: () {
+          _ToolbarIcon(svgAsset: AppAssets.iconPoll, onTap: () {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Polls are coming soon!'), duration: Duration(seconds: 2)),
             );
           }),
           SizedBox(width: 26.w),
-          _ToolbarIcon(icon: Icons.location_on_outlined, onTap: () {
+          _ToolbarIcon(svgAsset: AppAssets.iconMapPin, onTap: () {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Location tagging is coming soon!'), duration: Duration(seconds: 2)),
             );
@@ -89,15 +91,15 @@ class CreatePostBottomToolbar extends StatelessWidget {
 }
 
 class _ToolbarIcon extends StatelessWidget {
-  final IconData icon;
+  final String svgAsset;
   final VoidCallback onTap;
-  const _ToolbarIcon({required this.icon, required this.onTap});
+  const _ToolbarIcon({required this.svgAsset, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: onTap,
-      icon: Icon(icon, size: 22.w, color: AppColors.textLabel),
+      icon: SvgPicture.asset(svgAsset, width: 22.w, height: 22.w, colorFilter: ColorFilter.mode(AppColors.textLabel, BlendMode.srcIn)),
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(),
       splashRadius: 24,

@@ -1,12 +1,17 @@
-import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../../core/services/supabase_service.dart';
+import 'package:flutter/foundation.dart';
 import '../../domain/entities/uni_graph_entity.dart';
+import '../../domain/usecases/get_graph_data_usecase.dart';
+
+enum UniGraphStatus { initial, loading, loaded, error }
 
 class UniGraphProvider extends ChangeNotifier {
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  final GetGraphDataUsecase _usecase;
+
+  UniGraphProvider({required GetGraphDataUsecase usecase}) : _usecase = usecase;
+
+  UniGraphStatus _status = UniGraphStatus.initial;
+  UniGraphStatus get status => _status;
+  bool get isLoading => _status == UniGraphStatus.loading;
 
   List<UniNodeEntity> _nodes = [];
   List<UniNodeEntity> get nodes => _nodes;
@@ -14,59 +19,24 @@ class UniGraphProvider extends ChangeNotifier {
   List<UniEdgeEntity> _edges = [];
   List<UniEdgeEntity> get edges => _edges;
 
+  String? _error;
+  String? get error => _error;
+
   Future<void> loadGraph() async {
-    _isLoading = true;
+    _status = UniGraphStatus.loading;
+    _error = null;
     notifyListeners();
-
     try {
-      final data = await SupabaseService.client
-          .from('universities')
-          .select('id, name, activity_score')
-          .order('activity_score', ascending: false);
-
-      final unis = data as List;
-      final count = unis.length;
-
-      // Distribute nodes in a circle
-      _nodes = List.generate(count, (i) {
-        final angle = (2 * pi * i) / count;
-        const cx = 300.0;
-        const cy = 300.0;
-        const r = 220.0;
-        return UniNodeEntity(
-          id: unis[i]['id'] as String,
-          name: unis[i]['name'] as String,
-          x: cx + r * cos(angle),
-          y: cy + r * sin(angle),
-          activityLevel: unis[i]['activity_score'] as int? ?? 0,
-        );
-      });
-
-      // Build edges between nodes whose activity scores are within 20 points
-      _edges = [];
-      for (int i = 0; i < _nodes.length; i++) {
-        for (int j = i + 1; j < _nodes.length; j++) {
-          final diff = (_nodes[i].activityLevel - _nodes[j].activityLevel).abs();
-          if (diff <= 20) {
-            _edges.add(UniEdgeEntity(
-              sourceId: _nodes[i].id,
-              targetId: _nodes[j].id,
-              strength: 1 - (diff / 20),
-            ));
-          }
-        }
-      }
-    } on PostgrestException catch (e) {
-      debugPrint('UniGraph error: ${e.message}');
-      _nodes = [];
-      _edges = [];
+      final result = await _usecase();
+      _nodes = result.nodes;
+      _edges = result.edges;
+      _status = UniGraphStatus.loaded;
     } catch (e) {
-      debugPrint('UniGraph error: $e');
+      _error = e.toString();
+      _status = UniGraphStatus.error;
       _nodes = [];
       _edges = [];
     }
-
-    _isLoading = false;
     notifyListeners();
   }
 }

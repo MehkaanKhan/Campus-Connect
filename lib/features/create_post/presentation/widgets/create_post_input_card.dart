@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../provider/create_post_provider.dart';
@@ -14,42 +16,9 @@ class CreatePostInputCard extends StatelessWidget {
     required this.contentController,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    final provider = context.watch<CreatePostProvider>();
-
-    return Container(
-      decoration: const BoxDecoration(color: AppColors.transparent),
-      padding: EdgeInsets.all(24.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _AvatarRow(
-            titleController: titleController,
-            contentController: contentController,
-          ),
-          SizedBox(height: 16.h),
-          _FlairRow(provider: provider),
-        ],
-      ),
-    );
-  }
-}
-
-class _AvatarRow extends StatelessWidget {
-  final TextEditingController titleController;
-  final TextEditingController contentController;
-
-  const _AvatarRow({
-    required this.titleController,
-    required this.contentController,
-  });
-
   static InputDecoration _fieldDecoration({
     required String hint,
     required double hintSize,
-    required double fontSize,
   }) =>
       InputDecoration(
         hintText: hint,
@@ -60,7 +29,7 @@ class _AvatarRow extends StatelessWidget {
           height: 1.35,
         ),
         filled: true,
-        fillColor: AppColors.transparent,
+        fillColor: Colors.transparent,
         border: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.zero),
         enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.zero),
         focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.zero),
@@ -71,97 +40,109 @@ class _AvatarRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 48.w,
-          height: 48.w,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.inputBorder, width: 1.5),
-            color: AppColors.avatarFallbackBg,
-          ),
-          child: const ClipOval(
-            child: Icon(Icons.person, color: AppColors.white54, size: 26),
-          ),
-        ),
-        SizedBox(width: 14.w),
-        Expanded(
-          child: Column(
+    final provider = context.watch<CreatePostProvider>();
+
+    return Container(
+      decoration: const BoxDecoration(color: Colors.transparent),
+      padding: EdgeInsets.all(24.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Avatar + title row
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
-                controller: titleController,
-                maxLines: null,
-                maxLength: 120,
-                autofocus: true,
-                style: TextStyle(
-                  fontSize: 17.sp,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                  height: 1.4,
-                  letterSpacing: -0.2,
+              Container(
+                width: 48.w,
+                height: 48.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.inputBorder, width: 1.5),
+                  color: AppColors.avatarFallbackBg,
                 ),
-                decoration: _fieldDecoration(
-                  hint: 'Add a title...',
-                  hintSize: 17.sp,
-                  fontSize: 17.sp,
+                child: ClipOval(
+                  child: SvgPicture.asset(AppAssets.iconProfile, width: 26, height: 26, colorFilter: const ColorFilter.mode(Colors.white54, BlendMode.srcIn)),
                 ),
               ),
-              SizedBox(height: 6.h),
-              Divider(color: AppColors.border, height: 1, thickness: 1),
-              SizedBox(height: 10.h),
-              TextField(
-                controller: contentController,
-                maxLines: null,
-                maxLength: 500,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: AppColors.textSecondary,
-                  height: 1.5,
-                ),
-                decoration: _fieldDecoration(
-                  hint: "What's happening on campus?",
-                  hintSize: 14.sp,
-                  fontSize: 14.sp,
+              SizedBox(width: 14.w),
+              Expanded(
+                child: TextField(
+                  controller: titleController,
+                  maxLines: null,
+                  maxLength: 120,
+                  autofocus: true,
+                  style: TextStyle(
+                    fontSize: 17.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    height: 1.4,
+                    letterSpacing: -0.2,
+                  ),
+                  decoration: _fieldDecoration(
+                    hint: 'Add a title...',
+                    hintSize: 17.sp,
+                  ),
                 ),
               ),
-              if (context.watch<CreatePostProvider>().imageBytes != null) ...[
-                SizedBox(height: 12.h),
-                Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12.r),
-                      child: Image.memory(
-                        context.watch<CreatePostProvider>().imageBytes!,
-                        width: double.infinity,
-                        height: 200.h,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned(
-                      top: 8.h,
-                      right: 8.w,
-                      child: GestureDetector(
-                        onTap: context.read<CreatePostProvider>().removeImage,
-                        child: Container(
-                          padding: EdgeInsets.all(6.w),
-                          decoration: const BoxDecoration(
-                            color: AppColors.black54,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(Icons.close, color: AppColors.white, size: 16.w),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
             ],
           ),
-        ),
-      ],
+          SizedBox(height: 16.h),
+
+          // Flair chips
+          _FlairRow(provider: provider),
+          SizedBox(height: 16.h),
+
+          // Body — full width, below avatar row and flair chips
+          TextField(
+            controller: contentController,
+            maxLines: null,
+            maxLength: 500,
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
+            decoration: _fieldDecoration(
+              hint: "What's happening on campus?",
+              hintSize: 14.sp,
+            ),
+          ),
+
+          // Attached image preview
+          if (provider.imageBytes != null) ...[
+            SizedBox(height: 12.h),
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12.r),
+                  child: Image.memory(
+                    provider.imageBytes!,
+                    width: double.infinity,
+                    height: 200.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  top: 8.h,
+                  right: 8.w,
+                  child: GestureDetector(
+                    onTap: context.read<CreatePostProvider>().removeImage,
+                    child: Container(
+                      padding: EdgeInsets.all(6.w),
+                      decoration: const BoxDecoration(
+                        color: Colors.black54,
+                        shape: BoxShape.circle,
+                      ),
+                      child: SvgPicture.asset(AppAssets.iconClose, width: 16.w, height: 16.w, colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -188,7 +169,7 @@ class _FlairRow extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.sage : AppColors.white.withValues(alpha: 0.7),
+              color: isSelected ? AppColors.sage : Colors.white.withValues(alpha: 0.7),
               borderRadius: BorderRadius.circular(100.r),
               border: Border.all(
                 color: isSelected ? AppColors.sage : AppColors.inputBorder,
@@ -201,11 +182,7 @@ class _FlairRow extends StatelessWidget {
                 if (isSelector)
                   Padding(
                     padding: EdgeInsets.only(right: 5.w),
-                    child: Icon(
-                      Icons.local_offer_outlined,
-                      size: 12.w,
-                      color: isSelected ? AppColors.white : AppColors.textLabel,
-                    ),
+                    child: SvgPicture.asset(AppAssets.iconTag, width: 12.w, height: 12.w, colorFilter: ColorFilter.mode(isSelected ? Colors.white : AppColors.textLabel, BlendMode.srcIn)),
                   ),
                 Text(
                   flair,
@@ -213,7 +190,7 @@ class _FlairRow extends StatelessWidget {
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.6,
-                    color: isSelected ? AppColors.white : AppColors.textLabel,
+                    color: isSelected ? Colors.white : AppColors.textLabel,
                   ),
                 ),
               ],

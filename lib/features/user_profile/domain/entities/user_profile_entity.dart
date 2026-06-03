@@ -26,6 +26,34 @@ class UserProfileEntity {
     required this.reactedPosts,
     required this.joinedCarpools,
   });
+
+  UserProfileEntity copyWith({
+    String? id,
+    String? name,
+    String? department,
+    String? year,
+    String? bio,
+    String? avatarUrl,
+    int? postCount,
+    int? karma,
+    int? ridesCount,
+    List<ProfilePostEntity>? posts,
+    List<ProfilePostEntity>? reactedPosts,
+    List<String>? joinedCarpools,
+  }) => UserProfileEntity(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    department: department ?? this.department,
+    year: year ?? this.year,
+    bio: bio ?? this.bio,
+    avatarUrl: avatarUrl ?? this.avatarUrl,
+    postCount: postCount ?? this.postCount,
+    karma: karma ?? this.karma,
+    ridesCount: ridesCount ?? this.ridesCount,
+    posts: posts ?? this.posts,
+    reactedPosts: reactedPosts ?? this.reactedPosts,
+    joinedCarpools: joinedCarpools ?? this.joinedCarpools,
+  );
 }
 
 class ProfilePostEntity {
@@ -48,4 +76,24 @@ class ProfilePostEntity {
     required this.commentCount,
     required this.timeAgo,
   });
+
+  ProfilePostEntity copyWith({
+    String? id,
+    String? flair,
+    String? flairColor,
+    String? title,
+    String? excerpt,
+    int? upvotes,
+    int? commentCount,
+    String? timeAgo,
+  }) => ProfilePostEntity(
+    id: id ?? this.id,
+    flair: flair ?? this.flair,
+    flairColor: flairColor ?? this.flairColor,
+    title: title ?? this.title,
+    excerpt: excerpt ?? this.excerpt,
+    upvotes: upvotes ?? this.upvotes,
+    commentCount: commentCount ?? this.commentCount,
+    timeAgo: timeAgo ?? this.timeAgo,
+  );
 }

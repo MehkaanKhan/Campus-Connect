@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 import '../../../../core/widgets/post_image_container.dart';
@@ -35,7 +37,7 @@ class ThreadPost extends StatelessWidget {
                           ? NetworkImage(thread.authorAvatarUrl!)
                           : null,
                       child: thread.authorAvatarUrl == null
-                          ? Icon(Icons.person, color: AppColors.white54, size: 22.w)
+                          ? SvgPicture.asset(AppAssets.iconProfile, width: 22.w, height: 22.w, colorFilter: const ColorFilter.mode(Colors.white54, BlendMode.srcIn))
                           : null,
                     ),
                     SizedBox(width: 12.w),

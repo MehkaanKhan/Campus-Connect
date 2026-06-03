@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/size_config.dart';
 
@@ -36,7 +38,7 @@ class ProfileCarpoolsList extends StatelessWidget {
             CircleAvatar(
               radius: 18.r,
               backgroundColor: AppColors.notifIconBg,
-              child: Icon(Icons.directions_car_outlined, size: 16.w, color: AppColors.sage),
+              child: SvgPicture.asset(AppAssets.iconDirectionsCar, width: 16.w, height: 16.w, colorFilter: ColorFilter.mode(AppColors.sage, BlendMode.srcIn)),
             ),
             SizedBox(width: 12.w),
             Text(

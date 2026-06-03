@@ -112,6 +112,36 @@ class ProjectPartnersRemoteDataSourceImpl
       'cover_message': coverMessage,
       if (phoneNumber != null && phoneNumber.isNotEmpty) 'phone_number': phoneNumber,
     });
+    _notifyListingCreator(listingId, userId).ignore();
+  }
+
+  Future<void> _notifyListingCreator(String listingId, String applicantId) async {
+    final listing = await _client
+        .from('project_listings')
+        .select('creator_id, title')
+        .eq('id', listingId)
+        .maybeSingle();
+    if (listing == null) return;
+    final creatorId = listing['creator_id'] as String?;
+    if (creatorId == null || creatorId == applicantId) return;
+
+    final applicant = await _client
+        .from('profiles')
+        .select('full_name, avatar_url')
+        .eq('id', applicantId)
+        .maybeSingle();
+    final applicantName = applicant?['full_name'] as String? ?? 'Someone';
+    final applicantAvatar = applicant?['avatar_url'] as String?;
+    final title = listing['title'] as String? ?? 'your project';
+
+    await _client.from('notifications').insert({
+      'user_id': creatorId,
+      'type': 'general',
+      'message': '$applicantName applied to "$title"',
+      'is_read': false,
+      'has_action': true,
+      'avatar_url': applicantAvatar,
+    });
   }
 
   @override

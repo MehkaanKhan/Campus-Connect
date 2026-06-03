@@ -1,6 +1,4 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter/material.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/services/supabase_service.dart';
 import '../../domain/entities/post_entity.dart';
 
@@ -16,7 +14,7 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
   final SupabaseClient _client;
 
   FeedRemoteDataSourceImpl({SupabaseClient? client})
-      : _client = client ?? SupabaseService.client;
+    : _client = client ?? SupabaseService.client;
 
   @override
   Future<String> getUniversityName() async {
@@ -42,6 +40,7 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
 
   @override
   Future<List<PostEntity>> getPosts() async {
+    // 1. Looks up profiles to get university_id
     final userId = SupabaseService.currentUser?.id;
     if (userId == null) throw Exception('Not authenticated');
 
@@ -59,7 +58,10 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
       );
     }
 
-    final response = await _client.from('posts').select('''
+    // 2. Queries posts with a join to profiles for author info, filtered by university_id.
+    final response = await _client
+        .from('posts')
+        .select('''
       id,
       title,
       content,
@@ -69,13 +71,17 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
       downvote_count,
       comment_count,
       created_at,
-      profiles!author_id (
+      profiles!author_id ( 
         full_name,
         avatar_url
       )
     ''')
         .eq('university_id', universityId)
         .order('created_at', ascending: false);
+
+    // The join syntax profiles!author_id(...) is Supabase's
+    //way of doing a foreign key join
+    //it means "join profiles via the author_id foreign key column on posts.
 
     final posts = response as List;
 
@@ -95,7 +101,9 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
 
     return posts.map((data) {
       final authorProfile = data['profiles'] as Map?;
-      final createdAt = DateTime.parse(data['created_at']);
+      final createdAt = DateTime.parse(
+        data['created_at'],
+      ).subtract(const Duration(minutes: 10));
       final postId = data['id'] as String;
 
       return PostEntity(
@@ -104,7 +112,7 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
         authorAvatarUrl: authorProfile?['avatar_url'] as String?,
         timeAgo: _formatTimeAgo(createdAt),
         flair: data['flair'] ?? 'General',
-        flairColor: _resolveFlairColor(data['flair']),
+        flairColor: data['flair'] as String? ?? 'General',
         title: data['title'] ?? '',
         excerpt: data['content'] ?? '',
         imageUrl: data['image_url'] as String?,
@@ -124,15 +132,29 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
       'post_id': postId,
       'vote_type': voteType,
     });
+    if (voteType == 'up') {
+      _notifyPostAuthorUpvote(postId).ignore();
+      _updateAuthorKarma(postId, 1).ignore();
+    }
   }
 
   @override
   Future<void> deleteVote(String postId) async {
+    final existing = await _client
+        .from('votes')
+        .select('vote_type')
+        .eq('user_id', SupabaseService.uid)
+        .eq('post_id', postId)
+        .maybeSingle();
+    final wasUpvote = existing?['vote_type'] == 'up';
+
     await _client
         .from('votes')
         .delete()
         .eq('user_id', SupabaseService.uid)
         .eq('post_id', postId);
+
+    if (wasUpvote) _updateAuthorKarma(postId, -1).ignore();
   }
 
   @override
@@ -142,17 +164,53 @@ class FeedRemoteDataSourceImpl implements FeedRemoteDataSource {
         .update({'vote_type': voteType})
         .eq('user_id', SupabaseService.uid)
         .eq('post_id', postId);
+    if (voteType == 'up') {
+      _notifyPostAuthorUpvote(postId).ignore();
+      _updateAuthorKarma(postId, 1).ignore();
+    } else {
+      _updateAuthorKarma(postId, -1).ignore();
+    }
   }
 
-  Color _resolveFlairColor(String? flair) {
-    switch (flair?.toLowerCase()) {
-      case 'events':      return AppColors.flairEvents;
-      case 'academic':    return AppColors.flairAcademic;
-      case 'hostel':      return AppColors.flairHostel;
-      case 'carpool':     return AppColors.flairCarpool;
-      case 'marketplace': return AppColors.flairMarketplace;
-      default:            return AppColors.flairHostel;
-    }
+  Future<void> _updateAuthorKarma(String postId, int delta) async {
+    final post = await _client
+        .from('posts')
+        .select('author_id')
+        .eq('id', postId)
+        .maybeSingle();
+    final authorId = post?['author_id'] as String?;
+    if (authorId == null) return;
+    await _client.rpc('increment_karma', params: {'uid': authorId, 'delta': delta});
+  }
+
+  Future<void> _notifyPostAuthorUpvote(String postId) async {
+    final voterId = SupabaseService.uid;
+    final post = await _client
+        .from('posts')
+        .select('author_id, title')
+        .eq('id', postId)
+        .maybeSingle();
+    if (post == null) return;
+    final authorId = post['author_id'] as String?;
+    if (authorId == null || authorId == voterId) return;
+
+    final voter = await _client
+        .from('profiles')
+        .select('full_name, avatar_url')
+        .eq('id', voterId)
+        .maybeSingle();
+    final voterName = voter?['full_name'] as String? ?? 'Someone';
+    final voterAvatar = voter?['avatar_url'] as String?;
+    final title = post['title'] as String? ?? 'your post';
+
+    await _client.from('notifications').insert({
+      'user_id': authorId,
+      'type': 'upvote',
+      'message': '$voterName upvoted "$title"',
+      'is_read': false,
+      'has_action': false,
+      'avatar_url': voterAvatar,
+    });
   }
 
   String _formatTimeAgo(DateTime dateTime) {

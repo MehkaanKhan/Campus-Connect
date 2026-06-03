@@ -12,4 +12,18 @@ class LeaderboardEntity {
     required this.score,
     required this.avatarUrl,
   });
+
+  LeaderboardEntity copyWith({
+    String? id,
+    String? name,
+    String? department,
+    int? score,
+    String? avatarUrl,
+  }) => LeaderboardEntity(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    department: department ?? this.department,
+    score: score ?? this.score,
+    avatarUrl: avatarUrl ?? this.avatarUrl,
+  );
 }

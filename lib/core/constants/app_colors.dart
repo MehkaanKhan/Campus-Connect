@@ -63,6 +63,17 @@ class AppColors {
     Color(0xFFE2E9E0),
   ];
 
+  static Color flairColor(String? key) {
+    switch (key?.toLowerCase()) {
+      case 'events':      return flairEvents;
+      case 'academic':    return flairAcademic;
+      case 'hostel':      return flairHostel;
+      case 'carpool':     return flairCarpool;
+      case 'marketplace': return flairMarketplace;
+      default:            return flairHostel;
+    }
+  }
+
   // ── Hostellite exchange item-type badges ─────────────────
   static const borrowBadgeBg   = Color(0xFFE3E9E1);
   static const rentBadgeBg     = Color(0xFFE5ECF0);
@@ -118,6 +129,10 @@ class AppColors {
   static const badgeHackathonText  = Color(0xFF5A7FA8); // steel blue text — hackathon
   static const badgeHackathonBg    = Color(0xFFEAF1F8); // pale blue bg — hackathon
   static const badgeDefaultBg      = Color(0xFFEDF4ED); // pale green bg — default project badge
+  static const badgeAcademicText   = Color(0xFF8B6F4E); // warm brown text — academic project badge
+
+  static String toHex(Color c) =>
+      '#${(c.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase()}';
 
   // ── Thread / comment avatars ──────────────────────────────────────────
   static const commentAvatarBg       = Color(0xFF6B5A8A); // purple — top-level comment avatar
@@ -142,4 +157,8 @@ class AppColors {
   static const borderSlate    = Color(0xFFE2E8F0); // slate border — form inputs, item detail
   static const setupPageBg    = Color(0xFF1C1C1C); // near-black — profile setup page background
   static const borderGrayGreen = Color(0xFFC3C8BC); // gray-green — uni overlay modal border
+
+  // ── Shimmer ───────────────────────────────────────────────────────────────
+  static const shimmerBase      = Color(0xFFEEEEE8); // shimmer base sweep colour
+  static const shimmerHighlight = Color(0xFFF8F8F5); // shimmer highlight sweep colour
 }
