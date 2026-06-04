@@ -45,6 +45,8 @@ class AuthProvider extends ChangeNotifier {
   bool get needsEmailVerification => _needsEmailVerification;
   bool get needsPasswordReset => _needsPasswordReset;
 
+  // Restores an existing session on app start and listens for Supabase auth
+  // events (token refresh, remote sign-out, password-recovery deep-link).
   void _init() {
     // Restore existing session immediately (covers app restarts)
     final current = SupabaseService.currentUser;
@@ -72,12 +74,14 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
+  // Cancels the auth stream subscription to prevent leaks when the provider is removed.
   @override
   void dispose() {
     _authSub?.cancel();
     super.dispose();
   }
 
+  // Signs in with email + password; navigates to feed on success or shows a friendly error.
   Future<void> login({required String email, required String password}) async {
     _setLoading();
     try {
@@ -89,6 +93,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Creates a new account; sets needsEmailVerification if Supabase email confirm is ON.
   Future<void> signup({
     required String name,
     required String email,
@@ -111,6 +116,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Signs out the current user and clears local state immediately (no waiting for stream).
   Future<void> logout() async {
     _setLoading();
     try {
@@ -123,6 +129,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Sends a password-reset email via Supabase; returns true so the page can navigate on success.
   Future<bool> resetPassword({required String email}) async {
     _setLoading();
     try {
@@ -136,6 +143,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // Updates password for a user who is already logged in (Settings flow).
   Future<bool> changePassword({required String newPassword}) async {
     _setLoading();
     try {
@@ -150,6 +158,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // Updates password from the recovery deep-link then signs out, forcing a fresh login.
   Future<bool> setNewPassword({required String password}) async {
     _setLoading();
     try {
@@ -166,7 +175,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  /// Update display name and optional avatar; refreshes _user afterwards.
+  // Uploads avatar to Storage (upsert) and updates the profiles table, then re-syncs _user.
   Future<bool> updateProfile({
     required String name,
     Uint8List? photoBytes,
@@ -201,7 +210,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  /// Re-fetch profile row and update in-memory UserEntity.
+  // Re-fetches the profiles row and patches _user in memory via copyWith.
   Future<void> refreshUser() async {
     final uid = SupabaseService.uid;
     final data = await SupabaseService.client
@@ -218,6 +227,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // Clears the last error so the UI stops showing the error state.
   void clearError() {
     _errorMessage = null;
     notifyListeners();
@@ -225,17 +235,20 @@ class AuthProvider extends ChangeNotifier {
 
   // ── Helpers ──────────────────────────────────────────────────────────────
 
+  // Sets loading status and clears any previous error, then notifies so the spinner appears.
   void _setLoading() {
     _status = AuthStatus.loading;
     _errorMessage = null;
     notifyListeners();
   }
 
+  // Stores the error message without notifying — the caller's notifyListeners() covers it.
   void _setError(String message) {
     _status = AuthStatus.error;
     _errorMessage = message;
   }
 
+  // Maps a Supabase User object to the domain UserEntity.
   UserEntity _entityFrom(User user) => UserEntity(
         id: user.id,
         name: user.userMetadata?['full_name'] as String? ?? user.email ?? '',
@@ -243,6 +256,7 @@ class AuthProvider extends ChangeNotifier {
         avatarUrl: user.userMetadata?['avatar_url'] as String?,
       );
 
+  // Converts raw Supabase error strings into user-readable messages.
   String _friendly(String raw) {
     if (raw.contains('Invalid login credentials')) return 'Incorrect email or password';
     if (raw.contains('Email not confirmed')) return 'Please verify your email before signing in';

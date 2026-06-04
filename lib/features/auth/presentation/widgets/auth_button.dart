@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_theme.dart';
+import '../../../../core/utils/size_config.dart';
 
 class AuthButton extends StatelessWidget {
   final String label;
@@ -18,28 +19,30 @@ class AuthButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: AppDimens.buttonHeight,
+      height: 54.h,
       child: GestureDetector(
         onTap: isLoading ? null : onPressed,
         child: Container(
           decoration: BoxDecoration(
             color: outlined ? Colors.transparent : AppColors.primary,
-            borderRadius: BorderRadius.circular(AppDimens.radiusButton),
+            borderRadius: BorderRadius.circular(100.r),
             border: outlined ? Border.all(color: AppColors.primary, width: 1.5) : null,
-            boxShadow: outlined ? null : [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.22),
-                blurRadius: 14,
-                offset: const Offset(0, 5),
-              ),
-            ],
+            boxShadow: outlined
+                ? null
+                : [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.22),
+                      blurRadius: 14,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
           ),
           child: Center(
             child: isLoading
-                ? const SizedBox(
-                    height: 22,
-                    width: 22,
-                    child: CircularProgressIndicator(
+                ? SizedBox(
+                    height: 22.h,
+                    width: 22.w,
+                    child: const CircularProgressIndicator(
                       strokeWidth: 2.5,
                       color: Colors.white,
                     ),
@@ -48,7 +51,7 @@ class AuthButton extends StatelessWidget {
                     label,
                     style: TextStyle(
                       color: outlined ? AppColors.primary : Colors.white,
-                      fontSize: AppTextStyles.buttonPrimary.fontSize,
+                      fontSize: 15.sp,
                       fontWeight: AppTextStyles.buttonPrimary.fontWeight,
                       letterSpacing: AppTextStyles.buttonPrimary.letterSpacing,
                       fontFamily: 'Inter',

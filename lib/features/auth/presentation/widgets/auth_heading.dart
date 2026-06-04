@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/size_config.dart';
 
 class AuthHeading extends StatelessWidget {
   final String title;
@@ -14,9 +15,9 @@ class AuthHeading extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'Inter',
-            fontSize: 32,
+            fontSize: 32.sp,
             fontWeight: FontWeight.w900,
             height: 1.15,
             letterSpacing: -0.5,
@@ -24,12 +25,12 @@ class AuthHeading extends StatelessWidget {
           ),
         ),
         if (subtitle != null) ...[
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Text(
             subtitle!,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 15,
+              fontSize: 15.sp,
               fontWeight: FontWeight.w400,
               height: 1.5,
               color: AppColors.textCaption,

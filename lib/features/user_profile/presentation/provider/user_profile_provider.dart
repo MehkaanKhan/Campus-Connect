@@ -18,6 +18,8 @@ class UserProfileProvider extends ChangeNotifier {
   bool get isLoading => _status == UserProfileStatus.loading;
   String? get error => _error;
 
+  // Loads the full profile (posts, reactions, carpools) for any userId.
+  // Passing 'me' resolves to the current user's UID inside the datasource.
   Future<void> load(String userId) async {
     _status = UserProfileStatus.loading;
     _error = null;

@@ -17,6 +17,7 @@ class CreatePostProvider extends ChangeNotifier {
   PostTab _activeTab = PostTab.text;
   PostTab get activeTab => _activeTab;
 
+  // Switches between text / image / poll input modes.
   void setTab(PostTab tab) {
     _activeTab = tab;
     notifyListeners();
@@ -26,6 +27,7 @@ class CreatePostProvider extends ChangeNotifier {
   String _title = '';
   String get title => _title;
 
+  // Synced from the TextEditingController listener on every keystroke.
   void setTitle(String val) {
     _title = val;
     notifyListeners();
@@ -35,6 +37,7 @@ class CreatePostProvider extends ChangeNotifier {
   String _content = '';
   String get content => _content;
 
+  // Synced from the TextEditingController listener on every keystroke.
   void setContent(String val) {
     _content = val;
     notifyListeners();
@@ -44,6 +47,7 @@ class CreatePostProvider extends ChangeNotifier {
   String? _selectedFlair;
   String? get selectedFlair => _selectedFlair;
 
+  // Stores the selected flair chip; null means 'General' will be used at submission.
   void setFlair(String? flair) {
     _selectedFlair = flair;
     notifyListeners();
@@ -53,6 +57,7 @@ class CreatePostProvider extends ChangeNotifier {
   Uint8List? _imageBytes;
   Uint8List? get imageBytes => _imageBytes;
 
+  // Opens the device gallery and stores raw bytes for direct upload to Supabase Storage.
   Future<void> pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -62,6 +67,7 @@ class CreatePostProvider extends ChangeNotifier {
     }
   }
 
+  // Clears the picked image so the user can remove it before submitting.
   void removeImage() {
     _imageBytes = null;
     notifyListeners();
@@ -74,8 +80,10 @@ class CreatePostProvider extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
+  // True only when title is non-empty; drives the enabled state of the Post button.
   bool get isFormValid => _title.trim().isNotEmpty;
 
+  // Resets all form state to defaults; called on page open so each session starts fresh.
   void reset() {
     _activeTab = PostTab.text;
     _title = '';
@@ -88,6 +96,9 @@ class CreatePostProvider extends ChangeNotifier {
   }
 
   // ── Actions ──
+
+  // Validates, uploads image if present, inserts the post, and returns the new postId
+  // so the page can navigate directly to the thread. Returns null on failure.
   Future<String?> submitPost() async {
     if (!isFormValid) {
       _errorMessage = 'Please add a title to your post';

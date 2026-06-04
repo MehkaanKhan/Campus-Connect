@@ -30,6 +30,7 @@ class FeedProvider extends ChangeNotifier {
   bool get isLoading => _status == FeedStatus.loading;
   String get universityName => _universityName;
 
+  // Fetches the university name and posts in parallel, then updates state.
   Future<void> loadFeed() async {
     _status = FeedStatus.loading;
     notifyListeners();
@@ -40,7 +41,7 @@ class FeedProvider extends ChangeNotifier {
       ]);
       _universityName = futures[0] as String;
       _posts = futures[1] as List<PostEntity>;
-      
+
       _status = FeedStatus.loaded;
     } catch (e) {
       _error = e.toString();
@@ -49,6 +50,8 @@ class FeedProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Optimistically updates the post in memory, then fires the DB write async (fire-and-forget).
+  // Handles 3 cases: remove existing upvote, switch from downvote, or cast a new upvote.
   void toggleUpvote(String postId) {
     final idx = _posts.indexWhere((p) => p.id == postId);
     if (idx < 0) return;
@@ -75,6 +78,7 @@ class FeedProvider extends ChangeNotifier {
     }
   }
 
+  // Mirror of toggleUpvote — same 3-case optimistic logic for downvotes.
   void toggleDownvote(String postId) {
     final idx = _posts.indexWhere((p) => p.id == postId);
     if (idx < 0) return;
@@ -101,6 +105,7 @@ class FeedProvider extends ChangeNotifier {
     }
   }
 
+  // Bumps comment count in memory when the Thread screen posts a new comment, avoiding a reload.
   void incrementCommentCount(String postId) {
     final idx = _posts.indexWhere((p) => p.id == postId);
     if (idx < 0) return;

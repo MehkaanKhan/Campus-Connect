@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/size_config.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../domain/entities/exchange_item_entity.dart';
 import '../provider/hostellite_provider.dart';
@@ -16,8 +17,8 @@ class ListItemBottomSheet extends StatefulWidget {
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.white,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         builder: (_) => ChangeNotifierProvider.value(
           value: context.read<HostelliteProvider>(),
@@ -107,7 +108,7 @@ class _ListItemBottomSheetState extends State<ListItemBottomSheet> {
   Widget build(BuildContext context) {
     final bottomPad = MediaQuery.of(context).viewInsets.bottom;
     return Padding(
-      padding: EdgeInsets.fromLTRB(20, 16, 20, 20 + bottomPad),
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h + bottomPad),
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -118,38 +119,29 @@ class _ListItemBottomSheetState extends State<ListItemBottomSheet> {
               // Handle
               Center(
                 child: Container(
-                  width: 40,
-                  height: 4,
+                  width: 40.w,
+                  height: 4.h,
                   decoration: BoxDecoration(
                     color: AppColors.border,
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: BorderRadius.circular(2.r),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              const Text(
+              SizedBox(height: 16.h),
+              Text(
                 'List an Item',
                 style: TextStyle(
                   fontFamily: 'Inter',
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.w800,
                   color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               // Type selector
-              const Text(
-                'TYPE',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.8,
-                  color: AppColors.textLabel,
-                ),
-              ),
-              const SizedBox(height: 8),
+              _label('TYPE'),
+              SizedBox(height: 8.h),
               Row(
                 children: [
                   _TypeChip(
@@ -157,13 +149,13 @@ class _ListItemBottomSheetState extends State<ListItemBottomSheet> {
                     selected: _type == ItemType.borrow,
                     onTap: () => setState(() => _type = ItemType.borrow),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   _TypeChip(
                     label: 'Rent',
                     selected: _type == ItemType.rent,
                     onTap: () => setState(() => _type = ItemType.rent),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   _TypeChip(
                     label: 'Free',
                     selected: _type == ItemType.free,
@@ -171,22 +163,22 @@ class _ListItemBottomSheetState extends State<ListItemBottomSheet> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
 
               // Title
               _label('TITLE'),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               TextFormField(
                 controller: _titleCtrl,
                 decoration: _inputDeco(hint: 'e.g. Calculator, Textbook...'),
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? 'Enter a title' : null,
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: 14.h),
 
               // Description
               _label('DESCRIPTION'),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               TextFormField(
                 controller: _descCtrl,
                 maxLines: 3,
@@ -194,12 +186,12 @@ class _ListItemBottomSheetState extends State<ListItemBottomSheet> {
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? 'Add a description' : null,
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: 14.h),
 
               // Price (hidden for free)
               if (_type != ItemType.free) ...[
                 _label(_type == ItemType.rent ? 'PRICE / DAY' : 'PRICE'),
-                const SizedBox(height: 6),
+                SizedBox(height: 6.h),
                 TextFormField(
                   controller: _priceCtrl,
                   keyboardType: TextInputType.number,
@@ -211,12 +203,12 @@ class _ListItemBottomSheetState extends State<ListItemBottomSheet> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 14),
+                SizedBox(height: 14.h),
               ],
 
               // Condition
               _label('CONDITION'),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               DropdownButtonFormField<ItemCondition>(
                 initialValue: _condition,
                 decoration: _inputDeco(),
@@ -231,38 +223,42 @@ class _ListItemBottomSheetState extends State<ListItemBottomSheet> {
                   if (v != null) setState(() => _condition = v);
                 },
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: 14.h),
 
               // Image picker
               _label('PHOTO (optional)'),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               GestureDetector(
                 onTap: _pickImage,
                 child: Container(
-                  height: 100,
+                  height: 100.h,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: AppColors.pageBg,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                     border: Border.all(
                         color: AppColors.inputBorder,
                         style: BorderStyle.solid),
                   ),
                   child: _imageBytes != null
                       ? ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           child: Image.memory(_imageBytes!, fit: BoxFit.cover),
                         )
                       : Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SvgPicture.asset(AppAssets.iconCamera, width: 28, height: 28, colorFilter: const ColorFilter.mode(AppColors.textMuted, BlendMode.srcIn)),
-                            SizedBox(height: 6),
+                            SvgPicture.asset(AppAssets.iconCamera,
+                                width: 28.w,
+                                height: 28.h,
+                                colorFilter: const ColorFilter.mode(
+                                    AppColors.textMuted, BlendMode.srcIn)),
+                            SizedBox(height: 6.h),
                             Text(
                               'Tap to add photo',
                               style: TextStyle(
                                 fontFamily: 'Inter',
-                                fontSize: 12,
+                                fontSize: 12.sp,
                                 color: AppColors.textMuted,
                               ),
                             ),
@@ -270,32 +266,32 @@ class _ListItemBottomSheetState extends State<ListItemBottomSheet> {
                         ),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
 
               // Submit
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 50.h,
                 child: ElevatedButton(
                   onPressed: _submitting ? null : _submit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
                   child: _submitting
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
+                      ? SizedBox(
+                          width: 22.w,
+                          height: 22.h,
+                          child: const CircularProgressIndicator(
                               color: Colors.white, strokeWidth: 2),
                         )
-                      : const Text(
+                      : Text(
                           'List Item',
                           style: TextStyle(
                             fontFamily: 'Inter',
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
@@ -311,9 +307,9 @@ class _ListItemBottomSheetState extends State<ListItemBottomSheet> {
 
   Widget _label(String text) => Text(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           fontFamily: 'Inter',
-          fontSize: 11,
+          fontSize: 11.sp,
           fontWeight: FontWeight.w600,
           letterSpacing: 0.8,
           color: AppColors.textLabel,
@@ -325,22 +321,21 @@ class _ListItemBottomSheetState extends State<ListItemBottomSheet> {
         hintStyle: const TextStyle(color: AppColors.textHint, fontFamily: 'Inter'),
         filled: true,
         fillColor: Colors.white,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           borderSide: const BorderSide(color: AppColors.inputBorder),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           borderSide: const BorderSide(color: AppColors.error),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           borderSide: const BorderSide(color: AppColors.error, width: 1.5),
         ),
       );
@@ -359,10 +354,10 @@ class _TypeChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
           color: selected ? AppColors.primary : Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
             color: selected ? AppColors.primary : AppColors.inputBorder,
           ),
@@ -371,7 +366,7 @@ class _TypeChip extends StatelessWidget {
           label,
           style: TextStyle(
             fontFamily: 'Inter',
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w600,
             color: selected ? Colors.white : AppColors.textSecondary,
           ),
