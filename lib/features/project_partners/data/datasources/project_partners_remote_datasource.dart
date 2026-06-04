@@ -21,53 +21,57 @@ class ProjectPartnersRemoteDataSourceImpl
 
   @override
   Future<List<ProjectPartnerEntity>> getProjects({int limit = 10, int offset = 0}) async {
-    final userId = SupabaseService.currentUser?.id;
+    try {
+      final userId = SupabaseService.currentUser?.id;
 
-    // Fetch listings along with their associated skills and applications
-    final response = await _client.from('project_listings').select('''
-      id,
-      creator_id,
-      badge,
-      badge_color,
-      title,
-      description,
-      project_skills ( skill_name ),
-      project_applications ( id, applicant_id, status )
-    ''').order('created_at', ascending: false).range(offset, offset + limit - 1);
+      // Fetch listings along with their associated skills and applications
+      final response = await _client.from('project_listings').select('''
+        id,
+        creator_id,
+        badge,
+        badge_color,
+        title,
+        description,
+        project_skills ( skill_name ),
+        project_applications ( id, applicant_id, status )
+      ''').order('created_at', ascending: false).range(offset, offset + limit - 1);
 
-    return (response as List).map((data) {
-      final skillsList = (data['project_skills'] as List?)
-              ?.map((s) => s['skill_name'] as String)
-              .toList() ??
-          [];
+      return (response as List).map((data) {
+        final skillsList = (data['project_skills'] as List?)
+                ?.map((s) => s['skill_name'] as String)
+                .toList() ??
+            [];
 
-      final applications = data['project_applications'] as List? ?? [];
-      final applicationCount = applications.length;
+        final applications = data['project_applications'] as List? ?? [];
+        final applicationCount = applications.length;
 
-      String? currentUserStatus;
-      if (userId != null) {
-        try {
-          final currentUserApp = applications.firstWhere(
-            (app) => app['applicant_id'] == userId,
-          );
-          currentUserStatus = currentUserApp['status'] as String?;
-        } catch (_) {
-          // No application found for current user
+        String? currentUserStatus;
+        if (userId != null) {
+          try {
+            final currentUserApp = applications.firstWhere(
+              (app) => app['applicant_id'] == userId,
+            );
+            currentUserStatus = currentUserApp['status'] as String?;
+          } catch (_) {
+            // No application found for current user
+          }
         }
-      }
 
-      return ProjectPartnerEntity(
-        id: data['id'] as String,
-        creatorId: data['creator_id'] as String,
-        badge: data['badge'] as String,
-        badgeColor: data['badge_color'] as String,
-        title: data['title'] as String,
-        description: data['description'] as String,
-        skills: skillsList,
-        applicationCount: applicationCount,
-        currentUserApplicationStatus: currentUserStatus,
-      );
-    }).toList();
+        return ProjectPartnerEntity(
+          id: data['id'] as String,
+          creatorId: data['creator_id'] as String,
+          badge: data['badge'] as String,
+          badgeColor: data['badge_color'] as String,
+          title: data['title'] as String,
+          description: data['description'] as String,
+          skills: skillsList,
+          applicationCount: applicationCount,
+          currentUserApplicationStatus: currentUserStatus,
+        );
+      }).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch project listings: ${e.toString()}');
+    }
   }
 
   @override
@@ -83,36 +87,56 @@ class ProjectPartnersRemoteDataSourceImpl
 
   @override
   Future<void> addProject(ProjectPartnerEntity project) async {
-    final userId = SupabaseService.uid;
+    if (project.title.trim().isEmpty) {
+      throw ArgumentError('Project title cannot be empty.');
+    }
+    if (project.description.trim().isEmpty) {
+      throw ArgumentError('Project description cannot be empty.');
+    }
+    try {
+      final userId = SupabaseService.uid;
 
-    final inserted = await _client.from('project_listings').insert({
-      'creator_id': userId,
-      'badge': project.badge,
-      'badge_color': project.badgeColor,
-      'title': project.title,
-      'description': project.description,
-    }).select('id').single();
+      final inserted = await _client.from('project_listings').insert({
+        'creator_id': userId,
+        'badge': project.badge,
+        'badge_color': project.badgeColor,
+        'title': project.title,
+        'description': project.description,
+      }).select('id').single();
 
-    final listingId = inserted['id'] as String;
+      final listingId = inserted['id'] as String;
 
-    if (project.skills.isNotEmpty) {
-      final skillRows = project.skills
-          .map((skill) => {'listing_id': listingId, 'skill_name': skill})
-          .toList();
-      await _client.from('project_skills').insert(skillRows);
+      if (project.skills.isNotEmpty) {
+        final skillRows = project.skills
+            .map((skill) => {'listing_id': listingId, 'skill_name': skill})
+            .toList();
+        await _client.from('project_skills').insert(skillRows);
+      }
+    } catch (e) {
+      throw Exception('Failed to add project listing: ${e.toString()}');
     }
   }
 
   @override
   Future<void> applyToProject(String listingId, String coverMessage, {String? phoneNumber}) async {
-    final userId = SupabaseService.uid;
-    await _client.from('project_applications').insert({
-      'listing_id': listingId,
-      'applicant_id': userId,
-      'cover_message': coverMessage,
-      if (phoneNumber != null && phoneNumber.isNotEmpty) 'phone_number': phoneNumber,
-    });
-    _notifyListingCreator(listingId, userId).ignore();
+    if (listingId.trim().isEmpty) {
+      throw ArgumentError('Listing ID cannot be empty.');
+    }
+    if (coverMessage.trim().isEmpty) {
+      throw ArgumentError('Cover message cannot be empty.');
+    }
+    try {
+      final userId = SupabaseService.uid;
+      await _client.from('project_applications').insert({
+        'listing_id': listingId,
+        'applicant_id': userId,
+        'cover_message': coverMessage,
+        if (phoneNumber != null && phoneNumber.isNotEmpty) 'phone_number': phoneNumber,
+      });
+      _notifyListingCreator(listingId, userId).ignore();
+    } catch (e) {
+      throw Exception('Failed to submit project application: ${e.toString()}');
+    }
   }
 
   Future<void> _notifyListingCreator(String listingId, String applicantId) async {
@@ -146,43 +170,57 @@ class ProjectPartnersRemoteDataSourceImpl
 
   @override
   Future<List<ProjectApplicationEntity>> getApplications(String listingId) async {
-    final response = await _client.from('project_applications').select('''
-      id,
-      listing_id,
-      applicant_id,
-      cover_message,
-      phone_number,
-      status,
-      created_at,
-      profiles!applicant_id (
-        full_name,
-        avatar_url
-      )
-    ''').eq('listing_id', listingId).order('created_at', ascending: false);
+    if (listingId.trim().isEmpty) {
+      throw ArgumentError('Listing ID cannot be empty.');
+    }
+    try {
+      final response = await _client.from('project_applications').select('''
+        id,
+        listing_id,
+        applicant_id,
+        cover_message,
+        phone_number,
+        status,
+        created_at,
+        profiles!applicant_id (
+          full_name,
+          avatar_url
+        )
+      ''').eq('listing_id', listingId).order('created_at', ascending: false);
 
-    return (response as List).map((data) {
-      final profile = data['profiles'] as Map?;
-      final createdAt = DateTime.parse(data['created_at']);
-      
-      return ProjectApplicationEntity(
-        id: data['id'] as String,
-        listingId: data['listing_id'] as String,
-        applicantId: data['applicant_id'] as String,
-        applicantName: profile?['full_name'] ?? 'Unknown',
-        applicantAvatarUrl: profile?['avatar_url'] as String?,
-        coverMessage: data['cover_message'] as String,
-        phoneNumber: data['phone_number'] as String?,
-        status: data['status'] as String,
-        appliedAgo: _formatTimeAgo(createdAt),
-      );
-    }).toList();
+      return (response as List).map((data) {
+        final profile = data['profiles'] as Map?;
+        final createdAt = DateTime.parse(data['created_at']);
+        
+        return ProjectApplicationEntity(
+          id: data['id'] as String,
+          listingId: data['listing_id'] as String,
+          applicantId: data['applicant_id'] as String,
+          applicantName: profile?['full_name'] ?? 'Unknown',
+          applicantAvatarUrl: profile?['avatar_url'] as String?,
+          coverMessage: data['cover_message'] as String,
+          phoneNumber: data['phone_number'] as String?,
+          status: data['status'] as String,
+          appliedAgo: _formatTimeAgo(createdAt),
+        );
+      }).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch applications: ${e.toString()}');
+    }
   }
 
   @override
   Future<void> updateApplicationStatus(String applicationId, String status) async {
-    await _client.from('project_applications').update({
-      'status': status,
-    }).eq('id', applicationId);
+    if (applicationId.trim().isEmpty) {
+      throw ArgumentError('Application ID cannot be empty.');
+    }
+    try {
+      await _client.from('project_applications').update({
+        'status': status,
+      }).eq('id', applicationId);
+    } catch (e) {
+      throw Exception('Failed to update application status: ${e.toString()}');
+    }
   }
 
   String _formatTimeAgo(DateTime dateTime) {

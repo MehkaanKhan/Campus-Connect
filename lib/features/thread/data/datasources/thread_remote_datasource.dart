@@ -17,97 +17,114 @@ class ThreadRemoteDataSourceImpl implements ThreadRemoteDataSource {
 
   @override
   Future<ThreadEntity> getThread(String postId) async {
-    final postResponse = await _client.from('posts').select('''
-      id,
-      title,
-      content,
-      image_url,
-      comment_count,
-      allow_replies,
-      created_at,
-      profiles!author_id (
-        full_name,
-        avatar_url
-      )
-    ''').eq('id', postId).maybeSingle();
-
-    if (postResponse == null) {
-      throw Exception('Post not found');
+    if (postId.trim().isEmpty) {
+      throw ArgumentError('Post ID cannot be empty.');
     }
+    try {
+      final postResponse = await _client.from('posts').select('''
+        id,
+        title,
+        content,
+        image_url,
+        comment_count,
+        allow_replies,
+        created_at,
+        profiles!author_id (
+          full_name,
+          avatar_url
+        )
+      ''').eq('id', postId).maybeSingle();
 
-    // Fetch comments with author profile data
-    final commentsResponse = await _client.from('comments').select('''
-      id,
-      content,
-      upvote_count,
-      is_op,
-      created_at,
-      parent_id,
-      profiles!author_id (
-        full_name,
-        avatar_url
-      )
-    ''').eq('post_id', postId).order('created_at', ascending: true);
+      if (postResponse == null) {
+        throw Exception('Post not found');
+      }
 
-    final authorProfile = postResponse['profiles'] as Map?;
-    final authorName = authorProfile?['full_name'] ?? 'Unknown';
-    final authorAvatarUrl = authorProfile?['avatar_url'] as String?;
-    final createdAt = DateTime.parse(postResponse['created_at']);
-    final timeAgo = _formatTimeAgo(createdAt);
+      // Fetch comments with author profile data
+      final commentsResponse = await _client.from('comments').select('''
+        id,
+        content,
+        upvote_count,
+        is_op,
+        created_at,
+        parent_id,
+        profiles!author_id (
+          full_name,
+          avatar_url
+        )
+      ''').eq('post_id', postId).order('created_at', ascending: true);
 
-    // Build the nested comment tree
-    final List<Map<String, dynamic>> allComments =
-        List<Map<String, dynamic>>.from(commentsResponse);
-    final topLevelComments =
-        allComments.where((c) => c['parent_id'] == null).toList();
+      final authorProfile = postResponse['profiles'] as Map?;
+      final authorName = authorProfile?['full_name'] ?? 'Unknown';
+      final authorAvatarUrl = authorProfile?['avatar_url'] as String?;
+      final createdAt = DateTime.parse(postResponse['created_at']);
+      final timeAgo = _formatTimeAgo(createdAt);
 
-    List<CommentEntity> mapComments(List<Map<String, dynamic>> nodes) {
-      return nodes.map((c) {
-        final replies =
-            allComments.where((r) => r['parent_id'] == c['id']).toList();
-        final cCreatedAt = DateTime.parse(c['created_at']);
-        final cProfile = c['profiles'] as Map?;
+      // Build the nested comment tree
+      final List<Map<String, dynamic>> allComments =
+          List<Map<String, dynamic>>.from(commentsResponse);
+      final topLevelComments =
+          allComments.where((c) => c['parent_id'] == null).toList();
 
-        return CommentEntity(
-          id: c['id'],
-          authorName: cProfile?['full_name'] ?? 'Unknown',
-          authorAvatarUrl: cProfile?['avatar_url'] as String?,
-          timeAgo: _formatTimeAgo(cCreatedAt),
-          content: c['content'],
-          upvotes: c['upvote_count'],
-          isOp: c['is_op'] ?? false,
-          replies: mapComments(replies),
-        );
-      }).toList();
+      List<CommentEntity> mapComments(List<Map<String, dynamic>> nodes) {
+        return nodes.map((c) {
+          final replies =
+              allComments.where((r) => r['parent_id'] == c['id']).toList();
+          final cCreatedAt = DateTime.parse(c['created_at']);
+          final cProfile = c['profiles'] as Map?;
+
+          return CommentEntity(
+            id: c['id'],
+            authorName: cProfile?['full_name'] ?? 'Unknown',
+            authorAvatarUrl: cProfile?['avatar_url'] as String?,
+            timeAgo: _formatTimeAgo(cCreatedAt),
+            content: c['content'],
+            upvotes: c['upvote_count'],
+            isOp: c['is_op'] ?? false,
+            replies: mapComments(replies),
+          );
+        }).toList();
+      }
+
+      final mappedComments = mapComments(topLevelComments);
+
+      return ThreadEntity(
+        id: postResponse['id'],
+        title: postResponse['title'],
+        authorName: authorName,
+        authorAvatarUrl: authorAvatarUrl,
+        postedAgo: timeAgo,
+        body: postResponse['content'] ?? '',
+        imageUrl: postResponse['image_url'] as String?,
+        commentCount: postResponse['comment_count'],
+        allowReplies: postResponse['allow_replies'],
+        comments: mappedComments,
+      );
+    } catch (e) {
+      throw Exception('Failed to load thread details: ${e.toString()}');
     }
-
-    final mappedComments = mapComments(topLevelComments);
-
-    return ThreadEntity(
-      id: postResponse['id'],
-      title: postResponse['title'],
-      authorName: authorName,
-      authorAvatarUrl: authorAvatarUrl,
-      postedAgo: timeAgo,
-      body: postResponse['content'] ?? '',
-      imageUrl: postResponse['image_url'] as String?,
-      commentCount: postResponse['comment_count'],
-      allowReplies: postResponse['allow_replies'],
-      comments: mappedComments,
-    );
   }
 
   @override
   Future<void> postComment(String postId, String content, {String? parentId}) async {
-    final userId = SupabaseService.uid;
-    await _client.from('comments').insert({
-      'post_id': postId,
-      'author_id': userId,
-      'content': content,
-      'parent_id': ?parentId,
-    });
-    _notifyPostAuthor(postId, userId).ignore();
-    if (parentId != null) _notifyCommentAuthor(parentId, userId).ignore();
+    if (postId.trim().isEmpty) {
+      throw ArgumentError('Post ID cannot be empty.');
+    }
+    if (content.trim().isEmpty) {
+      throw ArgumentError('Comment content cannot be empty.');
+    }
+    try {
+      final userId = SupabaseService.uid;
+      await _client.from('comments').insert({
+        'post_id': postId,
+        'author_id': userId,
+        'content': content,
+        'parent_id': parentId,
+      });
+      _notifyPostAuthor(postId, userId).ignore();
+      if (parentId != null) _notifyCommentAuthor(parentId, userId).ignore();
+    } catch (e) {
+      throw Exception('Failed to post comment: ${e.toString()}');
+    }
   }
 
   Future<void> _notifyPostAuthor(String postId, String commenterId) async {
@@ -168,9 +185,16 @@ class ThreadRemoteDataSourceImpl implements ThreadRemoteDataSource {
 
   @override
   Future<void> toggleAllowReplies(String postId, bool value) async {
-    await _client.from('posts').update({
-      'allow_replies': value,
-    }).eq('id', postId);
+    if (postId.trim().isEmpty) {
+      throw ArgumentError('Post ID cannot be empty.');
+    }
+    try {
+      await _client.from('posts').update({
+        'allow_replies': value,
+      }).eq('id', postId);
+    } catch (e) {
+      throw Exception('Failed to toggle replies setting: ${e.toString()}');
+    }
   }
 
   String _formatTimeAgo(DateTime dateTime) {

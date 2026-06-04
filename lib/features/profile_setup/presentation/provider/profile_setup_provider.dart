@@ -28,6 +28,9 @@ class ProfileSetupProvider extends ChangeNotifier {
   ProfileSetupStatus _status = ProfileSetupStatus.idle;
   ProfileSetupStatus get status => _status;
 
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
   String _fullName = '';
   String get fullName => _fullName;
 
@@ -49,13 +52,15 @@ class ProfileSetupProvider extends ChangeNotifier {
 
   Future<void> _init() async {
     _status = ProfileSetupStatus.loading;
+    _errorMessage = null;
     notifyListeners();
     try {
       universities = await getUniversitiesUsecase();
       departments = await getDepartmentsUsecase();
       semesters = await getSemestersUsecase();
       _status = ProfileSetupStatus.success;
-    } catch (_) {
+    } catch (e) {
+      _errorMessage = e.toString();
       _status = ProfileSetupStatus.error;
     }
     notifyListeners();
@@ -101,6 +106,7 @@ class ProfileSetupProvider extends ChangeNotifier {
   Future<void> saveProfile() async {
     if (!isFormValid) return;
     _status = ProfileSetupStatus.loading;
+    _errorMessage = null;
     notifyListeners();
     try {
       await saveProfileUsecase(
@@ -113,7 +119,8 @@ class ProfileSetupProvider extends ChangeNotifier {
         ),
       );
       _status = ProfileSetupStatus.success;
-    } catch (_) {
+    } catch (e) {
+      _errorMessage = e.toString();
       _status = ProfileSetupStatus.error;
     }
     notifyListeners();

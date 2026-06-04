@@ -41,16 +41,21 @@ class ThreadProvider extends ChangeNotifier {
   ThreadStatus _status = ThreadStatus.idle;
   ThreadStatus get status => _status;
 
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
   Future<void> loadThread(String postId) async {
     _activePostId = postId;
     _thread = null;
     _status = ThreadStatus.loading;
+    _errorMessage = null;
     notifyListeners();
     try {
       _thread = await getThreadUsecase(postId);
       _allowReplies = _thread?.allowReplies ?? true;
       _status = ThreadStatus.success;
-    } catch (_) {
+    } catch (e) {
+      _errorMessage = e.toString();
       _status = ThreadStatus.error;
     }
     notifyListeners();
@@ -81,6 +86,7 @@ class ThreadProvider extends ChangeNotifier {
     _commentDraft = '';
     _replyToId = null;
     _replyToName = null;
+    _errorMessage = null;
 
     // Optimistic update only for top-level comments
     if (parentId == null) {
@@ -106,16 +112,24 @@ class ThreadProvider extends ChangeNotifier {
       final updatedThread = await getThreadUsecase(_activePostId!);
       _thread = updatedThread;
       notifyListeners();
-    } catch (_) {}
+    } catch (e) {
+      _errorMessage = e.toString();
+      // Revert optimistic update
+      final updatedThread = await getThreadUsecase(_activePostId!);
+      _thread = updatedThread;
+      notifyListeners();
+    }
   }
 
   Future<void> toggleReplies(bool val) async {
     if (_activePostId == null) return;
     _allowReplies = val;
+    _errorMessage = null;
     notifyListeners();
     try {
       await toggleAllowRepliesUsecase(_activePostId!, val);
-    } catch (_) {
+    } catch (e) {
+      _errorMessage = e.toString();
       // Revert if error
       _allowReplies = !_allowReplies;
       notifyListeners();

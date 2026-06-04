@@ -5,5 +5,10 @@ class SubmitPostUsecase {
   final CreatePostRepository repository;
   const SubmitPostUsecase(this.repository);
 
-  Future<String> call(CreatePostEntity post) => repository.submitPost(post);
+  Future<String> call(CreatePostEntity post) {
+    if (post.title.trim().isEmpty) {
+      throw ArgumentError('Post title cannot be empty.');
+    }
+    return repository.submitPost(post);
+  }
 }

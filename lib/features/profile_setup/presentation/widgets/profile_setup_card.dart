@@ -94,9 +94,16 @@ class ProfileSetupCard extends StatelessWidget {
             isLoading: provider.status == ProfileSetupStatus.loading,
             onTap: () async {
               await provider.saveProfile();
-              if (context.mounted &&
-                  provider.status == ProfileSetupStatus.success) {
+              if (!context.mounted) return;
+              if (provider.status == ProfileSetupStatus.success) {
                 context.go('/feed');
+              } else if (provider.status == ProfileSetupStatus.error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(provider.errorMessage ?? 'An error occurred'),
+                    backgroundColor: AppColors.negativeVote,
+                  ),
+                );
               }
             },
           ),
