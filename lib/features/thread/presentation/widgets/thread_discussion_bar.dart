@@ -4,14 +4,10 @@ import '../../../../core/utils/size_config.dart';
 
 class ThreadDiscussionBar extends StatelessWidget {
   final int commentCount;
-  final bool allowReplies;
-  final ValueChanged<bool> onToggle;
 
   const ThreadDiscussionBar({
     super.key,
     required this.commentCount,
-    required this.allowReplies,
-    required this.onToggle,
   });
 
   @override
@@ -35,7 +31,7 @@ class ThreadDiscussionBar extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.w700),
                 ),
                 TextSpan(
-                  text: '($commentCount\nComments)',
+                  text: '($commentCount Comments)',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     color: AppColors.textFaint,
@@ -43,36 +39,6 @@ class ThreadDiscussionBar extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-          const Spacer(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'MOD: ALLOW\nREPLIES',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontSize: 9.5.sp,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.5,
-                  color: AppColors.navInactive,
-                ),
-              ),
-              SizedBox(height: 4.h),
-              Transform.scale(
-                scale: 0.82,
-                alignment: Alignment.centerRight,
-                child: Switch(
-                  value: allowReplies,
-                  onChanged: onToggle,
-                  activeThumbColor: AppColors.white,
-                  activeTrackColor: AppColors.sage,
-                  inactiveThumbColor: AppColors.white,
-                  inactiveTrackColor: AppColors.imagePlaceholder,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-              ),
-            ],
           ),
         ],
       ),

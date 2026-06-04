@@ -68,8 +68,6 @@ class _ThreadPageState extends State<ThreadPage> {
                       ThreadPost(thread: thread),
                       ThreadDiscussionBar(
                         commentCount: thread.commentCount,
-                        allowReplies: provider.allowReplies,
-                        onToggle: provider.toggleReplies,
                       ),
                       ...thread.comments.map(
                         (c) => ThreadCommentTile(comment: c, isNested: false, onReply: _onReply),
