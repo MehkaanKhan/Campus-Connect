@@ -73,9 +73,15 @@ class _HeroImageCard extends StatelessWidget {
       aspectRatio: 1.0,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(22.r),
-        child: Image.asset(
-          imagePath,
-          fit: BoxFit.contain,
+        child: ColorFiltered(
+          colorFilter: const ColorFilter.mode(
+            AppColors.onboardingBg,
+            BlendMode.multiply,
+          ),
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );
