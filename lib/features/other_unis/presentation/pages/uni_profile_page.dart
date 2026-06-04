@@ -81,16 +81,34 @@ class _HeroHeader extends StatelessWidget {
                 border: Border.all(
                     color: Colors.white.withValues(alpha: 0.3), width: 2),
               ),
-              child: Center(
-                child: Text(
-                  uni.logoText,
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 30.sp,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.filterActiveBg,
-                  ),
-                ),
+              child: ClipOval(
+                child: uni.imageUrl != null
+                    ? Image.network(
+                        uni.imageUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) => Center(
+                          child: Text(
+                            uni.logoText,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 30.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.filterActiveBg,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Center(
+                        child: Text(
+                          uni.logoText,
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 30.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.filterActiveBg,
+                          ),
+                        ),
+                      ),
               ),
             ),
           ),
