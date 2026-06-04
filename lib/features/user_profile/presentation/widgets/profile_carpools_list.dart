@@ -41,13 +41,16 @@ class ProfileCarpoolsList extends StatelessWidget {
               child: SvgPicture.asset(AppAssets.iconDirectionsCar, width: 16.w, height: 16.w, colorFilter: ColorFilter.mode(AppColors.sage, BlendMode.srcIn)),
             ),
             SizedBox(width: 12.w),
-            Text(
-              carpools[i],
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary,
+            Expanded(
+              child: Text(
+                carpools[i],
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary,
+                ),
               ),
             ),
           ],
