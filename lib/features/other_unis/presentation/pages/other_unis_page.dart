@@ -235,22 +235,36 @@ class _UniCard extends StatelessWidget {
               // Avatar – fixed height
               Hero(
                 tag: 'uni_logo_${uni.id}',
-                child: Container(
-                  width: 54.w,
-                  height: 54.w,
-                  decoration: BoxDecoration(
+                child: ClipOval(
+                  child: Container(
+                    width: 54.w,
+                    height: 54.w,
                     color: AppColors.primary.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Text(
-                      uni.logoText,
-                      style: TextStyle(
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                      ),
-                    ),
+                    child: uni.imageUrl != null
+                        ? Image.network(
+                            uni.imageUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, _, _) => Center(
+                              child: Text(
+                                uni.logoText,
+                                style: TextStyle(
+                                  fontSize: 22.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Center(
+                            child: Text(
+                              uni.logoText,
+                              style: TextStyle(
+                                fontSize: 22.sp,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ),
                   ),
                 ),
               ),

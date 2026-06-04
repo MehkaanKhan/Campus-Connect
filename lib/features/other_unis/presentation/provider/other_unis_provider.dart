@@ -24,18 +24,27 @@ class OtherUnisProvider extends ChangeNotifier {
     try {
       final data = await SupabaseService.client
           .from('universities')
-          .select('id, name, region, member_count, activity_score, logo_text, description')
+          .select('id, name, region, member_count, activity_score, logo_text, description, image_url')
           .order('activity_score', ascending: false);
 
-      _allUnis = (data as List).map((u) => OtherUniEntity(
-        id: u['id'] as String,
-        name: u['name'] as String,
-        region: u['region'] as String? ?? '',
-        memberCount: u['member_count'] as int? ?? 0,
-        activityScore: u['activity_score'] as int? ?? 0,
-        logoText: u['logo_text'] as String? ?? '',
-        description: u['description'] as String? ?? '',
-      )).toList();
+      _allUnis = (data as List).map((u) {
+        final imageFile = u['image_url'] as String?;
+        final imageUrl = (imageFile != null && imageFile.isNotEmpty)
+            ? SupabaseService.client.storage
+                .from('university-images')
+                .getPublicUrl(imageFile)
+            : null;
+        return OtherUniEntity(
+          id: u['id'] as String,
+          name: u['name'] as String,
+          region: u['region'] as String? ?? '',
+          memberCount: u['member_count'] as int? ?? 0,
+          activityScore: u['activity_score'] as int? ?? 0,
+          logoText: u['logo_text'] as String? ?? '',
+          description: u['description'] as String? ?? '',
+          imageUrl: imageUrl,
+        );
+      }).toList();
 
       _filteredUnis = _allUnis;
     } on PostgrestException catch (e) {
